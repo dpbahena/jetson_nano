@@ -22,9 +22,6 @@ set(CMAKE_CUDA_ARCHITECTURES 53)
 # Add source files
 
 
-
-
-
 # Find OpenGL and GLUT packages
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
