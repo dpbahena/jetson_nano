@@ -20,6 +20,24 @@ project(${PROJECT_NAME} VERSION 0.1.0 LANGUAGES C CXX CUDA)
 set(CMAKE_CUDA_ARCHITECTURES 53)
 
 # Add source files
+set(IMGUI_DIR ${CMAKE_SOURCE_DIR}/imgui)
+set(IMGUI_BACKENDS ${IMGUI_DIR}/backends)
+
+set(IMGUI_SOURCES
+    ${IMGUI_DIR}/imgui.cpp
+    ${IMGUI_DIR}/imgui_draw.cpp
+    ${IMGUI_DIR}/imgui_widgets.cpp
+    ${IMGUI_DIR}/imgui_tables.cpp
+    ${IMGUI_DIR}/imgui_demo.cpp
+    ${IMGUI_BACKENDS}/imgui_impl_glut.cpp
+    ${IMGUI_BACKENDS}/imgui_impl_opengl2.cpp
+)
+
+include_directories(
+    ${IMGUI_DIR}
+    ${IMGUI_BACKENDS}
+)
+
 
 
 # Find OpenGL and GLUT packages
@@ -30,8 +48,8 @@ find_package(GLUT REQUIRED)
 find_package(CUDAToolkit REQUIRED)
 
 # Find SDL2 package
-# find_package(SDL2 REQUIRED)
-# include_directories(${SDL2_INCLUDE_DIRS})
+find_package(SDL2 REQUIRED)
+include_directories(${SDL2_INCLUDE_DIRS})
 
 
 # Collect all source files in the src directory
@@ -39,10 +57,10 @@ file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.cu")
 file(GLOB_RECURSE HEADERS "src/*.h"  )
 
 # Add the main executable and specify all source files
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${IMGUI_SOURCES})
 
 #Link SDL2 library
-target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES} X11 Xrandr)
 
 
 # Link OpenGL, GLUT, and CUDA libraries
