@@ -209,8 +209,17 @@ void CUDAHandler::updateDraw(float dt)
 {
     this->dt = dt;
 
-    if(leniaSize == 0) {
+    static Settings previousSettings;
+    Settings currentSettings = {
+        .numberOfParticles = totalParticles,
+        .particleRadius = particleRadius,
+        .spacing = spacing,
+        
+    };
+    if(leniaSize == 0 || currentSettings != previousSettings) {
+        
         initLenia();
+        previousSettings = currentSettings;
         
     }
  
@@ -274,6 +283,26 @@ void CUDAHandler::drawTriangle(cudaSurfaceObject_t &surface, uchar4 color, vec2 
 void CUDAHandler::initLenia()
 {
     
+    // Free previously allocated GPU memory if it exists
+    if (d_leniaParticles) { 
+        checkCuda(cudaFree(d_leniaParticles));
+        d_leniaParticles = nullptr;
+    }
+    if (d_states) {
+        checkCuda(cudaFree(d_states));
+        d_states = nullptr;
+    }
+    if (d_colors) {
+        checkCuda(cudaFree(d_colors));
+        d_colors = nullptr;
+    }
+
+    // Optional: delete previous Lenia object
+    if (lenia) {
+        delete lenia;
+        lenia = nullptr;
+    }
+
     lenia = new Lenia(width, height, totalParticles, particleRadius, spacing, {16,10} );
     leniaSize = lenia->particles.size();
     
@@ -296,7 +325,7 @@ void CUDAHandler::initLenia()
     initializeLeniaParticle<<<gridSize, blockSize>>>(d_leniaParticles, leniaSize, d_states, d_colors, colorPallete.size());
     checkCuda(cudaPeekAtLastError());
     checkCuda(cudaDeviceSynchronize());
-    printf("LeniaSize: %d\n", leniaSize);
+    
     
 }
 

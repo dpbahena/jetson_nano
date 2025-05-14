@@ -1,4 +1,5 @@
 #include "CUDAHandler.h"
+#include "UI.h"
 #include "monitor_utils.h"
 
 #include "GLManager.h"
@@ -10,6 +11,7 @@
 
 GLManager* glManager;
 CUDAHandler* cudaHandler;
+SimulationUI UI;
 
 
 
@@ -38,17 +40,8 @@ void display() {
     
     imGuiMonitorSelector();
 
-    static int frameCount = 0;
-    static float timeAccumulator = 0.0f;
+    UI.render(*cudaHandler);
 
-    frameCount++;
-    timeAccumulator += deltaTime;
-
-    if (timeAccumulator >= 1.0f) {
-        // printf("Actual FPS: %d\n", frameCount);
-        frameCount = 0;
-        timeAccumulator = 0.0f;
-    }
     // --- 2. Update simulation ---
     if (cudaHandler) {
         cudaHandler->updateDraw(deltaTime);
@@ -88,6 +81,7 @@ int main(int argc, char** argv) {
     
     findMonitors();
     glutCreateWindow("CUDA OpenGL Sim");
+    UI.instance = &UI;
      
     
     glManager = new GLManager(width, height);

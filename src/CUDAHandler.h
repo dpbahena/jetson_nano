@@ -17,6 +17,19 @@
 
 
 
+struct Settings {
+    int numberOfParticles;
+    float particleRadius;
+    float spacing;
+
+    bool operator!=(const Settings& other) const {
+        return std::tie(numberOfParticles, particleRadius, spacing) !=
+               std::tie(other.numberOfParticles, other.particleRadius, other.spacing);
+    }
+};
+
+
+
 class CUDAHandler {
 
     public:
@@ -25,16 +38,16 @@ class CUDAHandler {
 
         CUDAHandler(int width, int height, GLuint textureID);
         ~CUDAHandler();
-        Lenia* lenia;
+        Lenia* lenia = nullptr;
         std::vector<uchar4> colorPallete = {BLUE_PLANET, GRAY_ROCKY, SUN_YELLOW, JUPITER, 
                                             SPACE_NIGH, FULL_MOON, RED_MERCURY,  VENUS_TAN, RED_MERCURY, 
                                             MARS_RED, SATURN_ROSE, NEPTUNE_PURPLE, URANUS_BLUE, 
                                             PLUTO_TAN, LITE_GREY, DARK, BLUE, GREEN, GOLD, WHITE, 
                                             PINK, ORANGE, TAN };
         // Device Variables
-        Particle* d_leniaParticles;
-        curandState_t* d_states;
-        uchar4* d_colors;
+        Particle* d_leniaParticles = nullptr;
+        curandState_t* d_states = nullptr;
+        uchar4* d_colors = nullptr;
 
         // main functions
         void updateDraw(float dt);
@@ -44,6 +57,7 @@ class CUDAHandler {
         // program variables
         float dt;  // delta time
         int height, width;
+        float zoom, panX, panY;
         bool startSimulation = false;
         int leniaSize = 0;
         int totalParticles = 1e6;
