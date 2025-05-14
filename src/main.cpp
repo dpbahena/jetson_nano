@@ -45,7 +45,7 @@ void display() {
     timeAccumulator += deltaTime;
 
     if (timeAccumulator >= 1.0f) {
-        printf("Actual FPS: %d\n", frameCount);
+        // printf("Actual FPS: %d\n", frameCount);
         frameCount = 0;
         timeAccumulator = 0.0f;
     }

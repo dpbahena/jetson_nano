@@ -1,13 +1,16 @@
 #pragma once
 
 
-#include "vectors.h"
+#include "my_vectors.h"
+#include "cuda_utils.h"
+#include "lenia.h"
 #include "imgui.h"
 #include "imgui_impl_glut.h"
 #include "imgui_impl_opengl2.h"
 
 #include <GL/glut.h>
 #include <cuda_runtime.h>
+#include <curand_kernel.h>
 #include <cuda_gl_interop.h>
 #include <vector>
 #include <string>
@@ -22,15 +25,31 @@ class CUDAHandler {
 
         CUDAHandler(int width, int height, GLuint textureID);
         ~CUDAHandler();
+        Lenia* lenia;
+        std::vector<uchar4> colorPallete = {BLUE_PLANET, GRAY_ROCKY, SUN_YELLOW, JUPITER, FULL_MOON, VENUS_TAN, RED_MERCURY, GREEN, GOLD, WHITE, PINK, ORANGE, TAN };
+        // Device Variables
+        Particle* d_leniaParticles;
+        curandState_t* d_states;
+        uchar4* d_colors;
 
         // main functions
         void updateDraw(float dt);
-        void clearGraphicsDisply(cudaSurfaceObject_t &surface, uchar4 color);
-        void drawTriangle(cudaSurfaceObject_t &surface, uchar4 colorcolor, Vec2 v0, Vec2 v1, Vec2 v2);
+        void clearGraphicsDisplay(cudaSurfaceObject_t &surface, uchar4 color);
+        void drawTriangle(cudaSurfaceObject_t &surface, uchar4 colorcolor, vec2 v0, vec2 v1, vec2 v2);
 
         // program variables
         float dt;  // delta time
         int height, width;
+        bool startSimulation = false;
+        int leniaSize = 0;
+        int totalParticles = 1000;
+        float particleRadius = 1.0f;
+
+        void initLenia();
+
+    private:
+        int blockSize;
+        int gridSize;
       
     
        
