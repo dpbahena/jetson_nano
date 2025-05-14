@@ -40,29 +40,47 @@ __global__ void initializeLeniaParticle(Particle* particles, int totalParticles,
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= totalParticles) return;
     curandState_t x = states[i];
-    // float e =  random_float_in_range(&x, 0.1, 0.5);
-    particles[i].energy = 1.5f;
+    float e =  random_float_in_range(&x, 0.1, 0.5);
+    particles[i].energy = e;
     states[i] = x; // reinstate the random value;
-    int colorIndex = static_cast<int>(1.0f * (numberColors - 1));
+    int colorIndex = static_cast<int>(e * (numberColors - 1));
     colorIndex = max(0, min(colorIndex, numberColors - 1));
-    particles[i].color = make_uchar4(0,0,0,255); // colors[colorIndex];
+    particles[i].color = colors[colorIndex];
 }
+
+// __global__ void drawLeniaParticles(cudaSurfaceObject_t surface, Particle* particles, int numberParticles, int width, int height, float zoom, float panX, float panY){
+//     int i = blockIdx.x * blockDim.x + threadIdx.x;
+//     if (i >= numberParticles) return;
+//     Particle p = particles[i];
+//     vec2 pos = p.position;
+//     // if (threadIdx.x == 0){
+//     //     printf("position.x  %f\n", pos.x);
+//     //     printf("Energy %f\n", p.energy);
+//     // }
+//     float radius = p.radius * zoom;
+//     int x0 = (int)(width / 2.0f + (pos.x + panX) * zoom);
+//     int y0 = (int)(height / 2.0f + (pos.y + panY) * zoom);
+    
+//     drawFilledCircle(surface, x0, y0, radius, p.color, width, height);
+// }
 
 __global__ void drawLeniaParticles(cudaSurfaceObject_t surface, Particle* particles, int numberParticles, int width, int height, float zoom, float panX, float panY){
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     if (i >= numberParticles) return;
+
     Particle p = particles[i];
-    vec2 pos = p.position;
-    if (threadIdx.x == 0){
-        printf("position.x  %f\n", pos.x);
-        printf("Energy %f\n", p.energy);
-    }
+
+    // Apply zoom and pan directly (without adding screen center shift)
     float radius = p.radius * zoom;
-    int x0 = (int)(width / 2.0f + (pos.x + panX) * zoom);
-    int y0 = (int)(height / 2.0f + (pos.y + panY) * zoom);
-    
+    int x0 = (int)((p.position.x + panX) * zoom);
+    int y0 = (int)((p.position.y + panY) * zoom);
+
+    // Reject particles that fall outside the surface
+    if (x0 < 0 || x0 >= width || y0 < 0 || y0 >= height) return;
+
     drawFilledCircle(surface, x0, y0, radius, p.color, width, height);
 }
+
 
 __global__ void clearSurface_kernel(cudaSurfaceObject_t surface, int width, int height, uchar4 color) {
     int x = threadIdx.x + blockIdx.x * blockDim.x;
@@ -200,8 +218,8 @@ void CUDAHandler::updateDraw(float dt)
    
     clearGraphicsDisplay(surface, WHITE);
     // drawTriangle(surface, RED_MERCURY, vec2(100, 200), vec2(150, 600), vec2(500, 300));
-    checkCuda(cudaPeekAtLastError());
-    checkCuda(cudaDeviceSynchronize());
+    // checkCuda(cudaPeekAtLastError());
+    // checkCuda(cudaDeviceSynchronize());
     // printf("again: %d\n", leniaSize);
     drawLeniaParticles<<<gridSize, blockSize>>>(surface, d_leniaParticles, leniaSize, width, height, 1.0f, 0.0f, 0.0f);
 
@@ -256,16 +274,14 @@ void CUDAHandler::drawTriangle(cudaSurfaceObject_t &surface, uchar4 color, vec2 
 void CUDAHandler::initLenia()
 {
     
-    lenia = new Lenia(width, height, totalParticles, particleRadius, {16,10} );
+    lenia = new Lenia(width, height, totalParticles, particleRadius, spacing, {16,10} );
     leniaSize = lenia->particles.size();
-    // for(int i = 0; i < 10; i++){
-    //     printf("position: (%f, %f) \n", lenia->particles[i]->position.x, lenia->particles[i]->position.y);
-    // }
+    
     blockSize = 256;
     gridSize = (leniaSize + blockSize - 1) / blockSize;
     
-    checkCuda(cudaMalloc(&d_leniaParticles, leniaSize * sizeof(Particle*)));
-    checkCuda(cudaMemcpy(d_leniaParticles, lenia->particles.data(), leniaSize * sizeof(Particle*), cudaMemcpyHostToDevice));
+    checkCuda(cudaMalloc(&d_leniaParticles, leniaSize * sizeof(Particle)));
+    checkCuda(cudaMemcpy(d_leniaParticles, lenia->particles.data(), leniaSize * sizeof(Particle), cudaMemcpyHostToDevice));
     
     checkCuda(cudaMalloc(&d_states, blockSize * gridSize * sizeof(curandState_t)));
     

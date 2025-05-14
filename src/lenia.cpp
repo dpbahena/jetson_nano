@@ -5,19 +5,15 @@ Lenia::Lenia()
 {
 }
 
-Lenia::Lenia(int displayWidth, int displayHeight, int totalParticles, float particleRadius, int2 gridRatio)
-    : width(displayWidth), height(displayHeight), totalParticles(totalParticles), particleRadius(particleRadius)
+Lenia::Lenia(int displayWidth, int displayHeight, int totalParticles, float particleRadius, float spacing, int2 gridRatio)
+    : width(displayWidth), height(displayHeight), totalParticles(totalParticles), particleRadius(particleRadius), spacing(spacing)
 {
-
-    particles.clear();
-    screenRatio = static_cast<float>(height) / width;
     setGrid(gridRatio);
 }
 
 Lenia::~Lenia()
 {
-    for (auto &p : particles)
-        delete p;
+    particles.clear();
 }
 
 int2 Lenia::calculateGridDimensions(int a, int b)
@@ -51,31 +47,25 @@ void Lenia::setGrid(int2 ratio)
     int rows = grid.x;
     int cols = grid.y;
 
-    // printf("Rows: %d  -  Cols: %d - total: %d\n", rows, cols, rows * cols);
 
     gridRows = rows;
-    gridCols = cols;    
+    gridCols = cols; 
+    
+    particles.reserve(gridRows * gridCols);
 
-    // int offset = width / 2.0f - (cols - 1) * particleRadius;    
-    // float offset = width / 2.0f - (cols - 1) * restLength / 2.0f;
     float offsetX = (width  - (cols - 1) * spacing) / 2.0f;
     float offsetY = (height - (rows - 1) * spacing) / 2.0f;
     topLeft = vec2(offsetX, offsetY);
-
-
-    // topLeft = vec2(offset, top);
     
-    int rowsSize = gridRows;
-    int colsSize = gridCols * screenRatio;  // screen ratio for correctness
 
     // Place particles in a 2D grid at restLength spacing
     for (int r = 0; r < rows; ++r) {
         for (int c = 0; c < cols; ++c) {
             float x = topLeft.x + c * spacing;
             float y = topLeft.y + r * spacing;
-            Particle* p = new Particle();
-            p->position = vec2(x,y);
-            p->radius = particleRadius;
+            Particle p;
+            p.position = vec2(x,y);
+            p.radius = particleRadius;
             particles.push_back(p);
         }
     }

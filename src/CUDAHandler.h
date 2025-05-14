@@ -26,7 +26,11 @@ class CUDAHandler {
         CUDAHandler(int width, int height, GLuint textureID);
         ~CUDAHandler();
         Lenia* lenia;
-        std::vector<uchar4> colorPallete = {BLUE_PLANET, GRAY_ROCKY, SUN_YELLOW, JUPITER, FULL_MOON, VENUS_TAN, RED_MERCURY, GREEN, GOLD, WHITE, PINK, ORANGE, TAN };
+        std::vector<uchar4> colorPallete = {BLUE_PLANET, GRAY_ROCKY, SUN_YELLOW, JUPITER, 
+                                            SPACE_NIGH, FULL_MOON, RED_MERCURY,  VENUS_TAN, RED_MERCURY, 
+                                            MARS_RED, SATURN_ROSE, NEPTUNE_PURPLE, URANUS_BLUE, 
+                                            PLUTO_TAN, LITE_GREY, DARK, BLUE, GREEN, GOLD, WHITE, 
+                                            PINK, ORANGE, TAN };
         // Device Variables
         Particle* d_leniaParticles;
         curandState_t* d_states;
@@ -42,28 +46,16 @@ class CUDAHandler {
         int height, width;
         bool startSimulation = false;
         int leniaSize = 0;
-        int totalParticles = 1000;
-        float particleRadius = 1.0f;
+        int totalParticles = 1e6;
+        float particleRadius = .5f;
+        float spacing = 1.0f;
 
         void initLenia();
 
     private:
         int blockSize;
         int gridSize;
-      
     
-       
-
-
-
-     
-
-  
-
-
-      
-    
-    private:
         // GL resources
         cudaGraphicsResource_t cudaResource;
         cudaSurfaceObject_t MapSurfaceResouse();

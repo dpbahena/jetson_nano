@@ -20,6 +20,7 @@ const uchar4 PLUTO_TAN      = make_uchar4(255, 241, 213, 255);
 const uchar4 LITE_GREY      = make_uchar4(211, 211, 211, 255);
 const uchar4 CHARCOAL_GREY  = make_uchar4(54, 69, 79, 255);
 const uchar4 DARK  = make_uchar4(0, 0, 0, 255);
+const uchar4 BLUE = make_uchar4(0, 0, 255, 255);
 const uchar4 GREEN  = make_uchar4(127, 255, 0, 255);
 const uchar4 GOLD   = make_uchar4(239, 191, 4, 255);
 const uchar4 WHITE  = make_uchar4(255, 255, 255, 255);
