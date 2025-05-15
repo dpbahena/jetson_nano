@@ -21,11 +21,13 @@ struct Settings {
     int numberOfParticles;
     float particleRadius;
     float spacing;
+    float convRadius;
+    float alpha;
     
 
     bool operator!=(const Settings& other) const {
-        return std::tie(numberOfParticles, particleRadius, spacing) !=
-               std::tie(other.numberOfParticles, other.particleRadius, other.spacing);
+        return std::tie(numberOfParticles, particleRadius, spacing, convRadius, alpha) !=
+               std::tie(other.numberOfParticles, other.particleRadius, other.spacing, other.convRadius, other.alpha);
     }
 };
 
@@ -40,11 +42,11 @@ class CUDAHandler {
         CUDAHandler(int width, int height, GLuint textureID);
         ~CUDAHandler();
         Lenia* lenia = nullptr;
-        std::vector<uchar4> colorPallete = {BLUE_PLANET, GRAY_ROCKY, SUN_YELLOW, JUPITER, 
+        std::vector<uchar4> colorPallete = {DARK, BLUE, GREEN, GOLD, WHITE, 
+                                            PINK, ORANGE, TAN, BLUE_PLANET, GRAY_ROCKY, SUN_YELLOW, JUPITER, 
                                             SPACE_NIGH, FULL_MOON, RED_MERCURY,  VENUS_TAN, RED_MERCURY, 
                                             MARS_RED, SATURN_ROSE, NEPTUNE_PURPLE, URANUS_BLUE, 
-                                            PLUTO_TAN, LITE_GREY, DARK, BLUE, GREEN, GOLD, WHITE, 
-                                            PINK, ORANGE, TAN };
+                                            PLUTO_TAN, LITE_GREY };
         // Device Variables
         Particle* d_leniaParticles = nullptr;
         curandState_t* d_states = nullptr;
@@ -68,7 +70,7 @@ class CUDAHandler {
         float alpha = 4.0;
         float sigma = 0.03f;
         float mu = 0.16f;
-        float conv_dt = 0.01f;
+        float conv_dt = 0.05f;
 
 
 

@@ -109,7 +109,7 @@ __global__ void activate_LeniaGoL_convolution_kernel(
     int gridRows,
     int gridCols,
     int kernelDiameter,
-    float radius,
+    int radius,
     float sigma,
     float mu,
     float dt
@@ -331,6 +331,8 @@ void CUDAHandler::updateDraw(float dt)
         .numberOfParticles = totalParticles,
         .particleRadius = particleRadius,
         .spacing = spacing,
+        .convRadius = convolutionRadius,
+        .alpha = alpha,
         
     };
     if(leniaSize == 0 || currentSettings != previousSettings) {
@@ -341,7 +343,7 @@ void CUDAHandler::updateDraw(float dt)
     }
 
     if(startSimulation){
-        int kernelDiameter = 2 * convolutionRadius - 1;
+        int kernelDiameter = 2 * convolutionRadius + 1;
         activate_LeniaGoL_convolution_kernel<<<gridSize, blockSize>>>(d_leniaParticles, leniaSize, lenia->gridRows, lenia->gridCols, kernelDiameter, convolutionRadius, sigma, mu, conv_dt);
         commitNextEnergy_kernel<<<gridSize, blockSize>>> (d_leniaParticles, leniaSize);
         thresholdAndCommit_kernel<<<gridSize, blockSize>>> (d_leniaParticles, leniaSize, d_colors, colorPallete.size());

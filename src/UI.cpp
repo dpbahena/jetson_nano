@@ -18,6 +18,9 @@ void SimulationUI::render(CUDAHandler &sim)
 
         ImGui::Begin("Simulation Control");
         if (ImGui::Button("Reset Sim")) {
+            sim.totalParticles = 1e6;
+            sim.spacing = 1.0f;
+            sim.particleRadius = .5f;
             sim.initLenia();
         }
         if (sim.startSimulation)
@@ -42,10 +45,12 @@ void SimulationUI::render(CUDAHandler &sim)
         ImGui::SliderInt("Number of Particles", &sim.totalParticles, 10000, 2000000);
         ImGui::SliderFloat("Radius", &sim.particleRadius, 0.1f, 30.f);
         ImGui::SliderFloat("distance", &sim.spacing, .2f, 30.f);
+        ImGui::SliderFloat("Conv Radius", &sim.convolutionRadius, 8.0f, 12.0f);
+        ImGui::SliderFloat("Alpha", &sim.alpha, 2.0f, 6.0f);
         ImGui::Separator;
-        ImGui::SliderFloat("sigma", &sim.sigma, .001f, 0.05f);
-        ImGui::SliderFloat("mu", &sim.mu, .0111f, 0.22f);
-        ImGui::SliderFloat("DT", &sim.conv_dt, 0.009, 0.20);
+        ImGui::SliderFloat("sigma", &sim.sigma, .02f, 0.04f);
+        ImGui::SliderFloat("mu", &sim.mu, .014f, 0.18f);
+        ImGui::SliderFloat("DT", &sim.conv_dt, 0.05, 0.12);
 
         // int gameMode = static_cast<GameMode>(sim.gameMode);
         // ImGui::RadioButton("Game Of Life", &gameMode, gameOfLife); ImGui::SameLine();
