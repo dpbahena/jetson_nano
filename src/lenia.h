@@ -20,12 +20,12 @@ class Lenia {
         ~Lenia();
         std::vector<Particle> particles;
         vec2 topLeft;
+        int gridRows;
+        int gridCols;
 
     private:
         int totalParticles;
         float particleRadius;
-        int gridRows;
-        int gridCols;
         float spacing;
         int width, height;
    

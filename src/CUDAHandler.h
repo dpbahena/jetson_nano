@@ -21,6 +21,7 @@ struct Settings {
     int numberOfParticles;
     float particleRadius;
     float spacing;
+    
 
     bool operator!=(const Settings& other) const {
         return std::tie(numberOfParticles, particleRadius, spacing) !=
@@ -57,18 +58,29 @@ class CUDAHandler {
         // program variables
         float dt;  // delta time
         int height, width;
-        float zoom, panX, panY;
+        float zoom = 1.f, panX = 0.f, panY = 0.f;
         bool startSimulation = false;
         int leniaSize = 0;
         int totalParticles = 1e6;
         float particleRadius = .5f;
         float spacing = 1.0f;
+        float convolutionRadius = 8.0f;
+        float alpha = 4.0;
+        float sigma = 0.03f;
+        float mu = 0.16f;
+        float conv_dt = 0.01f;
+
+
 
         void initLenia();
+        std::vector<float> generateCircularShellKernel(int radius, float alpha=4.0f);
+        
 
     private:
-        int blockSize;
+        // Cuda kernel configuration variables
+        int blockSize; 
         int gridSize;
+        
     
         // GL resources
         cudaGraphicsResource_t cudaResource;

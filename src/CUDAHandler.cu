@@ -1,6 +1,13 @@
 #include "CUDAHandler.h"
 
 
+constexpr int MAX_RADIUS = 30;                    // change to suit your max
+constexpr int MAX_K      = (2*MAX_RADIUS+1)*(2*MAX_RADIUS+1);
+
+__constant__ float d_kernelConst[MAX_K];          // <── NOT a pointer
+
+
+
 __device__ float random_float_in_range(curandState_t* state, float a, float b) {
     // return a + (b - a) * curand_uniform_float(state);  // this does not include b  e.g -1 to 1.0  it does not include 1.0
     return a + (b - a) * (curand_uniform(state) - 0.5) * 2.0;  // this approach includes the upper limit   -1 to 1.0  it includes 1.0
@@ -63,6 +70,85 @@ __global__ void initializeLeniaParticle(Particle* particles, int totalParticles,
     
 //     drawFilledCircle(surface, x0, y0, radius, p.color, width, height);
 // }
+
+__global__ void commitNextEnergy_kernel(Particle* particles, int totalParticles) {
+    int i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i >= totalParticles) return;
+
+    particles[i].energy = particles[i].nextEnergy;
+    particles[i].nextEnergy = 0;
+}
+
+__global__ void thresholdAndCommit_kernel(Particle* g,
+                                          int n,
+                                          const uchar4* colors,
+                                          int numColors,
+                                          float thresh=0.3f /* e.g. 0.3f */)
+{
+    int i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i >= n) return;
+
+    const float e = g[i].energy;          // already up-to-date from step-2
+
+    // 1.  Boolean life flag (only used if you still need a discrete state)
+    g[i].alive = (e > thresh);
+
+    // 2.  Colour lookup for rendering – linear ramp through your palette
+    int idx = (int)(e * (numColors - 1) + 0.5f);
+    idx = max(0, min(idx, numColors - 1));
+    g[i].color = colors[idx];
+}
+
+__device__ float growthMapping(float u, float mu, float sigma) {
+    return 2.0f * expf(-powf((u - mu), 2) / (2.0f * sigma * sigma)) - 1.0f;
+}
+
+__global__ void activate_LeniaGoL_convolution_kernel(
+    Particle* particles,
+    int totalParticles,
+    int gridRows,
+    int gridCols,
+    int kernelDiameter,
+    float radius,
+    float sigma,
+    float mu,
+    float dt
+) {
+    int i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i >= totalParticles) return;
+
+    int row = i / gridCols;
+    int col = i % gridCols;
+
+    float neighborSum = 0.0f;
+    float weightSum = 0.0f;
+
+    for (int dr = -radius; dr <= radius; ++dr) {
+        for (int dc = -radius; dc <= radius; ++dc) {
+            int nr = row + dr;
+            int nc = col + dc;
+            // float distance = sqrtf(dr * dr + dc * dc);
+            if (nr >= 0 && nr < gridRows && nc >= 0 && nc < gridCols) {
+                int j = nr * gridCols + nc;
+                // float weight = gaussianKernel(distance / radius, sigma);
+                int kernelIndex = (dr + radius) * kernelDiameter + (dc + radius);
+                float weight = d_kernelConst[kernelIndex];
+                neighborSum += particles[j].energy * weight;
+                weightSum += weight;
+            }
+        }
+    }
+
+   
+    float u = neighborSum / weightSum;
+    
+
+    float growth = growthMapping(u, mu, sigma);
+    float e = fminf(1.0f, fmaxf(0.0f, particles[i].energy + dt * growth));
+    particles[i].nextEnergy = e;
+}
+
+
 
 __global__ void drawLeniaParticles(cudaSurfaceObject_t surface, Particle* particles, int numberParticles, int width, int height, float zoom, float panX, float panY){
     int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -186,6 +272,37 @@ __global__ void drawTriangle_kernel(cudaSurfaceObject_t surface, int width, int 
     
 }
 
+
+// ────────────────────────────────
+//  Chan-Lenia “shell” kernel
+//  (build once on the host)
+// ────────────────────────────────
+std::vector<float> CUDAHandler::generateCircularShellKernel(int radius, float alpha /* ≈4 */)
+{
+    int  diameter = 2 * radius + 1;
+    std::vector<float> kernel(diameter * diameter, 0.0f);
+
+    float sum = 0.0f;
+    for (int y = -radius; y <= radius; ++y)
+        for (int x = -radius; x <= radius; ++x)
+        {
+            float dist = std::sqrt(float(x*x + y*y));     // Euclidean distance
+            if (dist > radius) continue;                  // outside the circle
+
+            float r = dist / radius;                      // normalise to [0,1]
+            float value = std::exp(alpha - alpha / (4.0f * r * (1.0f - r)));
+            // ────────────────▲  shell(r, alpha)
+
+            kernel[(y + radius) * diameter + (x + radius)] = value;
+            sum += value;
+        }
+
+    // normalise so ΣK = 1 (preserves total mass)
+    for (float& v : kernel) v /= sum;
+
+    return kernel;
+}
+
 CUDAHandler* CUDAHandler::instance = nullptr;
 
 CUDAHandler::CUDAHandler(int width, int height, GLuint textureID) :  width(width), height(height)
@@ -222,6 +339,13 @@ void CUDAHandler::updateDraw(float dt)
         previousSettings = currentSettings;
         
     }
+
+    if(startSimulation){
+        int kernelDiameter = 2 * convolutionRadius - 1;
+        activate_LeniaGoL_convolution_kernel<<<gridSize, blockSize>>>(d_leniaParticles, leniaSize, lenia->gridRows, lenia->gridCols, kernelDiameter, convolutionRadius, sigma, mu, conv_dt);
+        commitNextEnergy_kernel<<<gridSize, blockSize>>> (d_leniaParticles, leniaSize);
+        thresholdAndCommit_kernel<<<gridSize, blockSize>>> (d_leniaParticles, leniaSize, d_colors, colorPallete.size());
+    }
  
     cudaSurfaceObject_t surface = MapSurfaceResouse();    
    
@@ -232,8 +356,8 @@ void CUDAHandler::updateDraw(float dt)
     // printf("again: %d\n", leniaSize);
     drawLeniaParticles<<<gridSize, blockSize>>>(surface, d_leniaParticles, leniaSize, width, height, 1.0f, 0.0f, 0.0f);
 
-    checkCuda(cudaPeekAtLastError());
-    checkCuda(cudaDeviceSynchronize());
+    // checkCuda(cudaPeekAtLastError());
+    // checkCuda(cudaDeviceSynchronize());
 
     cudaDestroySurfaceObject(surface);
     cudaGraphicsUnmapResources(1, &cudaResource);
@@ -303,9 +427,16 @@ void CUDAHandler::initLenia()
         lenia = nullptr;
     }
 
+    std::vector<float> convKernel = generateCircularShellKernel(convolutionRadius, alpha);
+    size_t bytes = convKernel.size() * sizeof(float);
+    checkCuda(cudaMemcpyToSymbol(d_kernelConst, convKernel.data(), bytes));
+
+
     lenia = new Lenia(width, height, totalParticles, particleRadius, spacing, {16,10} );
     leniaSize = lenia->particles.size();
     
+
+
     blockSize = 256;
     gridSize = (leniaSize + blockSize - 1) / blockSize;
     
@@ -319,12 +450,12 @@ void CUDAHandler::initLenia()
     checkCuda(cudaMemcpy(d_colors, colorPallete.data(), colorPallete.size() * sizeof(uchar4), cudaMemcpyHostToDevice));    
     
     init_random<<<gridSize, blockSize>>>(time(0), d_states);
-    checkCuda(cudaPeekAtLastError());
-    checkCuda(cudaDeviceSynchronize());
+    // checkCuda(cudaPeekAtLastError());
+    // checkCuda(cudaDeviceSynchronize());
     // energy and colors
     initializeLeniaParticle<<<gridSize, blockSize>>>(d_leniaParticles, leniaSize, d_states, d_colors, colorPallete.size());
-    checkCuda(cudaPeekAtLastError());
-    checkCuda(cudaDeviceSynchronize());
+    // checkCuda(cudaPeekAtLastError());
+    // checkCuda(cudaDeviceSynchronize());
     
     
 }
@@ -333,7 +464,7 @@ cudaSurfaceObject_t CUDAHandler::MapSurfaceResouse()
 {
     //* Map the resource for CUDA
     cudaArray_t array;
-    // glFinish();
+    
     cudaGraphicsMapResources(1, &cudaResource, 0);
     cudaGraphicsSubResourceGetMappedArray(&array, cudaResource, 0, 0);
 

@@ -42,6 +42,10 @@ void SimulationUI::render(CUDAHandler &sim)
         ImGui::SliderInt("Number of Particles", &sim.totalParticles, 10000, 2000000);
         ImGui::SliderFloat("Radius", &sim.particleRadius, 0.1f, 30.f);
         ImGui::SliderFloat("distance", &sim.spacing, .2f, 30.f);
+        ImGui::Separator;
+        ImGui::SliderFloat("sigma", &sim.sigma, .001f, 0.05f);
+        ImGui::SliderFloat("mu", &sim.mu, .0111f, 0.22f);
+        ImGui::SliderFloat("DT", &sim.conv_dt, 0.009, 0.20);
 
         // int gameMode = static_cast<GameMode>(sim.gameMode);
         // ImGui::RadioButton("Game Of Life", &gameMode, gameOfLife); ImGui::SameLine();
