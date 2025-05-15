@@ -44,9 +44,9 @@ class CUDAHandler {
         ~CUDAHandler();
         Lenia* lenia = nullptr;
         std::vector<uchar4> colorPallete = {DARK, BLUE, GREEN, GOLD, WHITE, 
-                                            PINK, ORANGE, TAN, BLUE_PLANET, GRAY_ROCKY, SUN_YELLOW, JUPITER, 
+                                            PINK, ORANGE, JUPITER, 
                                             SPACE_NIGH, FULL_MOON, RED_MERCURY,  VENUS_TAN, RED_MERCURY, 
-                                            MARS_RED, SATURN_ROSE, NEPTUNE_PURPLE, URANUS_BLUE, 
+                                            MARS_RED, SATURN_ROSE, NEPTUNE_PURPLE, TAN, BLUE_PLANET, GRAY_ROCKY, SUN_YELLOW, URANUS_BLUE, 
                                             PLUTO_TAN, LITE_GREY };
         // Device Variables
         Particle* d_leniaParticles = nullptr;
@@ -71,6 +71,8 @@ class CUDAHandler {
         float alpha = 4.0;
         float sigma = 0.03f;
         float mu = 0.16f;
+        float m = .5f;
+        float s = .15f;
         float conv_dt = 0.05f;
         int TARGET_FPS = 90;
         #if defined(__aarch64__) || defined(USE_X11_MONITORS)
@@ -83,6 +85,7 @@ class CUDAHandler {
 
         void initLenia();
         std::vector<float> generateCircularShellKernel(int radius, float alpha=4.0f);
+        std::vector<float> generateCircularBellKernel(int radius, float m, float s);
         
 
     private:

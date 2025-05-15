@@ -83,7 +83,7 @@ int main(int argc, char** argv) {
     
     findMonitors();
     glutCreateWindow("CUDA OpenGL Sim");
-    UI.instance = &UI;
+    // UI.instance = &UI;
      
     
     glManager = new GLManager(width, height);
@@ -100,7 +100,15 @@ int main(int argc, char** argv) {
     ImGui_ImplOpenGL2_Init();
     ImGui::StyleColorsDark();
 
-   
+   // Input hooks
+    // glutKeyboardFunc(SimulationUI::keyboardCallback);
+    // glutKeyboardUpFunc(ImGui_ImplGLUT_KeyboardUpFunc);
+    // glutSpecialFunc(ImGui_ImplGLUT_SpecialFunc);
+    // glutSpecialUpFunc(ImGui_ImplGLUT_SpecialUpFunc);
+    
+    // glutMouseFunc(SimulationUI::mouseCallback);
+    // glutMouseWheelFunc(SimulationUI::mouseWheelCallback);
+    // glutMotionFunc([](int x, int y) { UI.mouseMotionCallback(x, y); });
 
     glutDisplayFunc(display);
     glutIdleFunc(idle);

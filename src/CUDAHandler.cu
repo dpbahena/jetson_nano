@@ -309,6 +309,36 @@ std::vector<float> CUDAHandler::generateCircularShellKernel(int radius, float al
     return kernel;
 }
 
+std::vector<float> CUDAHandler::generateCircularBellKernel(int radius, float m, float s)
+{
+    int diameter = 2 * radius + 1;
+    std::vector<float> kernel(diameter * diameter, 0.0f);
+
+    float sum = 0.0f;
+    for (int y = -radius; y <= radius; ++y)
+    {
+        for (int x = -radius; x <= radius; ++x)
+        {
+            float dist = std::sqrt(float(x * x + y * y)); // Euclidean distance
+            if (dist > radius) continue;                 // outside the circle
+
+            float r = dist / radius;                     // normalize to [0, 1]
+
+            // --- Lenia-style bell curve ---
+            float value = std::exp(-((r - m) * (r - m)) / (2.0f * s * s));
+
+            kernel[(y + radius) * diameter + (x + radius)] = value;
+            sum += value;
+        }
+    }
+
+    // normalize so that sum(kernel) = 1
+    for (float& v : kernel) v /= sum;
+
+    return kernel;
+}
+
+
 CUDAHandler* CUDAHandler::instance = nullptr;
 
 CUDAHandler::CUDAHandler(int width, int height, GLuint textureID) :  width(width), height(height)
@@ -435,7 +465,8 @@ void CUDAHandler::initLenia()
         lenia = nullptr;
     }
 
-    std::vector<float> convKernel = generateCircularShellKernel(convolutionRadius, alpha);
+    // std::vector<float> convKernel = generateCircularShellKernel(convolutionRadius, alpha);
+    std::vector<float> convKernel = generateCircularBellKernel(convolutionRadius, m, s);
     size_t bytes = convKernel.size() * sizeof(float);
     checkCuda(cudaMemcpyToSymbol(d_kernelConst, convKernel.data(), bytes));
 

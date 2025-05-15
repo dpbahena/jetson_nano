@@ -60,6 +60,8 @@ void SimulationUI::render(CUDAHandler &sim)
         ImGui::Separator;
         ImGui::SliderFloat("sigma", &sim.sigma, .02f, 0.04f);
         ImGui::SliderFloat("mu", &sim.mu, .014f, 0.18f);
+        ImGui::SliderFloat("Pick of Ring", &sim.m, .01f, 0.9f);
+        ImGui::SliderFloat("Thickness/Ring Spread", &sim.s, .01f, 0.21f);
         ImGui::SliderFloat("DT", &sim.conv_dt, 0.005, 0.12);
 
         // int gameMode = static_cast<GameMode>(sim.gameMode);
