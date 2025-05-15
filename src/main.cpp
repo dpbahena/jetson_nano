@@ -18,8 +18,8 @@ SimulationUI UI;
 int width =  1920;
 int height = 1080;
 
-const int TARGET_FPS = 90;
-const int FRAME_TIME_MS = 1000 / TARGET_FPS; // 16.67 ms per frame
+// int TARGET_FPS = cudaHandler->TARGET_FPS;
+// const int FRAME_TIME_MS = 1000 / TARGET_FPS; // 16.67 ms per frame
 
 
 void imGuiMonitorSelector();
@@ -63,6 +63,8 @@ void display() {
         glutPositionWindow(posX, posY);
         moveWindow = false;
     }
+    int TARGET_FPS = cudaHandler->TARGET_FPS;
+    const int FRAME_TIME_MS = 1000 / TARGET_FPS; // 16.67 ms per frame
     ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
     // --- 6. FPS control ---
     auto endTime = std::chrono::high_resolution_clock::now();

@@ -18,7 +18,12 @@ void SimulationUI::render(CUDAHandler &sim)
 
         ImGui::Begin("Simulation Control");
         if (ImGui::Button("Reset Sim")) {
+            #if defined(__aarch64__) || defined(USE_X11_MONITORS)
+            sim.totalParticles = 15e4;
+            #else
             sim.totalParticles = 1e6;
+            #endif
+            
             sim.spacing = 1.0f;
             sim.particleRadius = .5f;
             sim.initLenia();
@@ -42,7 +47,12 @@ void SimulationUI::render(CUDAHandler &sim)
         // if (ImGui::Combo("Game of Life Pattern", &selectedOption, options, IM_ARRAYSIZE(options))) {
         //     sim.option = selectedOption;
         // }
+        #if defined(__aarch64__) || defined(USE_X11_MONITORS)
+        ImGui::SliderInt("Number of Particles", &sim.totalParticles, 10000, 200000);
+        #else
         ImGui::SliderInt("Number of Particles", &sim.totalParticles, 10000, 2000000);
+        #endif
+        
         ImGui::SliderFloat("Radius", &sim.particleRadius, 0.1f, 30.f);
         ImGui::SliderFloat("distance", &sim.spacing, .2f, 30.f);
         ImGui::SliderFloat("Conv Radius", &sim.convolutionRadius, 8.0f, 12.0f);
@@ -50,7 +60,7 @@ void SimulationUI::render(CUDAHandler &sim)
         ImGui::Separator;
         ImGui::SliderFloat("sigma", &sim.sigma, .02f, 0.04f);
         ImGui::SliderFloat("mu", &sim.mu, .014f, 0.18f);
-        ImGui::SliderFloat("DT", &sim.conv_dt, 0.05, 0.12);
+        ImGui::SliderFloat("DT", &sim.conv_dt, 0.005, 0.12);
 
         // int gameMode = static_cast<GameMode>(sim.gameMode);
         // ImGui::RadioButton("Game Of Life", &gameMode, gameOfLife); ImGui::SameLine();
@@ -119,6 +129,7 @@ void SimulationUI::render(CUDAHandler &sim)
         ImGui::Separator;
         ImGui::Text("Total Cells: %d", (int)sim.leniaSize);
         ImGui::Text("Zoom Factor: %f", sim.zoom);
+        ImGui::SliderInt("FPS", &sim.TARGET_FPS, 20, 120);
         ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
         ImGui::Text("Actual FPS: %.1f", 1.0f / sim.dt);
         

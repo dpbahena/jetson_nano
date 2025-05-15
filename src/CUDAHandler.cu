@@ -1,7 +1,7 @@
 #include "CUDAHandler.h"
 
 
-constexpr int MAX_RADIUS = 30;                    // change to suit your max
+constexpr int MAX_RADIUS = 12;                    // change to suit your max
 constexpr int MAX_K      = (2*MAX_RADIUS+1)*(2*MAX_RADIUS+1);
 
 __constant__ float d_kernelConst[MAX_K];          // <── NOT a pointer
@@ -47,7 +47,9 @@ __global__ void initializeLeniaParticle(Particle* particles, int totalParticles,
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= totalParticles) return;
     curandState_t x = states[i];
-    float e =  random_float_in_range(&x, 0.1, 0.5);
+    // float e =  random_float_in_range(&x, 0.1, 0.5);
+    // initial noise
+    float e = curand_uniform(&x) < 0.15f ? curand_uniform(&x) * 0.35f : 0.0f; 
     particles[i].energy = e;
     states[i] = x; // reinstate the random value;
     int colorIndex = static_cast<int>(e * (numberColors - 1));
@@ -292,6 +294,10 @@ std::vector<float> CUDAHandler::generateCircularShellKernel(int radius, float al
             float r = dist / radius;                      // normalise to [0,1]
             float value = std::exp(alpha - alpha / (4.0f * r * (1.0f - r)));
             // ────────────────▲  shell(r, alpha)
+            // float value = std::exp(-(r * r) / (2.0f * alpha * alpha));
+            // float value = std::exp(alpha - (alpha/(4 * r * (1 - r))));
+            // float value = std::pow(4 * r * (1 - r), alpha);
+            // float value = std::exp(alpha -1.0f / (2.0f * r * r));
 
             kernel[(y + radius) * diameter + (x + radius)] = value;
             sum += value;

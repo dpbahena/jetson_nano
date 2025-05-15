@@ -12,6 +12,7 @@
 #include <cuda_runtime.h>
 #include <curand_kernel.h>
 #include <cuda_gl_interop.h>
+#include <tuple> // For std::tie
 #include <vector>
 #include <string>
 
@@ -63,7 +64,7 @@ class CUDAHandler {
         float zoom = 1.f, panX = 0.f, panY = 0.f;
         bool startSimulation = false;
         int leniaSize = 0;
-        int totalParticles = 1e6;
+        
         float particleRadius = .5f;
         float spacing = 1.0f;
         float convolutionRadius = 8.0f;
@@ -71,6 +72,12 @@ class CUDAHandler {
         float sigma = 0.03f;
         float mu = 0.16f;
         float conv_dt = 0.05f;
+        int TARGET_FPS = 90;
+        #if defined(__aarch64__) || defined(USE_X11_MONITORS)
+        int totalParticles = 150000;
+        #else
+        int totalParticles = 1e6;
+        #endif
 
 
 
