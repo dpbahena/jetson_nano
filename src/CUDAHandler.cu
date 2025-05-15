@@ -85,7 +85,7 @@ __global__ void thresholdAndCommit_kernel(Particle* g,
                                           int n,
                                           const uchar4* colors,
                                           int numColors,
-                                          float thresh=0.3f /* e.g. 0.3f */)
+                                          float thresh=0.2f /* e.g. 0.3f */)
 {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= n) return;
@@ -142,7 +142,7 @@ __global__ void activate_LeniaGoL_convolution_kernel(
     }
 
    
-    float u = neighborSum / weightSum;
+    float u = neighborSum  / weightSum ;
     
 
     float growth = growthMapping(u, mu, sigma);
@@ -154,7 +154,7 @@ __global__ void activate_LeniaGoL_convolution_kernel(
 
 __global__ void drawLeniaParticles(cudaSurfaceObject_t surface, Particle* particles, int numberParticles, int width, int height, float zoom, float panX, float panY){
     int i = blockIdx.x * blockDim.x + threadIdx.x;
-    if (i >= numberParticles) return;
+    if (i >= numberParticles ) return;
 
     Particle p = particles[i];
 
