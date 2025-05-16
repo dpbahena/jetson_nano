@@ -101,8 +101,76 @@ __global__ void thresholdAndCommit_kernel(Particle* g,
     g[i].color = colors[idx];
 }
 
+// __device__ float growthMapping(float u, float mu, float sigma) {
+//     return 2.0f * expf(-powf((u - mu), 2) / (2.0f * sigma * sigma)) - 1.0f;
+// }
 __device__ float growthMapping(float u, float mu, float sigma) {
-    return 2.0f * expf(-powf((u - mu), 2) / (2.0f * sigma * sigma)) - 1.0f;
+    float z = (u - mu) / sigma;
+    return expf(-0.5f * z * z) * 2.0f - 1.0f;
+}
+
+// __global__ void activate_LeniaGoL_convolution_kernel(
+//     Particle* particles,
+//     int totalParticles,
+//     int gridRows,
+//     int gridCols,
+//     int kernelDiameter,
+//     int radius,
+//     float sigma,
+//     float mu,
+//     float dt
+// ) {
+//     int i = threadIdx.x + blockIdx.x * blockDim.x;
+//     if (i >= totalParticles) return;
+
+//     int row = i / gridCols;
+//     int col = i % gridCols;
+
+//     float neighborSum = 0.0f;
+//     float weightSum = 0.0f;
+
+//     for (int dr = -radius; dr <= radius; ++dr) {
+//         for (int dc = -radius; dc <= radius; ++dc) {
+//             int nr = row + dr;
+//             int nc = col + dc;
+//             // float distance = sqrtf(dr * dr + dc * dc);
+//             if (nr >= 0 && nr < gridRows && nc >= 0 && nc < gridCols) {
+//                 int j = nr * gridCols + nc;
+//                 // float weight = gaussianKernel(distance / radius, sigma);
+//                 int kernelIndex = (dr + radius) * kernelDiameter + (dc + radius);
+//                 float weight = d_kernelConst[kernelIndex];
+//                 neighborSum += particles[j].energy * weight;
+//                 weightSum += weight;
+//             }
+//         }
+//     }
+
+   
+//     float u = neighborSum  / weightSum ;
+    
+
+//     float growth = growthMapping(u, mu, sigma);
+//     float e = fminf(1.0f, fmaxf(0.0f, particles[i].energy + dt * growth));
+//     particles[i].nextEnergy = e;
+// }
+
+
+
+__global__ void drawLeniaParticles(cudaSurfaceObject_t surface, Particle* particles, int numberParticles, int width, int height, float zoom, float panX, float panY){
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    if (i >= numberParticles ) return;
+
+    Particle p = particles[i];
+
+    // Apply zoom and pan directly (without adding screen center shift)
+    float radius = p.radius * zoom;
+    int x0 = (int)((p.position.x + panX) * zoom);
+    int y0 = (int)((p.position.y + panY) * zoom);
+
+    // Reject particles that fall outside the surface
+    if (x0 < 0 || x0 >= width || y0 < 0 || y0 >= height) return;
+
+    drawFilledCircle(surface, x0, y0, radius, p.color, width, height);
 }
 
 __global__ void activate_LeniaGoL_convolution_kernel(
@@ -127,46 +195,35 @@ __global__ void activate_LeniaGoL_convolution_kernel(
 
     for (int dr = -radius; dr <= radius; ++dr) {
         for (int dc = -radius; dc <= radius; ++dc) {
-            int nr = row + dr;
-            int nc = col + dc;
-            // float distance = sqrtf(dr * dr + dc * dc);
-            if (nr >= 0 && nr < gridRows && nc >= 0 && nc < gridCols) {
-                int j = nr * gridCols + nc;
-                // float weight = gaussianKernel(distance / radius, sigma);
-                int kernelIndex = (dr + radius) * kernelDiameter + (dc + radius);
-                float weight = d_kernelConst[kernelIndex];
-                neighborSum += particles[j].energy * weight;
-                weightSum += weight;
-            }
+            // Wrap around (periodic boundary)
+            int nr = (row + dr + gridRows) % gridRows;
+            int nc = (col + dc + gridCols) % gridCols;
+
+            int j = nr * gridCols + nc;
+            int kernelIndex = (dr + radius) * kernelDiameter + (dc + radius);
+
+            float weight = d_kernelConst[kernelIndex];
+            neighborSum += particles[j].energy * weight;
+            weightSum += weight;
         }
     }
 
-   
-    float u = neighborSum  / weightSum ;
-    
+    float u = (weightSum > 0.0f) ? (neighborSum / weightSum) : 0.0f;
 
     float growth = growthMapping(u, mu, sigma);
     float e = fminf(1.0f, fmaxf(0.0f, particles[i].energy + dt * growth));
+    // TEMP: Visualize normalized excitation and growth directly
+    uchar4 debugColor;
+    debugColor.x = (unsigned char)(255.0f * fminf(fmaxf(u, 0.0f), 1.0f));        // Red = excitation u
+    debugColor.y = (unsigned char)(255.0f * fminf(fmaxf((growth + 1.0f) * 0.5f, 0.0f), 1.0f)); // Green = growth (-1 to 1 mapped to 0-1)
+    debugColor.z = 0;
+    debugColor.w = 255;
+
+    particles[i].color = debugColor;
+
     particles[i].nextEnergy = e;
-}
+   
 
-
-
-__global__ void drawLeniaParticles(cudaSurfaceObject_t surface, Particle* particles, int numberParticles, int width, int height, float zoom, float panX, float panY){
-    int i = blockIdx.x * blockDim.x + threadIdx.x;
-    if (i >= numberParticles ) return;
-
-    Particle p = particles[i];
-
-    // Apply zoom and pan directly (without adding screen center shift)
-    float radius = p.radius * zoom;
-    int x0 = (int)((p.position.x + panX) * zoom);
-    int y0 = (int)((p.position.y + panY) * zoom);
-
-    // Reject particles that fall outside the surface
-    if (x0 < 0 || x0 >= width || y0 < 0 || y0 >= height) return;
-
-    drawFilledCircle(surface, x0, y0, radius, p.color, width, height);
 }
 
 
@@ -382,7 +439,7 @@ void CUDAHandler::updateDraw(float dt)
         int kernelDiameter = 2 * convolutionRadius + 1;
         activate_LeniaGoL_convolution_kernel<<<gridSize, blockSize>>>(d_leniaParticles, leniaSize, lenia->gridRows, lenia->gridCols, kernelDiameter, convolutionRadius, sigma, mu, conv_dt);
         commitNextEnergy_kernel<<<gridSize, blockSize>>> (d_leniaParticles, leniaSize);
-        thresholdAndCommit_kernel<<<gridSize, blockSize>>> (d_leniaParticles, leniaSize, d_colors, colorPallete.size());
+        // thresholdAndCommit_kernel<<<gridSize, blockSize>>> (d_leniaParticles, leniaSize, d_colors, colorPallete.size());
     }
  
     cudaSurfaceObject_t surface = MapSurfaceResouse();    
