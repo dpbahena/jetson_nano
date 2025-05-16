@@ -182,7 +182,7 @@ __global__ void activate_LeniaGoL_convolution_kernel(
     int radius,
     float sigma,
     float mu,
-    float dt
+    float dt 
 ) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= totalParticles) return;
@@ -222,6 +222,80 @@ __global__ void activate_LeniaGoL_convolution_kernel(
     particles[i].color = debugColor;
 
     particles[i].nextEnergy = e;
+   
+
+}
+
+__global__ void activate_LeniaGoL_convolution_kernel(
+    Particle* particles,
+    int totalParticles,
+    int gridRows,
+    int gridCols,
+    int kernelDiameter,
+    int radius,
+    float sigma,
+    float mu,
+    float dt,
+    float* debugU,
+    float* debugGrowth 
+) {
+    int i = threadIdx.x + blockIdx.x * blockDim.x;
+    if (i >= totalParticles) return;
+
+    int row = i / gridCols;
+    int col = i % gridCols;
+
+    float neighborSum = 0.0f;
+    float weightSum = 0.0f;
+
+    for (int dr = -radius; dr <= radius; ++dr) {
+        for (int dc = -radius; dc <= radius; ++dc) {
+            // Wrap around (periodic boundary)
+            int nr = (row + dr + gridRows) % gridRows;
+            int nc = (col + dc + gridCols) % gridCols;
+
+            int j = nr * gridCols + nc;
+            int kernelIndex = (dr + radius) * kernelDiameter + (dc + radius);
+
+            float weight = d_kernelConst[kernelIndex];
+            neighborSum += particles[j].energy * weight;
+            weightSum += weight;
+        }
+    }
+
+    float u = (weightSum > 0.0f) ? (neighborSum / weightSum) : 0.0f;
+
+    float growth = growthMapping(u, mu, sigma);
+    float e = fminf(1.0f, fmaxf(0.0f, particles[i].energy + dt * growth));
+    // TEMP: Visualize normalized excitation and growth directly
+    uchar4 debugColor;
+    debugColor.x = (unsigned char)(255.0f * fminf(fmaxf(u, 0.0f), 1.0f));        // Red = excitation u
+    debugColor.y = (unsigned char)(255.0f * fminf(fmaxf((growth + 1.0f) * 0.5f, 0.0f), 1.0f)); // Green = growth (-1 to 1 mapped to 0-1)
+    debugColor.z = 0;
+    debugColor.w = 255;
+
+    particles[i].color = debugColor;
+
+    particles[i].nextEnergy = e;
+    // if (i == 0) {
+    //     // Store a sample (first thread only — for simplicity)
+    //     debugU[0] = u;
+    //     debugGrowth[0] = growth;
+    // }
+    if (i == 0) {
+        if (!isnan(u) && !isnan(growth)) {
+            debugU[0] = u;
+            debugGrowth[0] = growth;
+        } else {
+            debugU[0] = 0.0f;
+            debugGrowth[0] = 0.0f;
+        }
+    }
+    // if (i == 0) {
+    //     printf("Sample u = %.5f, growth = %.5f\n", u, growth);
+    // }
+
+
    
 
 }
@@ -409,11 +483,16 @@ CUDAHandler::~CUDAHandler()
     cudaFree(d_leniaParticles); 
     cudaFree(d_colors);
     cudaFree(d_states);
+    cudaFree(d_debugGrowth);
+    cudaFree(d_debugU);
     delete lenia;
       
     cudaGraphicsUnregisterResource(cudaResource);
     
 }
+
+// std::vector<float> CUDAHandler::uHistory;
+// std::vector<float> CUDAHandler::growthHistory;
 // _________________________________________________________________________//
 void CUDAHandler::updateDraw(float dt)
 {
@@ -434,16 +513,32 @@ void CUDAHandler::updateDraw(float dt)
         previousSettings = currentSettings;
         
     }
+    
 
     if(startSimulation){
         int kernelDiameter = 2 * convolutionRadius + 1;
-        activate_LeniaGoL_convolution_kernel<<<gridSize, blockSize>>>(d_leniaParticles, leniaSize, lenia->gridRows, lenia->gridCols, kernelDiameter, convolutionRadius, sigma, mu, conv_dt);
+        activate_LeniaGoL_convolution_kernel<<<gridSize, blockSize>>>(d_leniaParticles, leniaSize, lenia->gridRows, lenia->gridCols, kernelDiameter, convolutionRadius, sigma, mu, conv_dt, d_debugU, d_debugGrowth);
         commitNextEnergy_kernel<<<gridSize, blockSize>>> (d_leniaParticles, leniaSize);
         // thresholdAndCommit_kernel<<<gridSize, blockSize>>> (d_leniaParticles, leniaSize, d_colors, colorPallete.size());
+        checkCuda(cudaDeviceSynchronize());
+        checkCuda(cudaMemcpy(&debugU_host, d_debugU, sizeof(float), cudaMemcpyDeviceToHost));
+        checkCuda(cudaMemcpy(&debugGrowth_host, d_debugGrowth, sizeof(float), cudaMemcpyDeviceToHost));
+        // Store it in a rolling buffer
+        static std::vector<float> uHistory, growthHistory;
+        if (uHistory.size() > 100) uHistory.erase(uHistory.begin());
+        uHistory.push_back(debugU_host);
+        // printf("size %d\n",(int)uHistory.size());
+        if (growthHistory.size() > 100) growthHistory.erase(growthHistory.begin());
+        growthHistory.push_back(debugGrowth_host);
+
+
+           
     }
  
-    cudaSurfaceObject_t surface = MapSurfaceResouse();    
-   
+    cudaSurfaceObject_t surface = MapSurfaceResourse();   
+
+    
+
     clearGraphicsDisplay(surface, WHITE);
     // drawTriangle(surface, RED_MERCURY, vec2(100, 200), vec2(150, 600), vec2(500, 300));
     // checkCuda(cudaPeekAtLastError());
@@ -451,9 +546,10 @@ void CUDAHandler::updateDraw(float dt)
     // printf("again: %d\n", leniaSize);
     drawLeniaParticles<<<gridSize, blockSize>>>(surface, d_leniaParticles, leniaSize, width, height, 1.0f, 0.0f, 0.0f);
 
-    // checkCuda(cudaPeekAtLastError());
-    // checkCuda(cudaDeviceSynchronize());
+    checkCuda(cudaPeekAtLastError());
+    checkCuda(cudaDeviceSynchronize());
 
+   
     cudaDestroySurfaceObject(surface);
     cudaGraphicsUnmapResources(1, &cudaResource);
 }
@@ -515,6 +611,15 @@ void CUDAHandler::initLenia()
         checkCuda(cudaFree(d_colors));
         d_colors = nullptr;
     }
+    if (d_debugGrowth) {
+        checkCuda(cudaFree(d_debugGrowth));
+        d_debugGrowth = nullptr;
+    }
+    if (d_debugU) {
+        checkCuda(cudaFree(d_debugU));
+        d_debugU = nullptr;
+    }
+
 
     // Optional: delete previous Lenia object
     if (lenia) {
@@ -545,6 +650,8 @@ void CUDAHandler::initLenia()
     checkCuda(cudaMalloc(&d_colors, colorPallete.size() * sizeof(uchar4)));
     checkCuda(cudaMemcpy(d_colors, colorPallete.data(), colorPallete.size() * sizeof(uchar4), cudaMemcpyHostToDevice));    
     
+
+
     init_random<<<gridSize, blockSize>>>(time(0), d_states);
     // checkCuda(cudaPeekAtLastError());
     // checkCuda(cudaDeviceSynchronize());
@@ -552,11 +659,14 @@ void CUDAHandler::initLenia()
     initializeLeniaParticle<<<gridSize, blockSize>>>(d_leniaParticles, leniaSize, d_states, d_colors, colorPallete.size());
     // checkCuda(cudaPeekAtLastError());
     // checkCuda(cudaDeviceSynchronize());
+
+    checkCuda(cudaMalloc(&d_debugU, sizeof(float)));
+    checkCuda(cudaMalloc(&d_debugGrowth, sizeof(float)));
     
     
 }
 
-cudaSurfaceObject_t CUDAHandler::MapSurfaceResouse()
+cudaSurfaceObject_t CUDAHandler::MapSurfaceResourse()
 {
     //* Map the resource for CUDA
     cudaArray_t array;

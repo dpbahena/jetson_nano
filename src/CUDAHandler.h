@@ -52,6 +52,8 @@ class CUDAHandler {
         Particle* d_leniaParticles = nullptr;
         curandState_t* d_states = nullptr;
         uchar4* d_colors = nullptr;
+        float* d_debugU = nullptr;
+        float* d_debugGrowth = nullptr;
 
         // main functions
         void updateDraw(float dt);
@@ -69,8 +71,8 @@ class CUDAHandler {
         float spacing = 1.0f;
         float convolutionRadius = 8.0f;
         float alpha = 4.0;
-        float sigma = 0.03f;
-        float mu = 0.16f;
+        float sigma = 0.04f;
+        float mu = 0.1f;
         float m = .5f;
         float s = .15f;
         float conv_dt = 0.05f;
@@ -80,6 +82,10 @@ class CUDAHandler {
         #else
         int totalParticles = 1e6;
         #endif
+        // save statistics
+        float debugU_host = 0.0f;
+        float debugGrowth_host = 0.0f;
+        std::vector<float> uHistory, growthHistory;
 
 
 
@@ -96,6 +102,6 @@ class CUDAHandler {
     
         // GL resources
         cudaGraphicsResource_t cudaResource;
-        cudaSurfaceObject_t MapSurfaceResouse();
+        cudaSurfaceObject_t MapSurfaceResourse();
 
 };

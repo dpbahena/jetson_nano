@@ -128,6 +128,14 @@ void SimulationUI::render(CUDAHandler &sim)
         //     sim.rule = static_cast<uint8_t>(ruleSlider);
         //     ImGui::PopID();
         // }
+        ImGui::Text("Latest u: %.4f", sim.debugU_host);
+        ImGui::Text("Latest growth: %.4f", sim.debugGrowth_host);
+        printf("size %d\n",(int)sim.uHistory.size());
+        if (!sim.uHistory.empty())
+            ImGui::PlotLines("Excitation (u)", sim.uHistory.data(), sim.uHistory.size(), 0, nullptr, 0.0f, 1.0f, ImVec2(0, 80));
+        if (!sim.growthHistory.empty())
+            ImGui::PlotLines("Growth", sim.growthHistory.data(), sim.growthHistory.size(), 0, nullptr, -1.0f, 1.0f, ImVec2(0, 80));
+
         ImGui::Separator;
         ImGui::Text("Total Cells: %d", (int)sim.leniaSize);
         ImGui::Text("Zoom Factor: %f", sim.zoom);
