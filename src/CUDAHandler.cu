@@ -524,10 +524,9 @@ void CUDAHandler::updateDraw(float dt)
         checkCuda(cudaMemcpy(&debugU_host, d_debugU, sizeof(float), cudaMemcpyDeviceToHost));
         checkCuda(cudaMemcpy(&debugGrowth_host, d_debugGrowth, sizeof(float), cudaMemcpyDeviceToHost));
         // Store it in a rolling buffer
-        static std::vector<float> uHistory, growthHistory;
         if (uHistory.size() > 100) uHistory.erase(uHistory.begin());
         uHistory.push_back(debugU_host);
-        // printf("size %d\n",(int)uHistory.size());
+     
         if (growthHistory.size() > 100) growthHistory.erase(growthHistory.begin());
         growthHistory.push_back(debugGrowth_host);
 
