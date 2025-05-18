@@ -59,22 +59,53 @@ void SimulationUI::render(CUDAHandler &sim)
         if (ImGui::IsItemHovered())
         ImGui::SetTooltip("Convolution Radius");
         ImGui::SliderFloat("Alpha", &sim.alpha, 2.0f, 6.0f);
-        ImGui::Separator;
+        ImGui::Separator();
         float step = .001f;
+        float step2 = .0001f;
+        
         ImGui::SliderFloat("S", &sim.sigma, .01f, 0.08f);
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Sigma");
-        // Fine-tune buttons
-        ImGui::SameLine();
-        if (ImGui::Button("-")) {
+        
+        // Fine-tune buttons for sigma
+        if (ImGui::Button("-##sigma1")) {
             sim.sigma -= step;
         }
         ImGui::SameLine();
-        if (ImGui::Button("+")) {
+        if (ImGui::Button("+##sigma1")) {
             sim.sigma += step;
         }
-
+        ImGui::SameLine();
+        if (ImGui::Button("-##sigma2")) {
+            sim.sigma -= step2;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("+##sigma2")) {
+            sim.sigma += step2;
+        }
+        
+        float muStep = .001f;
+        float muStep2 = .0001f;
+        
         ImGui::SliderFloat("mu", &sim.mu, .014f, 0.28f);
+        
+        // Fine-tune buttons for mu
+        if (ImGui::Button("-##mu1")) {
+            sim.mu -= muStep;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("+##mu1")) {
+            sim.mu += muStep;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("-##mu2")) {
+            sim.mu -= muStep2;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("+##mu2")) {
+            sim.mu += muStep2;
+        }
+        
         ImGui::SliderFloat("Pick of Ring", &sim.m, .01f, 0.9f);
         ImGui::SliderFloat("Thickness/Ring Spread", &sim.s, .01f, 0.21f);
         ImGui::SliderFloat("DT", &sim.conv_dt, 0.005, 0.12);
