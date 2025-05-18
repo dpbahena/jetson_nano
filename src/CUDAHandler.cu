@@ -268,13 +268,13 @@ __global__ void activate_LeniaGoL_convolution_kernel(
     float growth = growthMapping(u, mu, sigma);
     float e = fminf(1.0f, fmaxf(0.0f, particles[i].energy + dt * growth));
     // TEMP: Visualize normalized excitation and growth directly
-    uchar4 debugColor;
-    debugColor.x = (unsigned char)(255.0f * fminf(fmaxf(u, 0.0f), 1.0f));        // Red = excitation u
-    debugColor.y = (unsigned char)(255.0f * fminf(fmaxf((growth + 1.0f) * 0.5f, 0.0f), 1.0f)); // Green = growth (-1 to 1 mapped to 0-1)
-    debugColor.z = 0;
-    debugColor.w = 255;
+    // uchar4 debugColor;
+    // debugColor.x = (unsigned char)(255.0f * fminf(fmaxf(u, 0.0f), 1.0f));        // Red = excitation u
+    // debugColor.y = (unsigned char)(255.0f * fminf(fmaxf((growth + 1.0f) * 0.5f, 0.0f), 1.0f)); // Green = growth (-1 to 1 mapped to 0-1)
+    // debugColor.z = 0;
+    // debugColor.w = 255;
 
-    particles[i].color = debugColor;
+    // particles[i].color = debugColor;
 
     particles[i].nextEnergy = e;
     // if (i == 0) {
@@ -505,6 +505,10 @@ void CUDAHandler::updateDraw(float dt)
         .spacing = spacing,
         .convRadius = convolutionRadius,
         .alpha = alpha,
+        .sigma = sigma,
+        .mu = mu,
+        .m = m,
+        .s = s
         
     };
     if(leniaSize == 0 || currentSettings != previousSettings) {
@@ -519,7 +523,7 @@ void CUDAHandler::updateDraw(float dt)
         int kernelDiameter = 2 * convolutionRadius + 1;
         activate_LeniaGoL_convolution_kernel<<<gridSize, blockSize>>>(d_leniaParticles, leniaSize, lenia->gridRows, lenia->gridCols, kernelDiameter, convolutionRadius, sigma, mu, conv_dt, d_debugU, d_debugGrowth);
         commitNextEnergy_kernel<<<gridSize, blockSize>>> (d_leniaParticles, leniaSize);
-        // thresholdAndCommit_kernel<<<gridSize, blockSize>>> (d_leniaParticles, leniaSize, d_colors, colorPallete.size());
+        thresholdAndCommit_kernel<<<gridSize, blockSize>>> (d_leniaParticles, leniaSize, d_colors, colorPallete.size());
         checkCuda(cudaDeviceSynchronize());
         checkCuda(cudaMemcpy(&debugU_host, d_debugU, sizeof(float), cudaMemcpyDeviceToHost));
         checkCuda(cudaMemcpy(&debugGrowth_host, d_debugGrowth, sizeof(float), cudaMemcpyDeviceToHost));
@@ -626,8 +630,8 @@ void CUDAHandler::initLenia()
         lenia = nullptr;
     }
 
-    // std::vector<float> convKernel = generateCircularShellKernel(convolutionRadius, alpha);
-    std::vector<float> convKernel = generateCircularBellKernel(convolutionRadius, m, s);
+    std::vector<float> convKernel = generateCircularShellKernel(convolutionRadius, alpha);
+    // std::vector<float> convKernel = generateCircularBellKernel(convolutionRadius, m, s);
     size_t bytes = convKernel.size() * sizeof(float);
     checkCuda(cudaMemcpyToSymbol(d_kernelConst, convKernel.data(), bytes));
 

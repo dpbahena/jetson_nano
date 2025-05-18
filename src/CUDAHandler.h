@@ -22,13 +22,17 @@ struct Settings {
     int numberOfParticles;
     float particleRadius;
     float spacing;
-    float convRadius;
+    int convRadius;
     float alpha;
+    float sigma;
+    float mu;
+    float m;
+    float s;
     
 
     bool operator!=(const Settings& other) const {
-        return std::tie(numberOfParticles, particleRadius, spacing, convRadius, alpha) !=
-               std::tie(other.numberOfParticles, other.particleRadius, other.spacing, other.convRadius, other.alpha);
+        return std::tie(numberOfParticles, particleRadius, spacing, convRadius, alpha, sigma, mu, m, s) !=
+               std::tie(other.numberOfParticles, other.particleRadius, other.spacing, other.convRadius, other.alpha, other.sigma,other.mu, other.m, other.s);
     }
 };
 
@@ -69,7 +73,7 @@ class CUDAHandler {
         
         float particleRadius = .5f;
         float spacing = 1.0f;
-        float convolutionRadius = 8.0f;
+        int convolutionRadius = 8;
         float alpha = 4.0;
         float sigma = 0.04f;
         float mu = 0.1f;

@@ -52,17 +52,34 @@ void SimulationUI::render(CUDAHandler &sim)
         #else
         ImGui::SliderInt("Number of Particles", &sim.totalParticles, 10000, 2000000);
         #endif
-        
+        ImGui::PushItemWidth(150);
         ImGui::SliderFloat("Radius", &sim.particleRadius, 0.1f, 30.f);
-        ImGui::SliderFloat("distance", &sim.spacing, .2f, 30.f);
-        ImGui::SliderFloat("Conv Radius", &sim.convolutionRadius, 8.0f, 12.0f);
+        ImGui::SliderFloat("distance", &sim.spacing, .2f, 30.f);        
+        ImGui::SliderInt("R", &sim.convolutionRadius, 1, 12);
+        if (ImGui::IsItemHovered())
+        ImGui::SetTooltip("Convolution Radius");
         ImGui::SliderFloat("Alpha", &sim.alpha, 2.0f, 6.0f);
         ImGui::Separator;
-        ImGui::SliderFloat("sigma", &sim.sigma, .02f, 0.04f);
-        ImGui::SliderFloat("mu", &sim.mu, .014f, 0.18f);
+        float step = .001f;
+        ImGui::SliderFloat("S", &sim.sigma, .01f, 0.08f);
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("Sigma");
+        // Fine-tune buttons
+        ImGui::SameLine();
+        if (ImGui::Button("-")) {
+            sim.sigma -= step;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("+")) {
+            sim.sigma += step;
+        }
+
+        ImGui::SliderFloat("mu", &sim.mu, .014f, 0.28f);
         ImGui::SliderFloat("Pick of Ring", &sim.m, .01f, 0.9f);
         ImGui::SliderFloat("Thickness/Ring Spread", &sim.s, .01f, 0.21f);
         ImGui::SliderFloat("DT", &sim.conv_dt, 0.005, 0.12);
+        ImGui::PopItemWidth();
+
 
         // int gameMode = static_cast<GameMode>(sim.gameMode);
         // ImGui::RadioButton("Game Of Life", &gameMode, gameOfLife); ImGui::SameLine();
