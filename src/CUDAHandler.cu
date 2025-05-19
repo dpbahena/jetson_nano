@@ -108,6 +108,11 @@ __device__ float growthMapping(float u, float mu, float sigma) {
     float z = (u - mu) / sigma;
     return expf(-0.5f * z * z) * 2.0f - 1.0f;
 }
+__device__ float growthMappingquad4(float u, float mu, float sigma) {
+    float x = 1.0f - ((u - mu) * (u - mu)) / (9.0f * sigma * sigma);
+    x = max(0.0f, x);
+    return std::pow(x, 4) * 2.0f - 1.0f;
+}
 
 // __global__ void activate_LeniaGoL_convolution_kernel(
 //     Particle* particles,
@@ -265,7 +270,8 @@ __global__ void activate_LeniaGoL_convolution_kernel(
 
     float u = (weightSum > 0.0f) ? (neighborSum / weightSum) : 0.0f;
 
-    float growth = growthMapping(u, mu, sigma);
+    // float growth = growthMapping(u, mu, sigma);
+    float growth = growthMappingquad4(u, mu, sigma);
     float e = fminf(1.0f, fmaxf(0.0f, particles[i].energy + dt * growth));
     // TEMP: Visualize normalized excitation and growth directly
     // uchar4 debugColor;
