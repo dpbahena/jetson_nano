@@ -297,11 +297,13 @@ __global__ void activate_LeniaGoL_convolution_kernel(
 
     float u = (weightSum > 0.0f) ? (neighborSum / weightSum) : 0.0f;
 
-    // float growth = growthMapping(u, mu, sigma);
+    float growth = growthMapping(u, mu, sigma);
     // float growth = growthMappingquad4(u, mu, sigma);
     // float growth = growth_triangle(u, mu, sigma);
-    float growth = growth_gaussian(u, mu, sigma);
-    float e = fminf(1.0f, fmaxf(0.0f, particles[i].energy + dt * growth));
+    // float growth = growth_gaussian(u, mu, sigma);
+    // float growth = growth_relu(u, mu, sigma);
+    // float growth = growth_step(u, mu, sigma);
+    float e = fminf(1.0f, fmaxf(0.0f, particles[i].energy + dt * growth * 0.5));
     // TEMP: Visualize normalized excitation and growth directly
     // uchar4 debugColor;
     // debugColor.x = (unsigned char)(255.0f * fminf(fmaxf(u, 0.0f), 1.0f));        // Red = excitation u
@@ -665,8 +667,8 @@ void CUDAHandler::initLenia()
         lenia = nullptr;
     }
 
-    std::vector<float> convKernel = generateCircularShellKernel(convolutionRadius, alpha);
-    // std::vector<float> convKernel = generateCircularBellKernel(convolutionRadius, m, s);
+    // std::vector<float> convKernel = generateCircularShellKernel(convolutionRadius, alpha);
+    std::vector<float> convKernel = generateCircularBellKernel(convolutionRadius, mu, sigma);
     size_t bytes = convKernel.size() * sizeof(float);
     checkCuda(cudaMemcpyToSymbol(d_kernelConst, convKernel.data(), bytes));
 
