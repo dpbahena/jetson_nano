@@ -108,7 +108,7 @@ void SimulationUI::render(CUDAHandler &sim)
         
         ImGui::SliderFloat("Pick of Ring", &sim.m, .01f, 0.9f);
         ImGui::SliderFloat("Thickness/Ring Spread", &sim.s, .01f, 0.21f);
-        ImGui::SliderFloat("DT", &sim.conv_dt, 0.005, 0.12);
+        ImGui::SliderFloat("DT", &sim.conv_dt, 0.001, 0.15);
         ImGui::PopItemWidth();
 
 
@@ -178,7 +178,7 @@ void SimulationUI::render(CUDAHandler &sim)
         // }
         ImGui::Text("Latest u: %.4f", sim.debugU_host);
         ImGui::Text("Latest growth: %.4f", sim.debugGrowth_host);
-        printf("size %d\n",(int)sim.uHistory.size());
+        // printf("size %d\n",(int)sim.uHistory.size());
         if (!sim.uHistory.empty())
             ImGui::PlotLines("Excitation (u)", sim.uHistory.data(), sim.uHistory.size(), 0, nullptr, 0.0f, 1.0f, ImVec2(0, 80));
         if (!sim.growthHistory.empty())

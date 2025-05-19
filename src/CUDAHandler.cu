@@ -114,6 +114,33 @@ __device__ float growthMappingquad4(float u, float mu, float sigma) {
     return std::pow(x, 4) * 2.0f - 1.0f;
 }
 
+__device__ float growth_quad4(float u, float mu, float sigma) {
+    float x = 1.0f - ((u - mu) * (u - mu)) / (9.0f * sigma * sigma);
+    x = fmaxf(0.0f, x);
+    return powf(x, 4) * 2.0f - 1.0f;
+}
+__device__ float growth_gaussian(float u, float mu, float sigma) {
+    float x = (u - mu) / sigma;
+    return 2.0f * expf(-x * x * 4.5f) - 1.0f;
+}
+
+
+__device__ float growth_triangle(float u, float mu, float sigma) {
+    float dist = fabsf(u - mu);
+    float x = 1.0f - dist / (1.5f * sigma);
+    return fmaxf(0.0f, x * 2.0f - 1.0f);
+}
+__device__ float growth_step(float u, float mu, float sigma) {
+    return (fabsf(u - mu) < sigma) ? 1.0f : -1.0f;
+}
+__device__ float growth_relu(float u, float mu, float sigma) {
+    float x = 1.0f - fabsf(u - mu) / sigma;
+    return fmaxf(0.0f, x) * 2.0f - 1.0f;
+}
+
+
+
+
 // __global__ void activate_LeniaGoL_convolution_kernel(
 //     Particle* particles,
 //     int totalParticles,
@@ -271,7 +298,9 @@ __global__ void activate_LeniaGoL_convolution_kernel(
     float u = (weightSum > 0.0f) ? (neighborSum / weightSum) : 0.0f;
 
     // float growth = growthMapping(u, mu, sigma);
-    float growth = growthMappingquad4(u, mu, sigma);
+    // float growth = growthMappingquad4(u, mu, sigma);
+    // float growth = growth_triangle(u, mu, sigma);
+    float growth = growth_gaussian(u, mu, sigma);
     float e = fminf(1.0f, fmaxf(0.0f, particles[i].energy + dt * growth));
     // TEMP: Visualize normalized excitation and growth directly
     // uchar4 debugColor;
