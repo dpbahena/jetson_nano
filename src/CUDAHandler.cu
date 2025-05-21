@@ -552,7 +552,8 @@ void CUDAHandler::updateDraw(float dt)
         .sigma = sigma,
         .mu = mu,
         .m = m,
-        .s = s
+        .s = s,
+        .conv_dt = conv_dt
         
     };
     if(leniaSize == 0 || currentSettings != previousSettings) {

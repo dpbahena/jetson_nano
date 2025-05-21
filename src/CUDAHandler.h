@@ -28,11 +28,12 @@ struct Settings {
     float mu;
     float m;
     float s;
+    float conv_dt;
     
 
     bool operator!=(const Settings& other) const {
-        return std::tie(numberOfParticles, particleRadius, spacing, convRadius, alpha, sigma, mu, m, s) !=
-               std::tie(other.numberOfParticles, other.particleRadius, other.spacing, other.convRadius, other.alpha, other.sigma,other.mu, other.m, other.s);
+        return std::tie(numberOfParticles, particleRadius, spacing, convRadius, alpha, sigma, mu, m, s, conv_dt) !=
+               std::tie(other.numberOfParticles, other.particleRadius, other.spacing, other.convRadius, other.alpha, other.sigma,other.mu, other.m, other.s, other.conv_dt);
     }
 };
 
