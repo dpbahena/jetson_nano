@@ -104,6 +104,10 @@ __global__ void thresholdAndCommit_kernel(Particle* g,
 // __device__ float growthMapping(float u, float mu, float sigma) {
 //     return 2.0f * expf(-powf((u - mu), 2) / (2.0f * sigma * sigma)) - 1.0f;
 // }
+__device__ float myGrowthMapping(float u, float mu, float sigma) {
+    float z = ((u - mu) * (u - mu)) / ( 2 * sigma * sigma);
+    return 2 * expf(-z) - 1.0f;
+}
 __device__ float growthMapping(float u, float mu, float sigma) {
     float z = (u - mu) / sigma;
     return expf(-0.5f * z * z) * 2.0f - 1.0f;
@@ -297,7 +301,7 @@ __global__ void activate_LeniaGoL_convolution_kernel(
 
     float u = (weightSum > 0.0f) ? (neighborSum / weightSum) : 0.0f;
 
-    float growth = growthMapping(u, mu, sigma);
+    float growth = myGrowthMapping(u, mu, sigma);
     // float growth = growthMappingquad4(u, mu, sigma);
     // float growth = growth_triangle(u, mu, sigma);
     // float growth = growth_gaussian(u, mu, sigma);
@@ -633,6 +637,25 @@ void CUDAHandler::drawTriangle(cudaSurfaceObject_t &surface, uchar4 color, vec2 
     drawTriangle_kernel<<<blocks, threads>>>(surface, width, height, RED_MERCURY, xMin, yMin, v0, v1, v2);
 
 
+}
+
+void CUDAHandler::drawCircularKernel(cudaSurfaceObject_t &surface)
+{
+
+    // Calculate bounding box   // if not zoom , nor panx, nor pany involved
+    // vec2 position(300, 300);
+    
+    // int xMin = max(0, (int)(position.x - convolutionRadius));
+    // int xMax = min(width - 1, (int)(position.x + convolutionRadius));
+    // int yMin = max(0, (int)(position.y - convolutionRadius));
+    // int yMax = min(height - 1, (int)(position.y + convolutionRadius));
+
+    // int drawWidth   = xMax - xMin + 1;
+    // int drawHeight  = yMax - yMin + 1;
+
+    // dim3 blockSize(16, 16);
+    // dim3 gridSize ((drawWidth + blockSize.x - 1) / blockSize.x, (drawHeight + blockSize.y -1) / blockSize.y);
+    // drawGlowingCircle_kernel<<<gridSize, blockSize>>>(surface, width, height, position.x, position.y, convolutionRadius,  color, 1.5f, xmin, ymin, zoom, panX, panY);
 }
 
 void CUDAHandler::initLenia()

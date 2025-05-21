@@ -62,7 +62,8 @@ class CUDAHandler {
         // main functions
         void updateDraw(float dt);
         void clearGraphicsDisplay(cudaSurfaceObject_t &surface, uchar4 color);
-        void drawTriangle(cudaSurfaceObject_t &surface, uchar4 colorcolor, vec2 v0, vec2 v1, vec2 v2);
+        void drawTriangle(cudaSurfaceObject_t &surface, uchar4 color, vec2 v0, vec2 v1, vec2 v2);
+        void drawCircularKernel(cudaSurfaceObject_t &surface);
 
         // program variables
         float dt;  // delta time
