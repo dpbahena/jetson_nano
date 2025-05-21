@@ -76,9 +76,9 @@ class CUDAHandler {
         float spacing = 1.0f;
         int convolutionRadius = 8;
         float alpha = 4.0;
-        float sigma = 0.04f;
-        float mu = 0.1f;
-        float m = .5f;
+        float sigma = 0.03f;
+        float mu = 0.15f;
+        float m = .03f;
         float s = .15f;
         float conv_dt = 0.05f;
         int TARGET_FPS = 90;

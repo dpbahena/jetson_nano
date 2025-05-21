@@ -49,7 +49,8 @@ __global__ void initializeLeniaParticle(Particle* particles, int totalParticles,
     curandState_t x = states[i];
     // float e =  random_float_in_range(&x, 0.1, 0.5);
     // initial noise
-    float e = curand_uniform(&x) < 0.15f ? curand_uniform(&x) * 0.35f : 0.0f; 
+    float e = curand_uniform(&x) * 0.5f;
+    // float e = curand_uniform(&x) < 0.15f ? curand_uniform(&x) * 0.35f : 0.0f; 
     particles[i].energy = e;
     states[i] = x; // reinstate the random value;
     int colorIndex = static_cast<int>(e * (numberColors - 1));
@@ -244,8 +245,8 @@ __global__ void activate_LeniaGoL_convolution_kernel(
         }
     }
 
-    float u = (weightSum > 0.0f) ? (neighborSum / weightSum) : 0.0f;
-
+    // float u = (weightSum > 0.0f) ? (neighborSum / weightSum) : 0.0f;
+    float u = neighborSum;
     float growth = growthMapping(u, mu, sigma);
     float e = fminf(1.0f, fmaxf(0.0f, particles[i].energy + dt * growth));
     // TEMP: Visualize normalized excitation and growth directly
@@ -302,12 +303,13 @@ __global__ void activate_LeniaGoL_convolution_kernel(
     float u = (weightSum > 0.0f) ? (neighborSum / weightSum) : 0.0f;
 
     float growth = myGrowthMapping(u, mu, sigma);
+    
     // float growth = growthMappingquad4(u, mu, sigma);
     // float growth = growth_triangle(u, mu, sigma);
     // float growth = growth_gaussian(u, mu, sigma);
     // float growth = growth_relu(u, mu, sigma);
     // float growth = growth_step(u, mu, sigma);
-    float e = fminf(1.0f, fmaxf(0.0f, particles[i].energy + dt * growth * 0.5));
+    float e = fminf(1.0f, fmaxf(0.0f, particles[i].energy + dt * growth));
     // TEMP: Visualize normalized excitation and growth directly
     // uchar4 debugColor;
     // debugColor.x = (unsigned char)(255.0f * fminf(fmaxf(u, 0.0f), 1.0f));        // Red = excitation u
@@ -497,6 +499,7 @@ std::vector<float> CUDAHandler::generateCircularBellKernel(int radius, float m, 
             float r = dist / radius;                     // normalize to [0, 1]
 
             // --- Lenia-style bell curve ---
+            // float value = 2.0f *  std::exp(-((r - m) * (r - m)) / (2.0f * s * s)) - 1.f;
             float value = std::exp(-((r - m) * (r - m)) / (2.0f * s * s));
 
             kernel[(y + radius) * diameter + (x + radius)] = value;
@@ -692,6 +695,9 @@ void CUDAHandler::initLenia()
 
     // std::vector<float> convKernel = generateCircularShellKernel(convolutionRadius, alpha);
     std::vector<float> convKernel = generateCircularBellKernel(convolutionRadius, mu, sigma);
+    // for (auto &v : convKernel) {
+    //     printf("v: %f", v);
+    // }
     size_t bytes = convKernel.size() * sizeof(float);
     checkCuda(cudaMemcpyToSymbol(d_kernelConst, convKernel.data(), bytes));
 
