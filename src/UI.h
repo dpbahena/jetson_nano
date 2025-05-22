@@ -14,9 +14,12 @@ class SimulationUI {
         static void mouseMotionCallback(int x, int y);
         static void mouseWheelCallback(int wheel, int direction, int x, int y);
 
+        
+
         static SimulationUI* instance;  //* Singleton-like access
         
         bool showMenu = true;
+        float cellSize = 8.f;
 
 
 };

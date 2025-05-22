@@ -176,6 +176,96 @@ void SimulationUI::render(CUDAHandler &sim)
         //     sim.rule = static_cast<uint8_t>(ruleSlider);
         //     ImGui::PopID();
         // }
+
+        static float shellData[100];
+        for (int i = 0; i < 100; ++i) {
+            float r = i / 99.0f;
+            float val = 0.0f;
+            if (r > 0.0f && r < 1.0f)
+                val = expf(sim.alpha - sim.alpha / (4.0f * r * (1.0f - r)));
+            shellData[i] = val;
+        }
+        ImGui::PlotLines("Shell Kernel Slice", shellData, 100, 0, nullptr, 0.0f, FLT_MAX, ImVec2(0, 100));
+
+        // Plot the kernel: K(r) = exp(-(r - m)^2 / (2 * s^2)), r in [0, 1]
+        static float kernelData[100];
+        for (int i = 0; i < 100; ++i) {
+            float r = i / 99.0f; // r in [0,1]
+            kernelData[i] = expf(-((r - sim.m) * (r - sim.m)) / (2.0f * sim.s * sim.s));
+        }
+        ImGui::PlotLines("Kernel Slice K(r)", kernelData, 100, 0, nullptr, 0.0f, 1.0f, ImVec2(0, 100));
+
+        // draw actual kernel
+        const std::vector<float>& kernel = sim.convKernel;  // Already generated and normalized
+        int diameter = sim.diameter;
+        if (ImGui::CollapsingHeader("Kernel 2D View")) {
+            ImDrawList* draw_list = ImGui::GetWindowDrawList();
+            ImVec2 canvas_pos = ImGui::GetCursorScreenPos(); // Top-left of the canvas
+            float cellSize = 8.0f;  // Adjust size to taste
+
+            for (int y = 0; y < diameter; ++y) {
+                for (int x = 0; x < diameter; ++x) {
+                    float value = kernel[y * diameter + x]; // Assuming row-major order
+                
+                    // Clamp and map to 0-255 grayscale
+                    float clamped = fminf(fmaxf(value, 0.0f), 1.0f);
+                    int shade = static_cast<int>(clamped * 255.0f);
+                
+                    ImU32 color = IM_COL32(shade, shade, shade, 255);
+                    ImVec2 p0 = ImVec2(canvas_pos.x + x * cellSize, canvas_pos.y + y * cellSize);
+                    ImVec2 p1 = ImVec2(p0.x + cellSize, p0.y + cellSize);
+                    draw_list->AddRectFilled(p0, p1, color);
+                    draw_list->AddRect(p0, p1, IM_COL32(50, 50, 50, 255)); // thin grid line border
+
+                }
+            }
+        
+            // Reserve space in the layout
+            ImGui::Dummy(ImVec2(cellSize * diameter, cellSize * diameter));
+        }
+
+        // gradient color instead
+        // int kernelSize = 2 * sim.convolutionRadius + 1;
+        // std::vector<unsigned char> imageData(kernelSize * kernelSize * 4);
+
+        // for (int y = 0; y < kernelSize; ++y) {
+        //     for (int x = 0; x < kernelSize; ++x) {
+        //         float value = sim.convKernel[y * kernelSize + x];  // Assume normalized in [0, 1]
+        //         value = fminf(fmaxf(value, 0.0f), 1.0f);          // Clamp
+
+        //         // Map to a color (e.g., blue–yellow gradient)
+        //         float r = value;
+        //         float g = value * 0.6f + 0.4f; // emphasize mid values
+        //         float b = 1.0f - value;
+
+        //         int idx = (y * kernelSize + x) * 4;
+        //         imageData[idx + 0] = static_cast<unsigned char>(r * 255);
+        //         imageData[idx + 1] = static_cast<unsigned char>(g * 255);
+        //         imageData[idx + 2] = static_cast<unsigned char>(b * 255);
+        //         imageData[idx + 3] = 255;  // Alpha
+        //     }
+        // }
+
+        GLuint kernelTextureID;
+        glGenTextures(1, &kernelTextureID);
+        glBindTexture(GL_TEXTURE_2D, kernelTextureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sim.diameter, sim.diameter, 0, GL_RGBA, GL_UNSIGNED_BYTE, sim.imageData.data());
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+        ImGui::Text("Kernel Heatmap Texture");
+        // ImGui::Image((ImTextureID)(intptr_t)kernelTextureID, ImVec2(200, 200));  // Adjust size as needed
+
+        
+        ImGui::SliderFloat("CellSize", &cellSize, 3.f, 15.f);
+        float viewSize = sim.diameter * cellSize;
+        ImGui::Image((ImTextureID)(intptr_t)kernelTextureID, ImVec2(viewSize, viewSize));
+        
+
+
+
+
+
         ImGui::Text("Latest u: %.4f", sim.debugU_host);
         ImGui::Text("Latest growth: %.4f", sim.debugGrowth_host);
         // printf("size %d\n",(int)sim.uHistory.size());
@@ -458,3 +548,5 @@ void SimulationUI::render(CUDAHandler &sim)
 
 //     // }
 // }
+
+

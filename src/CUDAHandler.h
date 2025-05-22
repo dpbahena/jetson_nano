@@ -92,6 +92,10 @@ class CUDAHandler {
         float debugU_host = 0.0f;
         float debugGrowth_host = 0.0f;
         std::vector<float> uHistory, growthHistory;
+        std::vector<float> convKernel;  // holds kernel info
+        std::vector<unsigned char> imageData;
+        int diameter;
+        vec3 turboColorMap(float x);
 
 
 

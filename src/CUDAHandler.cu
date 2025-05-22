@@ -1,4 +1,5 @@
 #include "CUDAHandler.h"
+#include <algorithm>
 
 
 constexpr int MAX_RADIUS = 12;                    // change to suit your max
@@ -485,7 +486,7 @@ std::vector<float> CUDAHandler::generateCircularShellKernel(int radius, float al
 
 std::vector<float> CUDAHandler::generateCircularBellKernel(int radius, float m, float s)
 {
-    int diameter = 2 * radius + 1;
+    diameter = 2 * radius + 1;
     std::vector<float> kernel(diameter * diameter, 0.0f);
 
     float sum = 0.0f;
@@ -694,14 +695,49 @@ void CUDAHandler::initLenia()
         lenia = nullptr;
     }
 
-    // std::vector<float> convKernel = generateCircularShellKernel(convolutionRadius, alpha);
-    std::vector<float> convKernel = generateCircularBellKernel(convolutionRadius, mu, sigma);
-    // for (auto &v : convKernel) {
-    //     printf("v: %f", v);
-    // }
+    // convKernel = generateCircularShellKernel(convolutionRadius, alpha);
+    convKernel = generateCircularBellKernel(convolutionRadius, mu, sigma);
+
+     
+    
     size_t bytes = convKernel.size() * sizeof(float);
     checkCuda(cudaMemcpyToSymbol(d_kernelConst, convKernel.data(), bytes));
+    int kernelSize = 2 * convolutionRadius + 1;
+    imageData.resize(kernelSize * kernelSize * 4);
 
+    float minVal = *std::min_element(convKernel.begin(), convKernel.end());
+    float maxVal = *std::max_element(convKernel.begin(), convKernel.end());
+
+
+    for (int y = 0; y < kernelSize; ++y) {
+        for (int x = 0; x < kernelSize; ++x) {
+            float value = convKernel[y * kernelSize + x];  // Assume normalized in [0, 1]
+            // value = fminf(fmaxf(value, 0.0f), 1.0f);          // Clamp
+
+            // // Map to a color (e.g., blue–yellow gradient)
+            // float r = value;
+            // float g = value * 0.6f + 0.4f; // emphasize mid values
+            // float b = 1.0f - value;
+
+            // int idx = (y * kernelSize + x) * 4;
+            // imageData[idx + 0] = static_cast<unsigned char>(r * 255);
+            // imageData[idx + 1] = static_cast<unsigned char>(g * 255);
+            // imageData[idx + 2] = static_cast<unsigned char>(b * 255);
+            // imageData[idx + 3] = 255;  // Alpha
+
+            
+            value = (value - minVal) / (maxVal - minVal + 1e-8f);  // Normalize locally
+
+            vec3 rgb = turboColorMap(value);
+            int idx = (y * kernelSize + x) * 4;
+
+            imageData[idx + 0] = static_cast<unsigned char>(rgb.x * 255);
+            imageData[idx + 1] = static_cast<unsigned char>(rgb.y * 255);
+            imageData[idx + 2] = static_cast<unsigned char>(rgb.z * 255);
+            imageData[idx + 3] = 255;
+
+        }
+    }
 
     lenia = new Lenia(width, height, totalParticles, particleRadius, spacing, {16,10} );
     leniaSize = lenia->particles.size();
@@ -752,4 +788,15 @@ cudaSurfaceObject_t CUDAHandler::MapSurfaceResourse()
     cudaSurfaceObject_t surface = 0;
     cudaCreateSurfaceObject(&surface, &resDesc);
     return surface;
+}
+
+vec3 CUDAHandler::turboColorMap(float x)
+{
+    x = fminf(fmaxf(x, 0.0f), 1.0f);  // Clamp to [0,1]
+
+    const float r = 34.61f + x * (1172.33f + x * (-10793.56f + x * (33300.12f + x * (-38394.49f + x * 14825.05f))));
+    const float g = 23.31f + x * (557.33f + x * (1572.88f + x * (-7743.36f + x * (10332.56f + x * -3584.14f))));
+    const float b = 27.2f  + x * (3211.1f + x * (-15327.97f + x * (27814.0f + x * (-22569.18f + x * 6838.66f))));
+
+    return vec3(r, g, b) / 255.0f;
 }
