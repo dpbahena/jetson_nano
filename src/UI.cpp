@@ -1,6 +1,7 @@
 #include "UI.h"
 
 #include "CUDAHandler.h"
+#include "GLManager.h"
 
 
 SimulationUI* SimulationUI::instance = nullptr;
@@ -197,15 +198,15 @@ void SimulationUI::render(CUDAHandler &sim)
 
         // draw actual kernel
         const std::vector<float>& kernel = sim.convKernel;  // Already generated and normalized
-        int diameter = sim.diameter;
+        int kernelSize = sim.kernelSize;
         if (ImGui::CollapsingHeader("Kernel 2D View")) {
             ImDrawList* draw_list = ImGui::GetWindowDrawList();
             ImVec2 canvas_pos = ImGui::GetCursorScreenPos(); // Top-left of the canvas
             float cellSize = 8.0f;  // Adjust size to taste
 
-            for (int y = 0; y < diameter; ++y) {
-                for (int x = 0; x < diameter; ++x) {
-                    float value = kernel[y * diameter + x]; // Assuming row-major order
+            for (int y = 0; y < kernelSize; ++y) {
+                for (int x = 0; x < kernelSize; ++x) {
+                    float value = kernel[y * kernelSize + x]; // Assuming row-major order
                 
                     // Clamp and map to 0-255 grayscale
                     float clamped = fminf(fmaxf(value, 0.0f), 1.0f);
@@ -221,44 +222,28 @@ void SimulationUI::render(CUDAHandler &sim)
             }
         
             // Reserve space in the layout
-            ImGui::Dummy(ImVec2(cellSize * diameter, cellSize * diameter));
+            ImGui::Dummy(ImVec2(cellSize * kernelSize, cellSize * kernelSize));
         }
 
         // gradient color instead
-        // int kernelSize = 2 * sim.convolutionRadius + 1;
-        // std::vector<unsigned char> imageData(kernelSize * kernelSize * 4);
+    
+        // GLuint kernelTextureID;
+        // glGenTextures(1, &kernelTextureID);
+        // glBindTexture(GL_TEXTURE_2D, kernelTextureID);
+        // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sim.kernelSize, sim.kernelSize, 0, GL_RGBA, GL_UNSIGNED_BYTE, sim.imageData.data());
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-        // for (int y = 0; y < kernelSize; ++y) {
-        //     for (int x = 0; x < kernelSize; ++x) {
-        //         float value = sim.convKernel[y * kernelSize + x];  // Assume normalized in [0, 1]
-        //         value = fminf(fmaxf(value, 0.0f), 1.0f);          // Clamp
-
-        //         // Map to a color (e.g., blue–yellow gradient)
-        //         float r = value;
-        //         float g = value * 0.6f + 0.4f; // emphasize mid values
-        //         float b = 1.0f - value;
-
-        //         int idx = (y * kernelSize + x) * 4;
-        //         imageData[idx + 0] = static_cast<unsigned char>(r * 255);
-        //         imageData[idx + 1] = static_cast<unsigned char>(g * 255);
-        //         imageData[idx + 2] = static_cast<unsigned char>(b * 255);
-        //         imageData[idx + 3] = 255;  // Alpha
-        //     }
-        // }
-
-        GLuint kernelTextureID;
-        glGenTextures(1, &kernelTextureID);
-        glBindTexture(GL_TEXTURE_2D, kernelTextureID);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sim.diameter, sim.diameter, 0, GL_RGBA, GL_UNSIGNED_BYTE, sim.imageData.data());
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
+        // Once kernelData is ready:
+        GLManager glManager(sim.kernelSize, sim.kernelSize);
+        glManager.uploadTexture(sim.imageData.data(), sim.kernelSize, sim.kernelSize);
+        GLuint kernelTextureID = glManager.getTextureID();
         ImGui::Text("Kernel Heatmap Texture");
         // ImGui::Image((ImTextureID)(intptr_t)kernelTextureID, ImVec2(200, 200));  // Adjust size as needed
 
         
         ImGui::SliderFloat("CellSize", &cellSize, 3.f, 15.f);
-        float viewSize = sim.diameter * cellSize;
+        float viewSize = sim.kernelSize * cellSize;
         ImGui::Image((ImTextureID)(intptr_t)kernelTextureID, ImVec2(viewSize, viewSize));
         
 

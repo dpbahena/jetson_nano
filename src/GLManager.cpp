@@ -54,3 +54,12 @@ GLuint GLManager::getTextureID() const
 {
     return textureID;
 }
+
+void GLManager::uploadTexture(const void *data, int width, int height, GLenum format, GLenum type)
+{
+    glBindTexture(GL_TEXTURE_2D, textureID);
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, type, data);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    extent = { static_cast<uint32_t>(width), static_cast<uint32_t>(height) };
+}

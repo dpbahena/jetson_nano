@@ -486,8 +486,8 @@ std::vector<float> CUDAHandler::generateCircularShellKernel(int radius, float al
 
 std::vector<float> CUDAHandler::generateCircularBellKernel(int radius, float m, float s)
 {
-    diameter = 2 * radius + 1;
-    std::vector<float> kernel(diameter * diameter, 0.0f);
+    kernelSize = 2 * radius + 1;
+    std::vector<float> kernel(kernelSize * kernelSize, 0.0f);
 
     float sum = 0.0f;
     for (int y = -radius; y <= radius; ++y)
@@ -503,7 +503,7 @@ std::vector<float> CUDAHandler::generateCircularBellKernel(int radius, float m, 
             // float value = 2.0f *  std::exp(-((r - m) * (r - m)) / (2.0f * s * s)) - 1.f;
             float value = std::exp(-((r - m) * (r - m)) / (2.0f * s * s));
 
-            kernel[(y + radius) * diameter + (x + radius)] = value;
+            kernel[(y + radius) * kernelSize + (x + radius)] = value;
             sum += value;
         }
     }

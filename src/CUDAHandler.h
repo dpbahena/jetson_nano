@@ -94,11 +94,8 @@ class CUDAHandler {
         std::vector<float> uHistory, growthHistory;
         std::vector<float> convKernel;  // holds kernel info
         std::vector<unsigned char> imageData;
-        int diameter;
         vec3 turboColorMap(float x);
-
-
-
+        int kernelSize;  //  diameter of circular kernel
         void initLenia();
         std::vector<float> generateCircularShellKernel(int radius, float alpha=4.0f);
         std::vector<float> generateCircularBellKernel(int radius, float m, float s);
