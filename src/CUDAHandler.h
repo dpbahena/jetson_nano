@@ -73,8 +73,8 @@ class CUDAHandler {
         bool startSimulation = false;
         int leniaSize = 0;
         
-        float particleRadius = .5f;
-        float spacing = 1.0f;
+        float particleRadius = 1.5f;
+        float spacing = 3.0f;
         int convolutionRadius = 8;
         float alpha = 4.0;
         float sigma = 0.03f;

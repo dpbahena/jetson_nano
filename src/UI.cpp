@@ -25,8 +25,8 @@ void SimulationUI::render(CUDAHandler &sim)
             sim.totalParticles = 1e6;
             #endif
             
-            sim.spacing = 1.0f;
-            sim.particleRadius = .5f;
+            sim.spacing = 3.f;
+            sim.particleRadius = 1.5f;
             sim.initLenia();
         }
         if (sim.startSimulation)

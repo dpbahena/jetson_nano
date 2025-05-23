@@ -22,6 +22,18 @@ void drawPixel(cudaSurfaceObject_t surface, int x, int y, uchar4 color, int widt
     }
 }
 
+__device__ void drawFilledSquare(cudaSurfaceObject_t surface, int x0, int y0, int halfSize, uchar4 color, int width, int height) {
+    for (int dy = -halfSize; dy <= halfSize; ++dy) {
+        for (int dx = -halfSize; dx <= halfSize; ++dx) {
+            int x = x0 + dx;
+            int y = y0 + dy;
+            if (x >= 0 && x < width && y >= 0 && y < height) {
+                surf2Dwrite(color, surface, x * sizeof(uchar4), y);
+            }
+        }
+    }
+}
+
 __device__ void drawFilledCircle(cudaSurfaceObject_t surface, int cx, int cy, int radius, uchar4 color, int width, int height) {
     int rSquared = radius * radius;
     for (int dy = -radius; dy <= radius; ++dy) {
@@ -209,6 +221,25 @@ __global__ void drawLeniaParticles(cudaSurfaceObject_t surface, Particle* partic
     if (x0 < 0 || x0 >= width || y0 < 0 || y0 >= height) return;
 
     drawFilledCircle(surface, x0, y0, radius, p.color, width, height);
+}
+
+__global__ void drawLeniaSquareParticles(cudaSurfaceObject_t surface, Particle* particles, int numberParticles, int width, int height, float zoom, float panX, float panY){
+    int i = blockIdx.x * blockDim.x + threadIdx.x;
+    if (i >= numberParticles ) return;
+
+    Particle p = particles[i];
+
+    // Apply zoom and pan directly (without adding screen center shift)
+    float radius = p.radius * zoom;
+    int x0 = (int)((p.position.x + panX) * zoom);
+    int y0 = (int)((p.position.y + panY) * zoom);
+
+    // Reject particles that fall outside the surface
+    if (x0 < 0 || x0 >= width || y0 < 0 || y0 >= height) return;
+
+    int halfSize = max((int)(radius), 1);
+    drawFilledSquare(surface, x0, y0, halfSize, p.color, width, height);
+
 }
 
 __global__ void activate_LeniaGoL_convolution_kernel(
@@ -593,7 +624,8 @@ void CUDAHandler::updateDraw(float dt)
     // checkCuda(cudaPeekAtLastError());
     // checkCuda(cudaDeviceSynchronize());
     // printf("again: %d\n", leniaSize);
-    drawLeniaParticles<<<gridSize, blockSize>>>(surface, d_leniaParticles, leniaSize, width, height, 1.0f, 0.0f, 0.0f);
+    // drawLeniaParticles<<<gridSize, blockSize>>>(surface, d_leniaParticles, leniaSize, width, height, 1.0f, 0.0f, 0.0f);
+    drawLeniaSquareParticles<<<gridSize, blockSize>>>(surface, d_leniaParticles, leniaSize, width, height, 1.0f, 0.0f, 0.0f);
 
     checkCuda(cudaPeekAtLastError());
     checkCuda(cudaDeviceSynchronize());
