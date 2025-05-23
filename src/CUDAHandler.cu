@@ -8,6 +8,10 @@ constexpr int MAX_K      = (2*MAX_RADIUS+1)*(2*MAX_RADIUS+1);
 __constant__ float d_kernelConst[MAX_K];          // <── NOT a pointer
 
 
+__device__ uchar4 makeColorFromEnergy(float energy) {
+    int intensity = min(255, max(0, (int)(energy * 255.0f)));
+    return make_uchar4(intensity, intensity, intensity, 255);
+}
 
 __device__ float random_float_in_range(curandState_t* state, float a, float b) {
     // return a + (b - a) * curand_uniform_float(state);  // this does not include b  e.g -1 to 1.0  it does not include 1.0
@@ -238,7 +242,10 @@ __global__ void drawLeniaSquareParticles(cudaSurfaceObject_t surface, Particle* 
     if (x0 < 0 || x0 >= width || y0 < 0 || y0 >= height) return;
 
     int halfSize = max((int)(radius), 1);
+
+    // uchar4 color = makeColorFromEnergy(p.energy);
     drawFilledSquare(surface, x0, y0, halfSize, p.color, width, height);
+    // drawFilledSquare(surface, x0, y0, halfSize, color, width, height);
 
 }
 
@@ -727,8 +734,8 @@ void CUDAHandler::initLenia()
         lenia = nullptr;
     }
 
-    convKernel = generateCircularShellKernel(convolutionRadius, alpha);
-    // convKernel = generateCircularBellKernel(convolutionRadius, mu, sigma);
+    // convKernel = generateCircularShellKernel(convolutionRadius, alpha);
+    convKernel = generateCircularBellKernel(convolutionRadius, m, s);
 
      
     
