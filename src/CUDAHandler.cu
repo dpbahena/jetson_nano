@@ -727,8 +727,8 @@ void CUDAHandler::initLenia()
         lenia = nullptr;
     }
 
-    // convKernel = generateCircularShellKernel(convolutionRadius, alpha);
-    convKernel = generateCircularBellKernel(convolutionRadius, mu, sigma);
+    convKernel = generateCircularShellKernel(convolutionRadius, alpha);
+    // convKernel = generateCircularBellKernel(convolutionRadius, mu, sigma);
 
      
     
