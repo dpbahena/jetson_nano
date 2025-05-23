@@ -95,6 +95,7 @@ class CUDAHandler {
         std::vector<float> convKernel;  // holds kernel info
         std::vector<unsigned char> imageData;
         vec3 turboColorMap(float x);
+      
         int kernelSize;  //  diameter of circular kernel
         void initLenia();
         std::vector<float> generateCircularShellKernel(int radius, float alpha=4.0f);

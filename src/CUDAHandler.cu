@@ -7,7 +7,17 @@ constexpr int MAX_K      = (2*MAX_RADIUS+1)*(2*MAX_RADIUS+1);
 
 __constant__ float d_kernelConst[MAX_K];          // <── NOT a pointer
 
+__device__
+uchar4 turboColorMapU(float x)
+{
+    x = fminf(fmaxf(x, 0.0f), 1.0f);  // Clamp to [0,1]
 
+    const float r = 34.61f + x * (1172.33f + x * (-10793.56f + x * (33300.12f + x * (-38394.49f + x * 14825.05f))));
+    const float g = 23.31f + x * (557.33f + x * (1572.88f + x * (-7743.36f + x * (10332.56f + x * -3584.14f))));
+    const float b = 27.2f  + x * (3211.1f + x * (-15327.97f + x * (27814.0f + x * (-22569.18f + x * 6838.66f))));
+
+    return make_uchar4(r, g, b, 255.0f);
+}
 __device__ uchar4 makeColorFromEnergy(float energy) {
     int intensity = min(255, max(0, (int)(energy * 255.0f)));
     return make_uchar4(intensity, intensity, intensity, 255);
@@ -244,8 +254,9 @@ __global__ void drawLeniaSquareParticles(cudaSurfaceObject_t surface, Particle* 
     int halfSize = max((int)(radius), 1);
 
     // uchar4 color = makeColorFromEnergy(p.energy);
-    drawFilledSquare(surface, x0, y0, halfSize, p.color, width, height);
-    // drawFilledSquare(surface, x0, y0, halfSize, color, width, height);
+    uchar4 color = turboColorMapU(p.energy);
+    // drawFilledSquare(surface, x0, y0, halfSize, p.color, width, height);
+    drawFilledSquare(surface, x0, y0, halfSize, color, width, height);
 
 }
 
@@ -839,3 +850,4 @@ vec3 CUDAHandler::turboColorMap(float x)
 
     return vec3(r, g, b) / 255.0f;
 }
+
