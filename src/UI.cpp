@@ -2,10 +2,21 @@
 
 #include "CUDAHandler.h"
 #include "GLManager.h"
+#include <ctime>
 
 
 SimulationUI* SimulationUI::instance = nullptr;
 
+SimulationUI::SimulationUI()
+{
+    std::string filename = "lenia_params_" + std::to_string(std::time(nullptr)) + ".txt";
+    paramLogFile.open(filename, std::ios::out);
+}
+
+SimulationUI::~SimulationUI()
+{
+    if (paramLogFile.is_open()) paramLogFile.close();
+}
 
 void SimulationUI::render(CUDAHandler &sim)
 {
@@ -111,7 +122,23 @@ void SimulationUI::render(CUDAHandler &sim)
         ImGui::SliderFloat("Thickness/Ring Spread", &sim.s, .01f, 0.21f);
         ImGui::SliderFloat("DT", &sim.conv_dt, 0.001, 0.15);
         ImGui::PopItemWidth();
-
+        ImGui::Separator();
+        ImGui::InputText("Description", descriptionBuffer, IM_ARRAYSIZE(descriptionBuffer));
+        if (ImGui::Button("Save Parameters Snapshot")) {
+            if (paramLogFile.is_open()) {
+                paramLogFile << "----Snapshot----\n";
+                paramLogFile << "Description: " << descriptionBuffer << "\n";
+                paramLogFile << "Particles: " << sim.totalParticles << "\n";
+                paramLogFile << "Convolution Radius: " << sim.convolutionRadius << "\n";
+                paramLogFile << "Alpha: " << sim.alpha << "\n";
+                paramLogFile << "Sigma: " << sim.sigma << "\n";
+                paramLogFile << "Mu: " << sim.mu << "\n";
+                paramLogFile << "Ring Peak (m): " << sim.m << "\n";
+                paramLogFile << "Ring Spread (s): " << sim.s << "\n";
+                paramLogFile << "Conv dt: " << sim.conv_dt << "\n";
+                paramLogFile << "---------------------------------\n";
+            }
+        }
 
         // int gameMode = static_cast<GameMode>(sim.gameMode);
         // ImGui::RadioButton("Game Of Life", &gameMode, gameOfLife); ImGui::SameLine();

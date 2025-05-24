@@ -1,0 +1,55 @@
+----Snapshot----
+Description: frog eggs
+Particles: 1000000
+Convolution Radius: 12
+Alpha: 4
+Sigma: 0.015
+Mu: 0.014
+Ring Peak (m): 0.521
+Ring Spread (s): 0.092
+Conv dt: 0.113
+---------------------------------
+----Snapshot----
+Description: blobs
+Particles: 1000000
+Convolution Radius: 12
+Alpha: 4
+Sigma: 0.015
+Mu: 0.014
+Ring Peak (m): 0.116
+Ring Spread (s): 0.197
+Conv dt: 0.106
+---------------------------------
+----Snapshot----
+Description: blobs 2
+Particles: 1000000
+Convolution Radius: 12
+Alpha: 4
+Sigma: 0.015
+Mu: 0.017
+Ring Peak (m): 0.116
+Ring Spread (s): 0.197
+Conv dt: 0.106
+---------------------------------
+----Snapshot----
+Description: boundaries
+Particles: 1000000
+Convolution Radius: 12
+Alpha: 4
+Sigma: 0.06
+Mu: 0.123
+Ring Peak (m): 0.057
+Ring Spread (s): 0.21
+Conv dt: 0.149
+---------------------------------
+----Snapshot----
+Description: brains
+Particles: 1000000
+Convolution Radius: 9
+Alpha: 4
+Sigma: 0.014
+Mu: 0.09
+Ring Peak (m): 0.01
+Ring Spread (s): 0.21
+Conv dt: 0.14
+---------------------------------
