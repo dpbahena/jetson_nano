@@ -76,8 +76,8 @@ __global__ void initializeLeniaParticle(Particle* particles, int totalParticles,
     curandState_t x = states[i];
     // float e =  random_float_in_range(&x, 0.1, 0.5);
     // initial noise
-    float e = curand_uniform(&x) * 0.5f;
-    // float e = curand_uniform(&x) < 0.15f ? curand_uniform(&x) * 0.35f : 0.0f; 
+    // float e = curand_uniform(&x) * 0.5f;
+    float e = curand_uniform(&x) < 0.15f ? curand_uniform(&x) * 0.35f : 0.0f; 
     particles[i].energy = e;
     states[i] = x; // reinstate the random value;
     int colorIndex = static_cast<int>(e * (numberColors - 1));
