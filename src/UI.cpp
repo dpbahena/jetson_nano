@@ -67,7 +67,11 @@ void SimulationUI::render(CUDAHandler &sim)
         ImGui::PushItemWidth(150);
         ImGui::SliderFloat("Radius", &sim.particleRadius, 0.1f, 30.f);
         ImGui::SliderFloat("distance", &sim.spacing, .2f, 30.f);        
-        ImGui::SliderInt("R", &sim.convolutionRadius, 1, 12);
+        #if defined(__aarch64__) || defined(USE_X11_MONITORS)
+            ImGui::SliderInt("R", &sim.convolutionRadius, 1, 12);    
+        #else
+            ImGui::SliderInt("R", &sim.convolutionRadius, 1, 20);
+        #endif
         if (ImGui::IsItemHovered())
         ImGui::SetTooltip("Convolution Radius");
         ImGui::SliderFloat("Alpha", &sim.alpha, 2.0f, 6.0f);

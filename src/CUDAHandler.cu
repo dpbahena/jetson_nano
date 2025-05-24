@@ -2,7 +2,7 @@
 #include <algorithm>
 
 
-constexpr int MAX_RADIUS = 12;                    // change to suit your max
+constexpr int MAX_RADIUS = 20;                    // change to suit your max
 constexpr int MAX_K      = (2*MAX_RADIUS+1)*(2*MAX_RADIUS+1);
 
 __constant__ float d_kernelConst[MAX_K];          // <── NOT a pointer

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <fstream>
+#include <vector>
 
 
 class CUDAHandler;  // Just temporary declaration but necessary
