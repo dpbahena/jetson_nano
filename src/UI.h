@@ -9,7 +9,7 @@ class CUDAHandler;  // Just temporary declaration but necessary
 struct Snapshot {
     std::string description;
     int totalParticles;
-    float convulationRadius;
+    float convolutionRadius;
     float alpha;
     float sigma;
     float mu;
@@ -43,6 +43,7 @@ class SimulationUI {
         std::vector<Snapshot> savedSnapshots;
         std::string selectFilename = "";
         int selectedSnapshotIndex = -1;
+        void loadSnapshotsFromFile(const std::string& filename);
         
         bool showMenu = true;
         float cellSize = 8.f;

@@ -1,0 +1,55 @@
+----Snapshot----
+Description: blocks
+Particles: 1000000
+Convolution Radius: 5
+Alpha: 4
+Sigma: 0.04
+Mu: 0.152
+Ring Peak (m): 0.03
+Ring Spread (s): 0.128
+Conv dt: 0.081
+---------------------------------
+----Snapshot----
+Description: electric
+Particles: 1000000
+Convolution Radius: 5
+Alpha: 4
+Sigma: 0.071
+Mu: 0.135
+Ring Peak (m): 0.701
+Ring Spread (s): 0.01
+Conv dt: 0.061
+---------------------------------
+----Snapshot----
+Description: pumping
+Particles: 1000000
+Convolution Radius: 5
+Alpha: 4
+Sigma: 0.0713
+Mu: 0.135
+Ring Peak (m): 0.701
+Ring Spread (s): 0.01
+Conv dt: 0.061
+---------------------------------
+----Snapshot----
+Description: big blobs
+Particles: 1000000
+Convolution Radius: 20
+Alpha: 4
+Sigma: 0.018
+Mu: 0.014
+Ring Peak (m): 0.9
+Ring Spread (s): 0.146
+Conv dt: 0.083
+---------------------------------
+----Snapshot----
+Description: more egges
+Particles: 1000000
+Convolution Radius: 20
+Alpha: 4
+Sigma: 0.017
+Mu: 0.016
+Ring Peak (m): 0.9
+Ring Spread (s): 0.146
+Conv dt: 0.122
+---------------------------------

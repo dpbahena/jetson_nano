@@ -3,14 +3,17 @@
 #include "CUDAHandler.h"
 #include "GLManager.h"
 #include <ctime>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 
 SimulationUI* SimulationUI::instance = nullptr;
 
 SimulationUI::SimulationUI()
 {
-    std::string filename = "lenia_params_" + std::to_string(std::time(nullptr)) + ".txt";
-    paramLogFile.open(filename, std::ios::out);
+    // std::string filename = "lenia_params_" + std::to_string(std::time(nullptr)) + ".txt";
+    // paramLogFile.open(filename, std::ios::out);
 }
 
 SimulationUI::~SimulationUI()
@@ -24,6 +27,7 @@ void SimulationUI::render(CUDAHandler &sim)
     // if (ImGui::IsKeyPressed(ImGuiKey_Tab)) {
     //     showMenu = ! showMenu;
     // }
+    
 
 
     if (showMenu) {
@@ -129,6 +133,11 @@ void SimulationUI::render(CUDAHandler &sim)
         ImGui::Separator();
         ImGui::InputText("Description", descriptionBuffer, IM_ARRAYSIZE(descriptionBuffer));
         if (ImGui::Button("Save Parameters Snapshot")) {
+            // create a new file
+            if (!paramLogFile.is_open()) {
+                std::string filename = "lenia_params_" + std::to_string(std::time(nullptr)) + ".txt";
+                paramLogFile.open(filename, std::ios::out);
+            }
             if (paramLogFile.is_open()) {
                 paramLogFile << "----Snapshot----\n";
                 paramLogFile << "Description: " << descriptionBuffer << "\n";
@@ -142,7 +151,47 @@ void SimulationUI::render(CUDAHandler &sim)
                 paramLogFile << "Conv dt: " << sim.conv_dt << "\n";
                 paramLogFile << "---------------------------------\n";
             }
+            descriptionBuffer[0] = '\0';  // clear text
         }
+
+        if (ImGui::BeginCombo("Saved Files", selectFilename.c_str())) {
+            for (const auto& entry : fs::directory_iterator(".")){
+                if (entry.path().extension() == ".txt" && entry.path().string().find("lenia_params_") != std::string::npos) {
+                    std::string filename = entry.path().filename().c_str();
+                    if (ImGui::Selectable(filename.c_str())) {
+                        selectFilename = filename;
+                        selectedSnapshotIndex = -1;
+                        savedSnapshots.clear();
+                        loadSnapshotsFromFile(filename);
+                    }
+                }
+            }
+            ImGui::EndCombo();
+            
+        }
+        if (!savedSnapshots.empty()) {
+            ImGui::Text("Snapshots in file:");
+            for (int i = 0; i < savedSnapshots.size(); i++) {
+                std::string label = std::to_string(i + 1) + ": " + savedSnapshots[i].description;
+                if (ImGui::Selectable(label.c_str(), selectedSnapshotIndex == i)) {
+                    selectedSnapshotIndex = i;
+                }
+            }
+            if (selectedSnapshotIndex != -1 && ImGui::Button("Load Selected Snapshot")) {
+                const Snapshot& snap = savedSnapshots[selectedSnapshotIndex];
+                sim.totalParticles = snap.totalParticles;
+                sim.convolutionRadius = snap.convolutionRadius;
+                sim.alpha = snap.alpha;
+                sim.sigma = snap.sigma;
+                sim.mu = snap.mu;
+                sim.m = snap.m;
+                sim.s = snap.s;
+                sim.conv_dt = snap.conv_dt;
+                sim.initLenia();  // reinitialize with new values;
+            }
+        }
+
+    
 
         // int gameMode = static_cast<GameMode>(sim.gameMode);
         // ImGui::RadioButton("Game Of Life", &gameMode, gameOfLife); ImGui::SameLine();
@@ -565,4 +614,36 @@ void SimulationUI::render(CUDAHandler &sim)
 //     // }
 // }
 
+void SimulationUI::loadSnapshotsFromFile(const std::string &filename)
+{
+    std::ifstream file(filename);
+    if (!file.is_open()) return;
+    std::string line;
+    Snapshot current;
+    while (std::getline(file, line)) {
+        if (line.find("Description:") == 0)
+            current.description = line.substr(13);
+        else if (line.find("Particles:") == 0)
+            current.totalParticles = std::stoi(line.substr(10));
+        else if (line.find("Convolution Radius:") == 0)
+            current.convolutionRadius = std::stof(line.substr(20));
+        else if (line.find("Alpha:") == 0)
+            current.alpha = std::stof(line.substr(6));
+        else if (line.find("Sigma:") == 0)
+            current.sigma = std::stof(line.substr(6));
+        else if (line.find("Mu:") == 0)
+            current.mu = std::stof(line.substr(3));
+        else if (line.find("Ring Peak (m):") == 0)
+            current.m = std::stof(line.substr(15));
+        else if (line.find("Ring Spread (s):") == 0)
+            current.s = std::stof(line.substr(17));
+        else if (line.find("Conv dt:") == 0)
+            current.conv_dt = std::stof(line.substr(9));
+        else if (line.find("---------------------------------") == 0) {
+            savedSnapshots.push_back(current);
+            std::cout << "Loaded snapshot: " << current.description << "\n";
 
+        }
+
+    }
+}
