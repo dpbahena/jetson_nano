@@ -856,7 +856,26 @@ void CUDAHandler::initLenia()
         lenia = nullptr;
     }
 
-    convKernel = generateCircularShellKernel(convolutionRadius, alpha);
+    switch(kMode) {
+        case kSHELL:
+            convKernel = generateCircularShellKernel(convolutionRadius, alpha);
+            break;
+        case kBELL:
+            convKernel = generateCircularBellKernel(convolutionRadius, m, s); // m: peak, s: spread
+            break;
+        case kPOLY:
+            convKernel = generateCircularPolyShellKernel(convolutionRadius, alpha);
+            break;
+        case kGAUSS:
+            convKernel = generateCircularGaussianKernel(convolutionRadius, s);  // s : spread
+            break;
+        case kFLAT:
+            convKernel = generateCircularFlatDiskKernel(convolutionRadius);
+            break;
+        default:
+            break;
+    }
+    // convKernel = generateCircularShellKernel(convolutionRadius, alpha);
     // convKernel = generateCircularBellKernel(convolutionRadius, m, s);
 
      

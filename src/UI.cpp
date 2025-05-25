@@ -55,14 +55,6 @@ void SimulationUI::render(CUDAHandler &sim)
         }
         ImGui::PopStyleColor();
 
-
-        // // Combo for Tree Display Mode
-        // const char* options[] = { "Grid", "Vertical", "Horizontal", "Checkered", "Diagonal", "X-shape", "Circle", "Spiral", "Border", "Doble border", "Rings", "Radial", "Animated Beams", "Diagonals Grid", "Full Grid", "Cellular Automata"};
-        // static int selectedOption = sim.option; 
-
-        // if (ImGui::Combo("Game of Life Pattern", &selectedOption, options, IM_ARRAYSIZE(options))) {
-        //     sim.option = selectedOption;
-        // }
         #if defined(__aarch64__) || defined(USE_X11_MONITORS)
         ImGui::SliderInt("Number of Particles", &sim.totalParticles, 10000, 200000);
         #else
@@ -70,7 +62,34 @@ void SimulationUI::render(CUDAHandler &sim)
         #endif
         ImGui::PushItemWidth(150);
         ImGui::SliderFloat("Radius", &sim.particleRadius, 0.1f, 30.f);
-        ImGui::SliderFloat("distance", &sim.spacing, .2f, 30.f);        
+        ImGui::SliderFloat("distance", &sim.spacing, .2f, 30.f);
+        ImGui::Separator();
+        // Choose kernel
+        int kMode = static_cast<KernelMode>(sim.kMode);
+        ImGui::Text("Select Convolution Kernel:");
+        ImGui::RadioButton("Shell", &kMode, kSHELL); ImGui::SameLine();
+        ImGui::RadioButton("Bell", &kMode, kBELL); ImGui::SameLine();
+        ImGui::RadioButton("Poly", &kMode, kPOLY);
+        ImGui::RadioButton("Gauss", &kMode, kGAUSS); ImGui::SameLine();
+        ImGui::RadioButton("FlatDisk", &kMode, kFLAT);
+        sim.kMode = static_cast<KernelMode>(kMode);
+        ImGui::Separator();
+        // Choose growth function
+        int gMode = static_cast<GrowthMode>(sim.gMode);
+        ImGui::Text("Select Growth Mapping:");
+        ImGui::RadioButton("Gaussian", &gMode, gGAUSSIAN); ImGui::SameLine();
+        ImGui::RadioButton("Gauss_Sharp", &gMode, gGAUSS_SHARP); ImGui::SameLine();
+        ImGui::RadioButton("Quad4", &gMode, gQUAD4); ImGui::SameLine();
+        ImGui::RadioButton("Triangle", &gMode, gTRIANGLE); 
+        ImGui::RadioButton("Step", &gMode, gSTEP); ImGui::SameLine();
+        ImGui::RadioButton("ReLu", &gMode, gRELU); ImGui::SameLine();
+        ImGui::RadioButton("Mex_Hat", &gMode, gMEX_HAT); ImGui::SameLine();
+        ImGui::RadioButton("Inv_Quad", &gMode, gINV_QUAD);
+        ImGui::RadioButton("Cosine", &gMode, gCOSINE); ImGui::SameLine();
+        ImGui::RadioButton("Smooth", &gMode, gSMOOTH_STEP); ImGui::SameLine();
+        ImGui::RadioButton("Sinc", &gMode, gSINC);
+        sim.gMode = static_cast<GrowthMode>(gMode);
+        ImGui::Separator();
         #if defined(__aarch64__) || defined(USE_X11_MONITORS)
             ImGui::SliderInt("R", &sim.convolutionRadius, 1, 12);    
         #else
@@ -78,17 +97,19 @@ void SimulationUI::render(CUDAHandler &sim)
         #endif
         if (ImGui::IsItemHovered())
         ImGui::SetTooltip("Convolution Radius");
-        float alphaStep = 0.001f;
-        ImGui::SliderFloat("Alpha", &sim.alpha, 2.0f, 6.0f);
-        ImGui::SameLine();
-        if (ImGui::Button("-##alpha")) {
-            sim.alpha -= alphaStep;
+        if (kMode == (int)kSHELL || kMode == (int)kPOLY) {
+            float alphaStep = 0.001f;
+            ImGui::SliderFloat("Alpha", &sim.alpha, 2.0f, 6.0f);
+            ImGui::SameLine();
+            if (ImGui::Button("-##alpha")) {
+                sim.alpha -= alphaStep;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("+##alpha")) {
+                sim.alpha += alphaStep;
+            }
         }
-        ImGui::SameLine();
-        if (ImGui::Button("+##alpha")) {
-            sim.alpha += alphaStep;
-        }
-        ImGui::Separator();
+        
         float step = .001f;
         // float step2 = .0001f;
         
@@ -115,7 +136,7 @@ void SimulationUI::render(CUDAHandler &sim)
         // }
         
         float muStep = .001f;
-        // float muStep2 = .0001f;
+        
         
         ImGui::SliderFloat("mu", &sim.mu, .014f, 0.28f);
         ImGui::SameLine();
@@ -127,17 +148,31 @@ void SimulationUI::render(CUDAHandler &sim)
         if (ImGui::Button("+##mu1")) {
             sim.mu += muStep;
         }
-        // ImGui::SameLine();
-        // if (ImGui::Button("-##mu2")) {
-        //     sim.mu -= muStep2;
-        // }
-        // ImGui::SameLine();
-        // if (ImGui::Button("+##mu2")) {
-        //     sim.mu += muStep2;
-        // }
-        
-        ImGui::SliderFloat("Pick of Ring", &sim.m, .01f, 0.9f);
-        ImGui::SliderFloat("Thickness/Ring Spread", &sim.s, .01f, 0.21f);
+        if (kMode == (int)kBELL) {
+            float mStep = 0.01;
+            ImGui::SliderFloat("Peak", &sim.m, .01f, 0.9f); 
+            ImGui::SameLine();
+            if (ImGui::Button("##-m")) {
+                sim.m -= mStep;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("##+m")) {
+                sim.m += mStep;
+            }
+        }
+        if (kMode == (int)kBELL || kMode == (int)kGAUSS) {
+            float sStep = 0.01;
+            ImGui::SliderFloat("Spread", &sim.s, .01f, 0.21f);
+            ImGui::SameLine();
+            if (ImGui::Button("##-s")) {
+                sim.s -= sStep;
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("##+s")) {
+                sim.s += sStep;
+            }
+        }
+
         float dtStep = 0.001f;
         ImGui::SliderFloat("DT", &sim.conv_dt, 0.001, 0.200);
         ImGui::SameLine();
@@ -161,6 +196,8 @@ void SimulationUI::render(CUDAHandler &sim)
                 paramLogFile << "----Snapshot----\n";
                 paramLogFile << "Description: " << descriptionBuffer << "\n";
                 paramLogFile << "Particles: " << sim.totalParticles << "\n";
+                paramLogFile << "Convolution Kernel: " << sim.kMode << "\n";
+                paramLogFile << "Growth Mapping: " << sim.gMode << "\n";
                 paramLogFile << "Convolution Radius: " << sim.convolutionRadius << "\n";
                 paramLogFile << "Alpha: " << sim.alpha << "\n";
                 paramLogFile << "Sigma: " << sim.sigma << "\n";
@@ -199,6 +236,8 @@ void SimulationUI::render(CUDAHandler &sim)
             if (selectedSnapshotIndex != -1 && ImGui::Button("Load Selected Snapshot")) {
                 const Snapshot& snap = savedSnapshots[selectedSnapshotIndex];
                 sim.totalParticles = snap.totalParticles;
+                sim.kMode = static_cast<KernelMode>(snap.kMode);
+                sim.gMode = static_cast<GrowthMode>(snap.gMode);
                 sim.convolutionRadius = snap.convolutionRadius;
                 sim.alpha = snap.alpha;
                 sim.sigma = snap.sigma;
@@ -206,10 +245,11 @@ void SimulationUI::render(CUDAHandler &sim)
                 sim.m = snap.m;
                 sim.s = snap.s;
                 sim.conv_dt = snap.conv_dt;
+
                 sim.initLenia();  // reinitialize with new values;
             }
         }
-
+        ImGui::Separator();
     
 
         // int gameMode = static_cast<GameMode>(sim.gameMode);
@@ -276,24 +316,60 @@ void SimulationUI::render(CUDAHandler &sim)
         //     sim.rule = static_cast<uint8_t>(ruleSlider);
         //     ImGui::PopID();
         // }
-
-        static float shellData[100];
-        for (int i = 0; i < 100; ++i) {
-            float r = i / 99.0f;
-            float val = 0.0f;
-            if (r > 0.0f && r < 1.0f)
-                val = expf(sim.alpha - sim.alpha / (4.0f * r * (1.0f - r)));
-            shellData[i] = val;
+        if (kMode == (int)kSHELL) {
+            static float shellData[100];
+            for (int i = 0; i < 100; ++i) {
+                float r = i / 99.0f;
+                float val = 0.0f;
+                if (r > 0.0f && r < 1.0f)
+                    val = expf(sim.alpha - sim.alpha / (4.0f * r * (1.0f - r)));
+                shellData[i] = val;
+            }
+            ImGui::PlotLines("Shell Kernel Slice", shellData, 100, 0, nullptr, 0.0f, FLT_MAX, ImVec2(0, 100));
         }
-        ImGui::PlotLines("Shell Kernel Slice", shellData, 100, 0, nullptr, 0.0f, FLT_MAX, ImVec2(0, 100));
 
-        // Plot the kernel: K(r) = exp(-(r - m)^2 / (2 * s^2)), r in [0, 1]
-        static float kernelData[100];
-        for (int i = 0; i < 100; ++i) {
-            float r = i / 99.0f; // r in [0,1]
-            kernelData[i] = expf(-((r - sim.m) * (r - sim.m)) / (2.0f * sim.s * sim.s));
+        if (kMode == (int)kBELL) {
+            static float kernelData[100];
+            for (int i = 0; i < 100; ++i) {
+                float r = i / 99.0f; // r in [0,1]
+                kernelData[i] = expf(-((r - sim.m) * (r - sim.m)) / (2.0f * sim.s * sim.s));
+            }
+            ImGui::PlotLines("Bell Kernel Slice", kernelData, 100, 0, nullptr, 0.0f, 1.0f, ImVec2(0, 100));
         }
-        ImGui::PlotLines("Kernel Slice K(r)", kernelData, 100, 0, nullptr, 0.0f, 1.0f, ImVec2(0, 100));
+
+        if (kMode == (int) kPOLY) {
+            static float polyData[100];
+            for (int i = 0; i < 100; ++i) {
+                float r = i / 99.0f;
+                float val = 0.0f;
+                if (r > 0.0f && r < 1.0f)
+                    val = std::pow(4.0f * r * (1.0f - r), sim.alpha); // smoother shell
+                polyData[i] = val;
+            }
+            ImGui::PlotLines("Poly Kernel Slice", polyData, 100, 0, nullptr, 0.0f, FLT_MAX, ImVec2(0, 100));
+        }
+        if (kMode == (int)kGAUSS) {
+            static float gaussData[100];
+            for (int i = 0; i < 100; ++i) {
+                float r = i / 99.0f;
+                float val = 0.0f;
+                if (r > 0.0f && r < 1.0f)
+                    val = std::exp(-r * r / (2.0f * sim.s * sim.s));
+                gaussData[i] = val;
+            }
+            ImGui::PlotLines("Gaussean Kernel Slice", gaussData, 100, 0, nullptr, 0.0f, FLT_MAX, ImVec2(0, 100));
+        }
+        if (kMode == (int)kFLAT) {
+            static float flatData[100];
+            for (int i = 0; i < 100; ++i) {
+                float r = i / 99.0f;
+                float val = 0.0f;
+                if (r > 0.0f && r < 1.0f)
+                    val = 1.0f;
+                flatData[i] = val;
+            }
+            ImGui::PlotLines("Flat Disk Kernel Slice", flatData, 100, 0, nullptr, 0.0f, FLT_MAX, ImVec2(0, 100));
+        }
 
         // draw actual kernel
         const std::vector<float>& kernel = sim.convKernel;  // Already generated and normalized
@@ -358,7 +434,7 @@ void SimulationUI::render(CUDAHandler &sim)
         if (!sim.growthHistory.empty())
             ImGui::PlotLines("Growth", sim.growthHistory.data(), sim.growthHistory.size(), 0, nullptr, -1.0f, 1.0f, ImVec2(0, 80));
 
-        ImGui::Separator;
+        ImGui::Separator();
         ImGui::Text("Total Cells: %d", (int)sim.leniaSize);
         ImGui::Text("Zoom Factor: %f", sim.zoom);
         ImGui::SliderInt("FPS", &sim.TARGET_FPS, 20, 120);
@@ -644,6 +720,10 @@ void SimulationUI::loadSnapshotsFromFile(const std::string &filename)
             current.description = line.substr(13);
         else if (line.find("Particles:") == 0)
             current.totalParticles = std::stoi(line.substr(10));
+        else if (line.find("Convolution Kernel:") == 0)
+            current.kMode = std::stoi(line.substr(20));
+        else if (line.find("Growth Mapping:") == 0)
+            current.gMode = std::stoi(line.substr(16));
         else if (line.find("Convolution Radius:") == 0)
             current.convolutionRadius = std::stof(line.substr(20));
         else if (line.find("Alpha:") == 0)

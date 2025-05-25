@@ -16,8 +16,8 @@ struct Snapshot {
     float m;
     float s;
     float conv_dt;
-    GrowthMode gMode;
-    KernelMode kMode;
+    int gMode;
+    int kMode;
 };
 
 

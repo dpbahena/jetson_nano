@@ -1,0 +1,39 @@
+----Snapshot----
+Description: Rubber bands
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 2
+Convolution Radius: 8
+Alpha: 2.747
+Sigma: 0.011
+Mu: 0.013
+Ring Peak (m): 0.501
+Ring Spread (s): 0.123
+Conv dt: 0.2
+---------------------------------
+----Snapshot----
+Description: eggs
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 2
+Convolution Radius: 8
+Alpha: 2.747
+Sigma: 0.011
+Mu: 0.013
+Ring Peak (m): 0.501
+Ring Spread (s): 0.123
+Conv dt: 0.123
+---------------------------------
+----Snapshot----
+Description: tree rings
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 4
+Convolution Radius: 8
+Alpha: 4.15
+Sigma: 0.06
+Mu: 0.099
+Ring Peak (m): 0.342
+Ring Spread (s): 0.123
+Conv dt: 0.2
+---------------------------------
