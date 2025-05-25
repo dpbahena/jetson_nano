@@ -16,7 +16,27 @@
 #include <vector>
 #include <string>
 
+enum KernelMode {
+    kSHELL   = 0,
+    kBELL    = 1,
+    kPOLY    = 2,
+    kGAUSS   = 3,
+    kFLAT    = 4,
 
+};
+enum GrowthMode {
+    gGAUSSIAN    = 0,
+    gGAUSS_SHARP = 1,
+    gQUAD4       = 2,
+    gTRIANGLE    = 3,
+    gSTEP        = 4,
+    gRELU        = 5,
+    gMEX_HAT     = 6,
+    gINV_QUAD    = 7,
+    gCOSINE      = 8,
+    gSMOOTH_STEP = 9,
+    gSINC        = 10
+};
 
 struct Settings {
     int numberOfParticles;
@@ -29,11 +49,13 @@ struct Settings {
     float m;
     float s;
     float conv_dt;
+    GrowthMode gMode;
+    KernelMode kMode;
     
 
     bool operator!=(const Settings& other) const {
-        return std::tie(numberOfParticles, particleRadius, spacing, convRadius, alpha, sigma, mu, m, s, conv_dt) !=
-               std::tie(other.numberOfParticles, other.particleRadius, other.spacing, other.convRadius, other.alpha, other.sigma,other.mu, other.m, other.s, other.conv_dt);
+        return std::tie(numberOfParticles, particleRadius, spacing, convRadius, alpha, sigma, mu, m, s, conv_dt, gMode, kMode) !=
+               std::tie(other.numberOfParticles, other.particleRadius, other.spacing, other.convRadius, other.alpha, other.sigma,other.mu, other.m, other.s, other.conv_dt, other.gMode, other.kMode);
     }
 };
 
@@ -98,9 +120,15 @@ class CUDAHandler {
       
         int kernelSize;  //  diameter of circular kernel
         void initLenia();
-        std::vector<float> generateCircularShellKernel(int radius, float alpha=4.0f);
+        std::vector<float> generateCircularShellKernel(int radius, float alpha);
         std::vector<float> generateCircularBellKernel(int radius, float m, float s);
+        std::vector<float> generateCircularPolyShellKernel(int radius, float alpha);
+        std::vector<float> generateCircularGaussianKernel(int radius, float sigma);
+        std::vector<float> generateCircularFlatDiskKernel(int radius);
+        KernelMode kMode = kBELL;
+        GrowthMode gMode = gGAUSSIAN;
         
+
 
     private:
         // Cuda kernel configuration variables

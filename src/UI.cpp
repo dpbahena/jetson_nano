@@ -78,37 +78,47 @@ void SimulationUI::render(CUDAHandler &sim)
         #endif
         if (ImGui::IsItemHovered())
         ImGui::SetTooltip("Convolution Radius");
+        float alphaStep = 0.001f;
         ImGui::SliderFloat("Alpha", &sim.alpha, 2.0f, 6.0f);
+        ImGui::SameLine();
+        if (ImGui::Button("-##alpha")) {
+            sim.alpha -= alphaStep;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("+##alpha")) {
+            sim.alpha += alphaStep;
+        }
         ImGui::Separator();
         float step = .001f;
-        float step2 = .0001f;
+        // float step2 = .0001f;
         
-        ImGui::SliderFloat("S", &sim.sigma, .01f, 0.08f);
+        ImGui::SliderFloat("S", &sim.sigma, .000f, 0.100f);
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Sigma");
-        
+        ImGui::SameLine();
         // Fine-tune buttons for sigma
         if (ImGui::Button("-##sigma1")) {
             sim.sigma -= step;
         }
         ImGui::SameLine();
+        ImGui::SameLine();
         if (ImGui::Button("+##sigma1")) {
             sim.sigma += step;
         }
-        ImGui::SameLine();
-        if (ImGui::Button("-##sigma2")) {
-            sim.sigma -= step2;
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("+##sigma2")) {
-            sim.sigma += step2;
-        }
+        // ImGui::SameLine();
+        // if (ImGui::Button("-##sigma2")) {
+        //     sim.sigma -= step2;
+        // }
+        // ImGui::SameLine();
+        // if (ImGui::Button("+##sigma2")) {
+        //     sim.sigma += step2;
+        // }
         
         float muStep = .001f;
-        float muStep2 = .0001f;
+        // float muStep2 = .0001f;
         
         ImGui::SliderFloat("mu", &sim.mu, .014f, 0.28f);
-        
+        ImGui::SameLine();
         // Fine-tune buttons for mu
         if (ImGui::Button("-##mu1")) {
             sim.mu -= muStep;
@@ -117,18 +127,27 @@ void SimulationUI::render(CUDAHandler &sim)
         if (ImGui::Button("+##mu1")) {
             sim.mu += muStep;
         }
-        ImGui::SameLine();
-        if (ImGui::Button("-##mu2")) {
-            sim.mu -= muStep2;
-        }
-        ImGui::SameLine();
-        if (ImGui::Button("+##mu2")) {
-            sim.mu += muStep2;
-        }
+        // ImGui::SameLine();
+        // if (ImGui::Button("-##mu2")) {
+        //     sim.mu -= muStep2;
+        // }
+        // ImGui::SameLine();
+        // if (ImGui::Button("+##mu2")) {
+        //     sim.mu += muStep2;
+        // }
         
         ImGui::SliderFloat("Pick of Ring", &sim.m, .01f, 0.9f);
         ImGui::SliderFloat("Thickness/Ring Spread", &sim.s, .01f, 0.21f);
-        ImGui::SliderFloat("DT", &sim.conv_dt, 0.001, 0.15);
+        float dtStep = 0.001f;
+        ImGui::SliderFloat("DT", &sim.conv_dt, 0.001, 0.200);
+        ImGui::SameLine();
+        if (ImGui::Button("-##dt")) {
+            sim.conv_dt -= dtStep;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("+##dt")) {
+            sim.conv_dt += dtStep;
+        }
         ImGui::PopItemWidth();
         ImGui::Separator();
         ImGui::InputText("Description", descriptionBuffer, IM_ARRAYSIZE(descriptionBuffer));
@@ -641,7 +660,7 @@ void SimulationUI::loadSnapshotsFromFile(const std::string &filename)
             current.conv_dt = std::stof(line.substr(9));
         else if (line.find("---------------------------------") == 0) {
             savedSnapshots.push_back(current);
-            std::cout << "Loaded snapshot: " << current.description << "\n";
+            // std::cout << "Loaded snapshot: " << current.description << "\n";
 
         }
 

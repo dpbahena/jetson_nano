@@ -129,34 +129,19 @@ __global__ void thresholdAndCommit_kernel(Particle* g,
     g[i].color = colors[idx];
 }
 
-// __device__ float growthMapping(float u, float mu, float sigma) {
-//     return 2.0f * expf(-powf((u - mu), 2) / (2.0f * sigma * sigma)) - 1.0f;
-// }
-__device__ float myGrowthMapping(float u, float mu, float sigma) {
-    float z = ((u - mu) * (u - mu)) / ( 2 * sigma * sigma);
-    return 2 * expf(-z) - 1.0f;
-}
-__device__ float growthMapping(float u, float mu, float sigma) {
+__device__ float growth_gaussian(float u, float mu, float sigma) {
     float z = (u - mu) / sigma;
-    return expf(-0.5f * z * z) * 2.0f - 1.0f;
+    return 2.0f * expf(-0.5f * z * z) - 1.0f;
 }
-__device__ float growthMappingquad4(float u, float mu, float sigma) {
-    float x = 1.0f - ((u - mu) * (u - mu)) / (9.0f * sigma * sigma);
-    x = max(0.0f, x);
-    return std::pow(x, 4) * 2.0f - 1.0f;
+__device__ float growth_gaussian_sharp(float u, float mu, float sigma) {
+    float z = (u - mu) / sigma;
+    return 2.0f * expf(-4.5f * z * z) - 1.0f;
 }
-
 __device__ float growth_quad4(float u, float mu, float sigma) {
     float x = 1.0f - ((u - mu) * (u - mu)) / (9.0f * sigma * sigma);
     x = fmaxf(0.0f, x);
-    return powf(x, 4) * 2.0f - 1.0f;
+    return powf(x, 4.0f) * 2.0f - 1.0f;
 }
-__device__ float growth_gaussian(float u, float mu, float sigma) {
-    float x = (u - mu) / sigma;
-    return 2.0f * expf(-x * x * 4.5f) - 1.0f;
-}
-
-
 __device__ float growth_triangle(float u, float mu, float sigma) {
     float dist = fabsf(u - mu);
     float x = 1.0f - dist / (1.5f * sigma);
@@ -169,10 +154,41 @@ __device__ float growth_relu(float u, float mu, float sigma) {
     float x = 1.0f - fabsf(u - mu) / sigma;
     return fmaxf(0.0f, x) * 2.0f - 1.0f;
 }
-__device__ 
-float growth2(float u, float mu, float sigma) {
-    return 2.0f * powf(fmaxf(0.0f, 1.0f - ((u - mu)*(u - mu)) / (9.0f * sigma * sigma)), 4.0f) - 1.0f;
+__device__ float growth_mexican_hat(float u, float mu, float sigma) {
+    float z = (u - mu) / sigma;
+    float z2 = z * z;
+    return (1.0f - z2) * expf(-0.5f * z2) * 2.0f;
 }
+__device__ float growth_inverse_quadratic(float u, float mu, float sigma) {
+    float z = (u - mu) / sigma;
+    return 2.0f / (1.0f + z * z) - 1.0f;
+}
+__device__ float growth_cosine(float u, float mu, float sigma) {
+    float d = fabsf(u - mu);
+    if (d > sigma) return -1.0f;
+    float x = d / sigma;
+    return cosf(x * M_PI) * 0.5f + 0.5f * 2.0f - 1.0f; // Normalized to [-1, 1]
+}
+__device__ float growth_smoothstep(float u, float mu, float sigma) {
+    float x = fabsf(u - mu) / sigma;
+    if (x >= 1.0f) return -1.0f;
+    float s = x * x * (3.0f - 2.0f * x);
+    return (1.0f - s) * 2.0f - 1.0f;
+}
+__device__ float growth_sinc(float u, float mu, float sigma) {
+    float x = (u - mu) / sigma;
+    if (x == 0.0f) return 1.0f;
+    float val = sinf(M_PI * x) / (M_PI * x);
+    return val * 2.0f - 1.0f;
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -301,7 +317,7 @@ __global__ void activate_LeniaGoL_convolution_kernel(
 
     // float u = (weightSum > 0.0f) ? (neighborSum / weightSum) : 0.0f;
     float u = neighborSum;
-    float growth = growthMapping(u, mu, sigma);
+    float growth = growth_gaussian(u, mu, sigma);
     float e = fminf(1.0f, fmaxf(0.0f, particles[i].energy + dt * growth));
     // TEMP: Visualize normalized excitation and growth directly
     uchar4 debugColor;
@@ -328,7 +344,8 @@ __global__ void activate_LeniaGoL_convolution_kernel(
     float mu,
     float dt,
     float* debugU,
-    float* debugGrowth 
+    float* debugGrowth,
+    GrowthMode gMode 
 ) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= totalParticles) return;
@@ -355,16 +372,48 @@ __global__ void activate_LeniaGoL_convolution_kernel(
     }
 
     float u = (weightSum > 0.0f) ? (neighborSum / weightSum) : 0.0f;
-
-    // float growth = myGrowthMapping(u, mu, sigma);
-    // float growth = growth2(u, mu, sigma);
+    float growth;
+    switch (gMode) {
+        case gGAUSSIAN:
+            growth = growth_gaussian(u, mu, sigma);
+            break;
+        case gGAUSS_SHARP:
+            growth = growth_gaussian_sharp(u, mu, sigma);
+            break;
+        case gQUAD4:
+            growth = growth_quad4(u, mu, sigma);
+            break;
+        case gTRIANGLE:
+            growth = growth_triangle(u, mu, sigma);
+            break;
+        case gSTEP:
+            growth = growth_step(u, mu, sigma);
+            break;
+        case gRELU: 
+            growth = growth_relu(u, mu, sigma);
+            break;
+        case gMEX_HAT:
+            growth = growth_mexican_hat(u, mu, sigma);
+            break;
+        case gINV_QUAD:
+            growth = growth_inverse_quadratic(u, mu, sigma);
+            break;
+        case gCOSINE:
+            growth = growth_cosine(u, mu, sigma);
+            break;
+        case gSMOOTH_STEP:
+            growth = growth_smoothstep(u, mu, sigma);
+            break;
+        case gSINC:
+            growth = growth_sinc(u, mu, sigma);
+            break;
+        default:
+            break;
+    }
     
-    float growth = growthMappingquad4(u, mu, sigma);
-    // float growth = growth_triangle(u, mu, sigma);
-    // float growth = growth_gaussian(u, mu, sigma);
-    // float growth = growth_relu(u, mu, sigma);
-    // float growth = growth_step(u, mu, sigma);
     float e = fminf(1.0f, fmaxf(0.0f, particles[i].energy + dt * growth));
+
+
     // TEMP: Visualize normalized excitation and growth directly
     // uchar4 debugColor;
     // debugColor.x = (unsigned char)(255.0f * fminf(fmaxf(u, 0.0f), 1.0f));        // Red = excitation u
@@ -505,66 +554,123 @@ __global__ void drawTriangle_kernel(cudaSurfaceObject_t surface, int width, int 
 
 
 // ────────────────────────────────
-//  Chan-Lenia “shell” kernel
-//  (build once on the host)
+//  1. Chan-Lenia “shell” kernel
+//  This kernel has a ring shape. It peaks midway and drops to zero at center and edge
 // ────────────────────────────────
-std::vector<float> CUDAHandler::generateCircularShellKernel(int radius, float alpha /* ≈4 */)
-{
-    int  diameter = 2 * radius + 1;
-    std::vector<float> kernel(diameter * diameter, 0.0f);
-
-    float sum = 0.0f;
-    for (int y = -radius; y <= radius; ++y)
-        for (int x = -radius; x <= radius; ++x)
-        {
-            float dist = std::sqrt(float(x*x + y*y));     // Euclidean distance
-            if (dist > radius) continue;                  // outside the circle
-
-            float r = dist / radius;                      // normalise to [0,1]
-            float value = std::exp(alpha - alpha / (4.0f * r * (1.0f - r)));
-            // ────────────────▲  shell(r, alpha)
-            // float value = std::exp(-(r * r) / (2.0f * alpha * alpha));
-            // float value = std::exp(alpha - (alpha/(4 * r * (1 - r))));
-            // float value = std::pow(4 * r * (1 - r), alpha);
-            // float value = std::exp(alpha -1.0f / (2.0f * r * r));
-
-            kernel[(y + radius) * diameter + (x + radius)] = value;
-            sum += value;
-        }
-
-    // normalise so ΣK = 1 (preserves total mass)
-    for (float& v : kernel) v /= sum;
-
-    return kernel;
-}
-
-std::vector<float> CUDAHandler::generateCircularBellKernel(int radius, float m, float s)
-{
+std::vector<float> CUDAHandler::generateCircularShellKernel(int radius, float alpha) {
     kernelSize = 2 * radius + 1;
     std::vector<float> kernel(kernelSize * kernelSize, 0.0f);
 
     float sum = 0.0f;
-    for (int y = -radius; y <= radius; ++y)
-    {
-        for (int x = -radius; x <= radius; ++x)
-        {
-            float dist = std::sqrt(float(x * x + y * y)); // Euclidean distance
-            if (dist > radius) continue;                 // outside the circle
+    for (int y = -radius; y <= radius; ++y) {
+        for (int x = -radius; x <= radius; ++x) {
+            float dist = std::sqrt(float(x*x + y*y));
+            if (dist > radius) continue;
 
-            float r = dist / radius;                     // normalize to [0, 1]
-
-            // --- Lenia-style bell curve ---
-            // float value = 2.0f *  std::exp(-((r - m) * (r - m)) / (2.0f * s * s)) - 1.f;
-            float value = std::exp(-((r - m) * (r - m)) / (2.0f * s * s));
-
+            float r = dist / radius;
+            float value = std::exp(alpha - alpha / (4.0f * r * (1.0f - r))); // shell
             kernel[(y + radius) * kernelSize + (x + radius)] = value;
             sum += value;
         }
     }
 
-    // normalize so that sum(kernel) = 1
     for (float& v : kernel) v /= sum;
+    return kernel;
+}
 
+// ────────────────────────────────
+//  2. Lenia’s bell curve” kernel
+//  Used for smoother, blob-like cell shapes.
+// ────────────────────────────────
+std::vector<float> CUDAHandler::generateCircularBellKernel(int radius, float m, float s) {
+    kernelSize = 2 * radius + 1;
+    std::vector<float> kernel(kernelSize * kernelSize, 0.0f);
+
+    float sum = 0.0f;
+    for (int y = -radius; y <= radius; ++y) {
+        for (int x = -radius; x <= radius; ++x) {
+            float dist = std::sqrt(float(x * x + y * y));
+            if (dist > radius) continue;
+
+            float r = dist / radius;
+            float value = std::exp(-((r - m) * (r - m)) / (2.0f * s * s)); // bell
+            kernel[(y + radius) * kernelSize + (x + radius)] = value;
+            sum += value;
+        }
+    }
+
+    for (float& v : kernel) v /= sum;
+    return kernel;
+}
+// ────────────────────────────────
+//  3. Polynomial Shell Kernel
+//  Ring-shaped, similar to Lenia shell, but polynomial instead of exponential
+// ────────────────────────────────
+std::vector<float> CUDAHandler::generateCircularPolyShellKernel(int radius, float alpha) {
+    kernelSize = 2 * radius + 1;
+    std::vector<float> kernel(kernelSize * kernelSize, 0.0f);
+    
+    float sum = 0.0f;
+    for (int y = -radius; y <= radius; ++y) {
+        for (int x = -radius; x <= radius; ++x) {
+            float dist = std::sqrt(float(x*x + y*y));
+            if (dist > radius) continue;
+
+            float r = dist / radius;
+            float value = std::pow(4.0f * r * (1.0f - r), alpha); // smoother shell
+            kernel[(y + radius) * kernelSize + (x + radius)] = value;
+            sum += value;
+        }
+    }
+
+    for (float& v : kernel) v /= sum;
+    return kernel;
+}
+// ────────────────────────────────
+//  4. Gaussian Kernel
+//  Standard smooth blob — no ring.
+// ────────────────────────────────
+std::vector<float> CUDAHandler::generateCircularGaussianKernel(int radius, float sigma) {
+    kernelSize = 2 * radius + 1;
+    std::vector<float> kernel(kernelSize * kernelSize, 0.0f);
+
+    float sum = 0.0f;
+    for (int y = -radius; y <= radius; ++y) {
+        for (int x = -radius; x <= radius; ++x) {
+            float dist = std::sqrt(float(x * x + y * y));
+            if (dist > radius) continue;
+
+            float r = dist / radius;
+            float value = std::exp(-r * r / (2.0f * sigma * sigma));
+            kernel[(y + radius) * kernelSize + (x + radius)] = value;
+            sum += value;
+        }
+    }
+
+    for (float& v : kernel) v /= sum;
+    return kernel;
+}
+
+// ────────────────────────────────
+//  5. Flat Disk Kernel
+//  Uniform influence inside radius.
+// ────────────────────────────────
+std::vector<float> CUDAHandler::generateCircularFlatDiskKernel(int radius) {
+    kernelSize = 2 * radius + 1;
+    std::vector<float> kernel(kernelSize * kernelSize, 0.0f);
+
+    float sum = 0.0f;
+    for (int y = -radius; y <= radius; ++y) {
+        for (int x = -radius; x <= radius; ++x) {
+            float dist = std::sqrt(float(x * x + y * y));
+            if (dist > radius) continue;
+
+            kernel[(y + radius) * kernelSize + (x + radius)] = 1.0f;
+            sum += 1.0f;
+        }
+    }
+
+    for (float& v : kernel) v /= sum;
     return kernel;
 }
 
@@ -590,8 +696,6 @@ CUDAHandler::~CUDAHandler()
     
 }
 
-// std::vector<float> CUDAHandler::uHistory;
-// std::vector<float> CUDAHandler::growthHistory;
 // _________________________________________________________________________//
 void CUDAHandler::updateDraw(float dt)
 {
@@ -608,9 +712,11 @@ void CUDAHandler::updateDraw(float dt)
         .mu = mu,
         .m = m,
         .s = s,
-        .conv_dt = conv_dt
-        
+        .conv_dt = conv_dt,
+        .gMode = gMode,
+        .kMode = kMode  
     };
+
     if(leniaSize == 0 || currentSettings != previousSettings) {
         
         initLenia();
@@ -621,7 +727,7 @@ void CUDAHandler::updateDraw(float dt)
 
     if(startSimulation){
         int kernelDiameter = 2 * convolutionRadius + 1;
-        activate_LeniaGoL_convolution_kernel<<<gridSize, blockSize>>>(d_leniaParticles, leniaSize, lenia->gridRows, lenia->gridCols, kernelDiameter, convolutionRadius, sigma, mu, conv_dt, d_debugU, d_debugGrowth);
+        activate_LeniaGoL_convolution_kernel<<<gridSize, blockSize>>>(d_leniaParticles, leniaSize, lenia->gridRows, lenia->gridCols, kernelDiameter, convolutionRadius, sigma, mu, conv_dt, d_debugU, d_debugGrowth, gMode);
         commitNextEnergy_kernel<<<gridSize, blockSize>>> (d_leniaParticles, leniaSize);
         // thresholdAndCommit_kernel<<<gridSize, blockSize>>> (d_leniaParticles, leniaSize, d_colors, colorPallete.size());
         checkCuda(cudaDeviceSynchronize());
@@ -750,8 +856,8 @@ void CUDAHandler::initLenia()
         lenia = nullptr;
     }
 
-    // convKernel = generateCircularShellKernel(convolutionRadius, alpha);
-    convKernel = generateCircularBellKernel(convolutionRadius, m, s);
+    convKernel = generateCircularShellKernel(convolutionRadius, alpha);
+    // convKernel = generateCircularBellKernel(convolutionRadius, m, s);
 
      
     
