@@ -152,23 +152,23 @@ void SimulationUI::render(CUDAHandler &sim)
             float mStep = 0.01;
             ImGui::SliderFloat("Peak", &sim.m, .01f, 0.9f); 
             ImGui::SameLine();
-            if (ImGui::Button("##-m")) {
+            if (ImGui::Button("-##m")) {
                 sim.m -= mStep;
             }
             ImGui::SameLine();
-            if (ImGui::Button("##+m")) {
+            if (ImGui::Button("+##m")) {
                 sim.m += mStep;
             }
         }
         if (kMode == (int)kBELL || kMode == (int)kGAUSS) {
-            float sStep = 0.01;
+            float sStep = 0.01f;
             ImGui::SliderFloat("Spread", &sim.s, .01f, 0.21f);
             ImGui::SameLine();
-            if (ImGui::Button("##-s")) {
+            if (ImGui::Button("-##s")) {
                 sim.s -= sStep;
             }
             ImGui::SameLine();
-            if (ImGui::Button("##+s")) {
+            if (ImGui::Button("+##s")) {
                 sim.s += sStep;
             }
         }
@@ -318,57 +318,77 @@ void SimulationUI::render(CUDAHandler &sim)
         // }
         if (kMode == (int)kSHELL) {
             static float shellData[100];
+            float maxVal = 0.0f;
             for (int i = 0; i < 100; ++i) {
                 float r = i / 99.0f;
                 float val = 0.0f;
-                if (r > 0.0f && r < 1.0f)
+                if (r > 0.001f && r < .999f) { // avoid dividig by zero
                     val = expf(sim.alpha - sim.alpha / (4.0f * r * (1.0f - r)));
+                    maxVal = fmax(maxVal, val);
+                }
                 shellData[i] = val;
             }
-            ImGui::PlotLines("Shell Kernel Slice", shellData, 100, 0, nullptr, 0.0f, FLT_MAX, ImVec2(0, 100));
+            // Normalize
+            for (int i = 0; i < 100; i++) shellData[i] /= maxVal > 0.0f ? maxVal : 1.0f;
+
+            ImGui::PlotLines("Shell Kernel Slice", shellData, 100, 0, nullptr, 0.0f, 1.0f, ImVec2(0, 100));
         }
 
         if (kMode == (int)kBELL) {
             static float kernelData[100];
+            float maxVal = 0.0f;
             for (int i = 0; i < 100; ++i) {
                 float r = i / 99.0f; // r in [0,1]
-                kernelData[i] = expf(-((r - sim.m) * (r - sim.m)) / (2.0f * sim.s * sim.s));
+                float val = expf(-((r - sim.m) * (r - sim.m)) / (2.0f * sim.s * sim.s + 1e-6f)); // avoid div by 0
+                kernelData[i] = val; 
+                maxVal = fmaxf(maxVal, val);
             }
+            // Normalize
+            for (int i = 0; i < 100; i++) kernelData[i] /= maxVal > 0.0f ? maxVal : 1.0f;
             ImGui::PlotLines("Bell Kernel Slice", kernelData, 100, 0, nullptr, 0.0f, 1.0f, ImVec2(0, 100));
         }
 
         if (kMode == (int) kPOLY) {
             static float polyData[100];
+            float maxVal = 0.0f;
             for (int i = 0; i < 100; ++i) {
                 float r = i / 99.0f;
                 float val = 0.0f;
-                if (r > 0.0f && r < 1.0f)
-                    val = std::pow(4.0f * r * (1.0f - r), sim.alpha); // smoother shell
+                if (r > 0.0f && r < 1.0f) {
+                    val = std::pow(4.0f * r * (1.0f - r), sim.alpha); // [0,1]^alpha
+                    maxVal = fmax(maxVal, val);
+                }
                 polyData[i] = val;
             }
-            ImGui::PlotLines("Poly Kernel Slice", polyData, 100, 0, nullptr, 0.0f, FLT_MAX, ImVec2(0, 100));
+            // Normalize
+            for (int i = 0; i < 100; i++) polyData[i] /= maxVal > 0.0f ? maxVal : 1.0f;
+            ImGui::PlotLines("Poly Kernel Slice", polyData, 100, 0, nullptr, 0.0f, 1.0f, ImVec2(0, 100));
         }
         if (kMode == (int)kGAUSS) {
             static float gaussData[100];
+            float maxVal = 0.0f;
             for (int i = 0; i < 100; ++i) {
                 float r = i / 99.0f;
                 float val = 0.0f;
-                if (r > 0.0f && r < 1.0f)
-                    val = std::exp(-r * r / (2.0f * sim.s * sim.s));
+                if (r > 0.0f && r < 1.0f) {
+                    val = std::exp(-r * r / (2.0f * sim.s * sim.s + 1e-6f)); // centered at 0
+                    maxVal = fmax(maxVal, val);
+                }
                 gaussData[i] = val;
             }
-            ImGui::PlotLines("Gaussean Kernel Slice", gaussData, 100, 0, nullptr, 0.0f, FLT_MAX, ImVec2(0, 100));
+            // Normalize
+            for (int i = 0; i < 100; i++) gaussData[i] /= maxVal > 0.0f ? maxVal : 1.0f;
+            ImGui::PlotLines("Gaussean Kernel Slice", gaussData, 100, 0, nullptr, 0.0f, 1.0f, ImVec2(0, 100));
         }
         if (kMode == (int)kFLAT) {
             static float flatData[100];
             for (int i = 0; i < 100; ++i) {
                 float r = i / 99.0f;
                 float val = 0.0f;
-                if (r > 0.0f && r < 1.0f)
-                    val = 1.0f;
-                flatData[i] = val;
+                
+                flatData[i] = (r >= 0.0f && r <= 1.0f) ? 1.0f : 0.0f;  // strict flat disk
             }
-            ImGui::PlotLines("Flat Disk Kernel Slice", flatData, 100, 0, nullptr, 0.0f, FLT_MAX, ImVec2(0, 100));
+            ImGui::PlotLines("Flat Disk Kernel Slice", flatData, 100, 0, nullptr, 0.0f, 1.0f, ImVec2(0, 100));
         }
 
         // draw actual kernel

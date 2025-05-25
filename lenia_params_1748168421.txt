@@ -1,0 +1,26 @@
+----Snapshot----
+Description: Bubbles
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 5
+Convolution Radius: 9
+Alpha: 6
+Sigma: 0.005
+Mu: 0.014
+Ring Peak (m): 0.448
+Ring Spread (s): 0.21
+Conv dt: 0.038
+---------------------------------
+----Snapshot----
+Description: bubbles 2
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 5
+Convolution Radius: 9
+Alpha: 6
+Sigma: 0.005
+Mu: 0.015
+Ring Peak (m): 0.448
+Ring Spread (s): 0.21
+Conv dt: 0.038
+---------------------------------
