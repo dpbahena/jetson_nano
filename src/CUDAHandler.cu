@@ -169,6 +169,10 @@ __device__ float growth_relu(float u, float mu, float sigma) {
     float x = 1.0f - fabsf(u - mu) / sigma;
     return fmaxf(0.0f, x) * 2.0f - 1.0f;
 }
+__device__ 
+float growth2(float u, float mu, float sigma) {
+    return 2.0f * powf(fmaxf(0.0f, 1.0f - ((u - mu)*(u - mu)) / (9.0f * sigma * sigma)), 4.0f) - 1.0f;
+}
 
 
 
@@ -352,9 +356,10 @@ __global__ void activate_LeniaGoL_convolution_kernel(
 
     float u = (weightSum > 0.0f) ? (neighborSum / weightSum) : 0.0f;
 
-    float growth = myGrowthMapping(u, mu, sigma);
+    // float growth = myGrowthMapping(u, mu, sigma);
+    // float growth = growth2(u, mu, sigma);
     
-    // float growth = growthMappingquad4(u, mu, sigma);
+    float growth = growthMappingquad4(u, mu, sigma);
     // float growth = growth_triangle(u, mu, sigma);
     // float growth = growth_gaussian(u, mu, sigma);
     // float growth = growth_relu(u, mu, sigma);
@@ -618,7 +623,7 @@ void CUDAHandler::updateDraw(float dt)
         int kernelDiameter = 2 * convolutionRadius + 1;
         activate_LeniaGoL_convolution_kernel<<<gridSize, blockSize>>>(d_leniaParticles, leniaSize, lenia->gridRows, lenia->gridCols, kernelDiameter, convolutionRadius, sigma, mu, conv_dt, d_debugU, d_debugGrowth);
         commitNextEnergy_kernel<<<gridSize, blockSize>>> (d_leniaParticles, leniaSize);
-        thresholdAndCommit_kernel<<<gridSize, blockSize>>> (d_leniaParticles, leniaSize, d_colors, colorPallete.size());
+        // thresholdAndCommit_kernel<<<gridSize, blockSize>>> (d_leniaParticles, leniaSize, d_colors, colorPallete.size());
         checkCuda(cudaDeviceSynchronize());
         checkCuda(cudaMemcpy(&debugU_host, d_debugU, sizeof(float), cudaMemcpyDeviceToHost));
         checkCuda(cudaMemcpy(&debugGrowth_host, d_debugGrowth, sizeof(float), cudaMemcpyDeviceToHost));
