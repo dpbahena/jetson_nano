@@ -1,0 +1,84 @@
+----Snapshot----
+Description: more rings
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 5
+Convolution Radius: 23
+Alpha: 2.747
+Sigma: 0.013
+Mu: 0.006
+Ring Peak (m): 0.441
+Ring Spread (s): 0.153
+Conv dt: 0.155
+k: 1
+---------------------------------
+----Snapshot----
+Description: cells not moving
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 10
+Convolution Radius: 23
+Alpha: 2.747
+Sigma: 0.013
+Mu: 0.006
+Ring Peak (m): 0.441
+Ring Spread (s): 0.153
+Conv dt: 0.156
+k: 1
+---------------------------------
+----Snapshot----
+Description: cells more
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 10
+Convolution Radius: 23
+Alpha: 2.747
+Sigma: 0.013
+Mu: 0.006
+Ring Peak (m): 0.441
+Ring Spread (s): 0.153
+Conv dt: 0.154
+k: 1
+---------------------------------
+----Snapshot----
+Description: cells 3
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 10
+Convolution Radius: 23
+Alpha: 2.747
+Sigma: 0.013
+Mu: 0.006
+Ring Peak (m): 0.441
+Ring Spread (s): 0.153
+Conv dt: 0.151
+k: 1
+---------------------------------
+----Snapshot----
+Description: beanst created..just wait
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 10
+Convolution Radius: 23
+Alpha: 2.747
+Sigma: 0.013
+Mu: 0.006
+Ring Peak (m): 0.441
+Ring Spread (s): 0.153
+Conv dt: 0.151
+k: 1.003
+---------------------------------
+----Snapshot----
+Description: cells misbehaving
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 10
+Convolution Radius: 23
+Alpha: 3.854
+Sigma: 0.01
+Mu: 0.006
+Ring Peak (m): 0.441
+Ring Spread (s): 0.153
+Conv dt: 0.147
+k: 1.002
+---------------------------------

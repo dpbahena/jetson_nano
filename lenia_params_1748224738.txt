@@ -1,0 +1,28 @@
+----Snapshot----
+Description: remolino
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 3
+Convolution Radius: 30
+Alpha: 1.045
+Sigma: 0.689
+Mu: 0.379
+Ring Peak (m): 1.043
+Ring Spread (s): 0.31
+Conv dt: 0.266
+k: 1.003
+---------------------------------
+----Snapshot----
+Description: remolino 2
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 3
+Convolution Radius: 30
+Alpha: 1.045
+Sigma: 1.003
+Mu: 0.428
+Ring Peak (m): 1.043
+Ring Spread (s): 0.31
+Conv dt: 0.266
+k: 1.003
+---------------------------------

@@ -1,0 +1,42 @@
+----Snapshot----
+Description: lenia
+Particles: 326591
+Convolution Kernel: 4
+Growth Mapping: 10
+Convolution Radius: 20
+Alpha: 5.91
+Sigma: 0.039
+Mu: 0.014
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.094
+k: 0.983
+---------------------------------
+----Snapshot----
+Description: snake
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 5
+Convolution Radius: 20
+Alpha: 5.91
+Sigma: 0.039
+Mu: 0.014
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.094
+k: 0.983
+---------------------------------
+----Snapshot----
+Description: snake2
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 5
+Convolution Radius: 20
+Alpha: 5.91
+Sigma: 0.039
+Mu: 0.014
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.094
+k: 0.982
+---------------------------------

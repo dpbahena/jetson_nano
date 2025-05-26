@@ -1,0 +1,169 @@
+----Snapshot----
+Description: snake
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 10
+Convolution Radius: 20
+Alpha: 5.91
+Sigma: 0.039
+Mu: 0.014
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.088
+---------------------------------
+----Snapshot----
+Description: lenia1
+Particles: 326591
+Convolution Kernel: 0
+Growth Mapping: 10
+Convolution Radius: 20
+Alpha: 5.91
+Sigma: 0.039
+Mu: 0.014
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.092
+---------------------------------
+----Snapshot----
+Description: lenia2
+Particles: 326591
+Convolution Kernel: 0
+Growth Mapping: 10
+Convolution Radius: 20
+Alpha: 5.91
+Sigma: 0.039
+Mu: 0.013
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.092
+---------------------------------
+----Snapshot----
+Description: lenia3
+Particles: 326591
+Convolution Kernel: 0
+Growth Mapping: 10
+Convolution Radius: 20
+Alpha: 5.91
+Sigma: 0.043
+Mu: 0.015
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.095
+---------------------------------
+----Snapshot----
+Description: lenia growth
+Particles: 326591
+Convolution Kernel: 0
+Growth Mapping: 10
+Convolution Radius: 20
+Alpha: 5.91
+Sigma: 0.043
+Mu: 0.014
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.199
+---------------------------------
+----Snapshot----
+Description: steady
+Particles: 326591
+Convolution Kernel: 0
+Growth Mapping: 10
+Convolution Radius: 20
+Alpha: 5.91
+Sigma: 0.043
+Mu: 0.015
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.199
+---------------------------------
+----Snapshot----
+Description: expanding
+Particles: 326591
+Convolution Kernel: 0
+Growth Mapping: 10
+Convolution Radius: 20
+Alpha: 5.91
+Sigma: 0.043
+Mu: 0.013
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.199
+---------------------------------
+----Snapshot----
+Description: expand2
+Particles: 326591
+Convolution Kernel: 0
+Growth Mapping: 10
+Convolution Radius: 20
+Alpha: 5.905
+Sigma: 0.043
+Mu: 0.013
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.199
+---------------------------------
+----Snapshot----
+Description: mosaic
+Particles: 515038
+Convolution Kernel: 1
+Growth Mapping: 6
+Convolution Radius: 20
+Alpha: 5.791
+Sigma: 0.041
+Mu: 0.01
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.175
+---------------------------------
+----Snapshot----
+Description: pebbles
+Particles: 515038
+Convolution Kernel: 1
+Growth Mapping: 6
+Convolution Radius: 20
+Alpha: 5.791
+Sigma: 0.034
+Mu: 0.04
+Ring Peak (m): 0.057
+Ring Spread (s): 0.123
+Conv dt: 0.181
+---------------------------------
+----Snapshot----
+Description: weird
+Particles: 1351743
+Convolution Kernel: 0
+Growth Mapping: 6
+Convolution Radius: 20
+Alpha: 3.695
+Sigma: 0.01
+Mu: 0.04
+Ring Peak (m): 0.057
+Ring Spread (s): 0.123
+Conv dt: 0.186
+---------------------------------
+----Snapshot----
+Description: 
+Particles: 1351743
+Convolution Kernel: 0
+Growth Mapping: 6
+Convolution Radius: 20
+Alpha: 3.687
+Sigma: 0.009
+Mu: 0.039
+Ring Peak (m): 0.057
+Ring Spread (s): 0.123
+Conv dt: 0.191
+---------------------------------
+----Snapshot----
+Description: weird2
+Particles: 1351743
+Convolution Kernel: 0
+Growth Mapping: 6
+Convolution Radius: 20
+Alpha: 3.687
+Sigma: 0.009
+Mu: 0.039
+Ring Peak (m): 0.057
+Ring Spread (s): 0.123
+Conv dt: 0.191
+---------------------------------

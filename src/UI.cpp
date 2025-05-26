@@ -93,13 +93,13 @@ void SimulationUI::render(CUDAHandler &sim)
         #if defined(__aarch64__) || defined(USE_X11_MONITORS)
             ImGui::SliderInt("R", &sim.convolutionRadius, 1, 12);    
         #else
-            ImGui::SliderInt("R", &sim.convolutionRadius, 1, 20);
+            ImGui::SliderInt("R", &sim.convolutionRadius, 1, 30);
         #endif
         if (ImGui::IsItemHovered())
         ImGui::SetTooltip("Convolution Radius");
         if (kMode == (int)kSHELL || kMode == (int)kPOLY) {
             float alphaStep = 0.001f;
-            ImGui::SliderFloat("Alpha", &sim.alpha, 2.0f, 6.0f);
+            ImGui::SliderFloat("Alpha", &sim.alpha, 0.0f, 12.0f);
             ImGui::SameLine();
             if (ImGui::Button("-##alpha")) {
                 sim.alpha -= alphaStep;
@@ -113,7 +113,7 @@ void SimulationUI::render(CUDAHandler &sim)
         float step = .001f;
         // float step2 = .0001f;
         
-        ImGui::SliderFloat("S", &sim.sigma, .000f, 0.100f);
+        ImGui::SliderFloat("S", &sim.sigma, .000f, 2.100f);
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Sigma");
         ImGui::SameLine();
@@ -138,7 +138,7 @@ void SimulationUI::render(CUDAHandler &sim)
         float muStep = .001f;
         
         
-        ImGui::SliderFloat("mu", &sim.mu, .014f, 0.28f);
+        ImGui::SliderFloat("mu", &sim.mu, .01f, 0.48f);
         ImGui::SameLine();
         // Fine-tune buttons for mu
         if (ImGui::Button("-##mu1")) {
@@ -150,7 +150,7 @@ void SimulationUI::render(CUDAHandler &sim)
         }
         if (kMode == (int)kBELL) {
             float mStep = 0.01;
-            ImGui::SliderFloat("Peak", &sim.m, .01f, 0.9f); 
+            ImGui::SliderFloat("Peak", &sim.m, .01f, 2.9f); 
             ImGui::SameLine();
             if (ImGui::Button("-##m")) {
                 sim.m -= mStep;
@@ -162,7 +162,7 @@ void SimulationUI::render(CUDAHandler &sim)
         }
         if (kMode == (int)kBELL || kMode == (int)kGAUSS) {
             float sStep = 0.01f;
-            ImGui::SliderFloat("Spread", &sim.s, .01f, 0.21f);
+            ImGui::SliderFloat("Spread", &sim.s, .01f, 0.31f);
             ImGui::SameLine();
             if (ImGui::Button("-##s")) {
                 sim.s -= sStep;
@@ -174,7 +174,7 @@ void SimulationUI::render(CUDAHandler &sim)
         }
 
         float dtStep = 0.001f;
-        ImGui::SliderFloat("DT", &sim.conv_dt, 0.001, 0.200);
+        ImGui::SliderFloat("DT", &sim.conv_dt, 0.001, 0.300);
         ImGui::SameLine();
         if (ImGui::Button("-##dt")) {
             sim.conv_dt -= dtStep;
@@ -182,6 +182,17 @@ void SimulationUI::render(CUDAHandler &sim)
         ImGui::SameLine();
         if (ImGui::Button("+##dt")) {
             sim.conv_dt += dtStep;
+        }
+
+        float kStep = 0.001f;
+        ImGui::SliderFloat("K", &sim.k, 0.001, 1.0);
+        ImGui::SameLine();
+        if (ImGui::Button("-##k")) {
+            sim.k -= kStep;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("+##k")) {
+            sim.k += kStep;
         }
         ImGui::PopItemWidth();
         ImGui::Separator();
@@ -205,6 +216,7 @@ void SimulationUI::render(CUDAHandler &sim)
                 paramLogFile << "Ring Peak (m): " << sim.m << "\n";
                 paramLogFile << "Ring Spread (s): " << sim.s << "\n";
                 paramLogFile << "Conv dt: " << sim.conv_dt << "\n";
+                paramLogFile << "k: " << sim.k << "\n";
                 paramLogFile << "---------------------------------\n";
             }
             descriptionBuffer[0] = '\0';  // clear text
@@ -245,6 +257,7 @@ void SimulationUI::render(CUDAHandler &sim)
                 sim.m = snap.m;
                 sim.s = snap.s;
                 sim.conv_dt = snap.conv_dt;
+                sim.k = snap.k;
 
                 sim.initLenia();  // reinitialize with new values;
             }
@@ -758,6 +771,8 @@ void SimulationUI::loadSnapshotsFromFile(const std::string &filename)
             current.s = std::stof(line.substr(17));
         else if (line.find("Conv dt:") == 0)
             current.conv_dt = std::stof(line.substr(9));
+        else if (line.find("k:") == 0)
+            current.k = std::stof(line.substr(2));
         else if (line.find("---------------------------------") == 0) {
             savedSnapshots.push_back(current);
             // std::cout << "Loaded snapshot: " << current.description << "\n";

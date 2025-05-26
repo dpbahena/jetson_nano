@@ -1,0 +1,39 @@
+----Snapshot----
+Description: 
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 0
+Convolution Radius: 8
+Alpha: 4
+Sigma: 0.03
+Mu: 0.15
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.05
+---------------------------------
+----Snapshot----
+Description: 
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 0
+Convolution Radius: 8
+Alpha: 4
+Sigma: 0.03
+Mu: 0.15
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.05
+---------------------------------
+----Snapshot----
+Description: moving blobs
+Particles: 1351743
+Convolution Kernel: 0
+Growth Mapping: 6
+Convolution Radius: 30
+Alpha: 3.685
+Sigma: 0.006
+Mu: 0.038
+Ring Peak (m): 0.057
+Ring Spread (s): 0.123
+Conv dt: 0.201
+---------------------------------

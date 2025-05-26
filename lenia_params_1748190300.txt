@@ -1,0 +1,78 @@
+----Snapshot----
+Description: beans separate
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 10
+Convolution Radius: 10
+Alpha: 4.15
+Sigma: 0.008
+Mu: 0.036
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.073
+---------------------------------
+----Snapshot----
+Description: more beans
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 7
+Convolution Radius: 5
+Alpha: 4.15
+Sigma: 0.009
+Mu: 0.058
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.2
+---------------------------------
+----Snapshot----
+Description: s
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 3
+Convolution Radius: 5
+Alpha: 4.15
+Sigma: 0.035
+Mu: 0.073
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.102
+---------------------------------
+----Snapshot----
+Description: 
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 3
+Convolution Radius: 5
+Alpha: 4.15
+Sigma: 0.035
+Mu: 0.073
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.102
+---------------------------------
+----Snapshot----
+Description: skin
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 3
+Convolution Radius: 5
+Alpha: 4.15
+Sigma: 0.035
+Mu: 0.073
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.102
+---------------------------------
+----Snapshot----
+Description: skin2
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 3
+Convolution Radius: 9
+Alpha: 4.15
+Sigma: 0.035
+Mu: 0.073
+Ring Peak (m): 0.342
+Ring Spread (s): 0.12
+Conv dt: 0.059
+---------------------------------

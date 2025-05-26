@@ -1,0 +1,13 @@
+----Snapshot----
+Description: laberint
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 0
+Convolution Radius: 12
+Alpha: 8.657
+Sigma: 0.484
+Mu: 0.01
+Ring Peak (m): 1.043
+Ring Spread (s): 0.31
+Conv dt: 0.251
+---------------------------------

@@ -2,7 +2,7 @@
 #include <algorithm>
 
 
-constexpr int MAX_RADIUS = 20;                    // change to suit your max
+constexpr int MAX_RADIUS = 30;                    // change to suit your max
 constexpr int MAX_K      = (2*MAX_RADIUS+1)*(2*MAX_RADIUS+1);
 
 __constant__ float d_kernelConst[MAX_K];          // <── NOT a pointer
@@ -274,9 +274,9 @@ __global__ void drawLeniaSquareParticles(cudaSurfaceObject_t surface, Particle* 
     int halfSize = max((int)(radius), 1);
 
     // uchar4 color = makeColorFromEnergy(p.energy);
-    uchar4 color = turboColorMapU(p.energy);
-    // drawFilledSquare(surface, x0, y0, halfSize, p.color, width, height);
-    drawFilledSquare(surface, x0, y0, halfSize, color, width, height);
+    // uchar4 color = turboColorMapU(p.energy);
+    drawFilledSquare(surface, x0, y0, halfSize, p.color, width, height);
+    // drawFilledSquare(surface, x0, y0, halfSize, color, width, height);
 
 }
 
@@ -345,7 +345,8 @@ __global__ void activate_LeniaGoL_convolution_kernel(
     float dt,
     float* debugU,
     float* debugGrowth,
-    GrowthMode gMode 
+    GrowthMode gMode, 
+    float k
 ) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= totalParticles) return;
@@ -411,6 +412,7 @@ __global__ void activate_LeniaGoL_convolution_kernel(
             break;
     }
     
+    // float e = fminf(1.0f, fmaxf(0.0f, particles[i].energy + dt * growth <= 0.0f ? 0.99f: growth));
     float e = fminf(1.0f, fmaxf(0.0f, particles[i].energy + dt * growth));
 
 
@@ -423,7 +425,7 @@ __global__ void activate_LeniaGoL_convolution_kernel(
 
     // particles[i].color = debugColor;
 
-    particles[i].nextEnergy = e;
+    particles[i].nextEnergy = e * k;
     // if (i == 0) {
     //     // Store a sample (first thread only — for simplicity)
     //     debugU[0] = u;
@@ -714,7 +716,8 @@ void CUDAHandler::updateDraw(float dt)
         .s = s,
         .conv_dt = conv_dt,
         .gMode = gMode,
-        .kMode = kMode  
+        .kMode = kMode,
+        .k = k
     };
 
     if(leniaSize == 0 || currentSettings != previousSettings) {
@@ -727,9 +730,11 @@ void CUDAHandler::updateDraw(float dt)
 
     if(startSimulation){
         int kernelDiameter = 2 * convolutionRadius + 1;
-        activate_LeniaGoL_convolution_kernel<<<gridSize, blockSize>>>(d_leniaParticles, leniaSize, lenia->gridRows, lenia->gridCols, kernelDiameter, convolutionRadius, sigma, mu, conv_dt, d_debugU, d_debugGrowth, gMode);
+        activate_LeniaGoL_convolution_kernel<<<gridSize, blockSize>>>(d_leniaParticles, leniaSize, lenia->gridRows, lenia->gridCols, kernelDiameter, convolutionRadius, sigma, mu, conv_dt, d_debugU, d_debugGrowth, gMode, k);
+        checkCuda(cudaDeviceSynchronize());
         commitNextEnergy_kernel<<<gridSize, blockSize>>> (d_leniaParticles, leniaSize);
-        // thresholdAndCommit_kernel<<<gridSize, blockSize>>> (d_leniaParticles, leniaSize, d_colors, colorPallete.size());
+        checkCuda(cudaDeviceSynchronize());
+        thresholdAndCommit_kernel<<<gridSize, blockSize>>> (d_leniaParticles, leniaSize, d_colors, colorPallete.size());
         checkCuda(cudaDeviceSynchronize());
         checkCuda(cudaMemcpy(&debugU_host, d_debugU, sizeof(float), cudaMemcpyDeviceToHost));
         checkCuda(cudaMemcpy(&debugGrowth_host, d_debugGrowth, sizeof(float), cudaMemcpyDeviceToHost));
@@ -875,8 +880,7 @@ void CUDAHandler::initLenia()
         default:
             break;
     }
-    // convKernel = generateCircularShellKernel(convolutionRadius, alpha);
-    // convKernel = generateCircularBellKernel(convolutionRadius, m, s);
+   
 
      
     

@@ -51,11 +51,13 @@ struct Settings {
     float conv_dt;
     GrowthMode gMode;
     KernelMode kMode;
+    float k;
+
     
 
     bool operator!=(const Settings& other) const {
-        return std::tie(numberOfParticles, particleRadius, spacing, convRadius, alpha, sigma, mu, m, s, conv_dt, gMode, kMode) !=
-               std::tie(other.numberOfParticles, other.particleRadius, other.spacing, other.convRadius, other.alpha, other.sigma,other.mu, other.m, other.s, other.conv_dt, other.gMode, other.kMode);
+        return std::tie(numberOfParticles, particleRadius, spacing, convRadius, alpha, sigma, mu, m, s, conv_dt, gMode, kMode, k) !=
+               std::tie(other.numberOfParticles, other.particleRadius, other.spacing, other.convRadius, other.alpha, other.sigma,other.mu, other.m, other.s, other.conv_dt, other.gMode, other.kMode, other.k);
     }
 };
 
@@ -71,10 +73,10 @@ class CUDAHandler {
         ~CUDAHandler();
         Lenia* lenia = nullptr;
         std::vector<uchar4> colorPallete = {DARK, BLUE, GREEN, GOLD, WHITE, 
-                                            PINK, ORANGE, JUPITER, 
+                                            /* PINK, ORANGE, JUPITER, 
                                             SPACE_NIGH, FULL_MOON, RED_MERCURY,  VENUS_TAN, RED_MERCURY, 
                                             MARS_RED, SATURN_ROSE, NEPTUNE_PURPLE, TAN, BLUE_PLANET, GRAY_ROCKY, SUN_YELLOW, URANUS_BLUE, 
-                                            PLUTO_TAN, LITE_GREY };
+                                            PLUTO_TAN, LITE_GREY */ };
         // Device Variables
         Particle* d_leniaParticles = nullptr;
         curandState_t* d_states = nullptr;
@@ -104,6 +106,7 @@ class CUDAHandler {
         float m = .03f;
         float s = .15f;
         float conv_dt = 0.05f;
+        float k = 1.0f;
         int TARGET_FPS = 90;
         #if defined(__aarch64__) || defined(USE_X11_MONITORS)
         int totalParticles = 150000;

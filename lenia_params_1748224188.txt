@@ -1,0 +1,14 @@
+----Snapshot----
+Description: intestines
+Particles: 326591
+Convolution Kernel: 1
+Growth Mapping: 10
+Convolution Radius: 26
+Alpha: 5.91
+Sigma: 0.045
+Mu: 0.032
+Ring Peak (m): 0.457
+Ring Spread (s): 0.61
+Conv dt: 0.271
+k: 0.073
+---------------------------------
