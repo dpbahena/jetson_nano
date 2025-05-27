@@ -802,11 +802,7 @@ void CUDAHandler::updateDraw(float dt)
         if (growthHistory.size() > 100) growthHistory.erase(growthHistory.begin());
         growthHistory.push_back(debugGrowth_host);
 
-           
-
-    
-
-    clearGraphicsDisplay(surface, make_uchar4(0, 0, 0, 255)); // Clear the surface with black color
+        // clearGraphicsDisplay(surface, make_uchar4(0, 0, 0, 255)); // Clear the surface with black color
            
     }
  
@@ -814,7 +810,7 @@ void CUDAHandler::updateDraw(float dt)
 
     
 
-    // clearGraphicsDisplay(surface, make_uchar4(0, 0, 0, 255)); // Clear the surface with black color
+    clearGraphicsDisplay(surface, make_uchar4(0, 0, 0, 255)); // Clear the surface with black color
     // drawTriangle(surface, RED_MERCURY, vec2(100, 200), vec2(150, 600), vec2(500, 300));
     // checkCuda(cudaPeekAtLastError());
     // checkCuda(cudaDeviceSynchronize());
