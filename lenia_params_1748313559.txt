@@ -1,0 +1,14 @@
+----Snapshot----
+Description: holes
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 6
+Convolution Radius: 30
+Alpha: 1.045
+Sigma: 0.36
+Mu: 0.348
+Ring Peak (m): 1.043
+Ring Spread (s): 0.149
+Conv dt: 0.085
+k: 0.955
+---------------------------------

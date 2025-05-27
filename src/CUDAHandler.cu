@@ -48,6 +48,59 @@ __device__ void drawFilledSquare(cudaSurfaceObject_t surface, int x0, int y0, in
     }
 }
 
+__device__ void drawSmoothSquare(cudaSurfaceObject_t surface, int x0, int y0, int halfSize, float energy, int width, int height) {
+    float sigma = halfSize * 0.5f; // Controls blur sharpness
+
+    for (int dy = -halfSize; dy <= halfSize; ++dy) {
+        for (int dx = -halfSize; dx <= halfSize; ++dx) {
+            int x = x0 + dx;
+            int y = y0 + dy;
+
+            if (x >= 0 && x < width && y >= 0 && y < height) {
+                float dist2 = dx * dx + dy * dy;
+                float falloff = __expf(-dist2 / (2.0f * sigma * sigma));  // Gaussian weight
+
+                float intensity = energy * falloff;  // Blend with particle energy
+
+                int val = min(255, max(0, int(intensity * 255.0f)));
+                uchar4 color = make_uchar4(val, val, val, 255);
+
+                surf2Dwrite(color, surface, x * sizeof(uchar4), y);
+            }
+        }
+    }
+}
+
+__device__ void drawSmoothBlendedSquare(cudaSurfaceObject_t surface, int x0, int y0, int halfSize, float energy, uchar4 baseColor, int width, int height) {
+    float sigma = halfSize * 0.5f;
+
+    for (int dy = -halfSize; dy <= halfSize; ++dy) {
+        for (int dx = -halfSize; dx <= halfSize; ++dx) {
+            int x = x0 + dx;
+            int y = y0 + dy;
+
+            if (x >= 0 && x < width && y >= 0 && y < height) {
+                float dist2 = dx * dx + dy * dy;
+                float falloff = __expf(-dist2 / (2.0f * sigma * sigma));  // Smooth kernel
+                float weight = energy * falloff * 0.05f;  // Very conservative scale
+
+                // Read existing pixel
+                uchar4 prev = surf2Dread<uchar4>(surface, x * sizeof(uchar4), y);
+
+                // Only add green channel for testing
+                int newG = min(255, prev.y + int(baseColor.y * weight));
+                uchar4 blended = make_uchar4(0, newG, 0, 255);
+
+                surf2Dwrite(blended, surface, x * sizeof(uchar4), y);
+            }
+        }
+    }
+}
+
+
+
+
+
 __device__ void drawFilledCircle(cudaSurfaceObject_t surface, int cx, int cy, int radius, uchar4 color, int width, int height) {
     int rSquared = radius * radius;
     for (int dy = -radius; dy <= radius; ++dy) {
@@ -276,6 +329,10 @@ __global__ void drawLeniaSquareParticles(cudaSurfaceObject_t surface, Particle* 
     // uchar4 color = makeColorFromEnergy(p.energy);
     // uchar4 color = turboColorMapU(p.energy);
     drawFilledSquare(surface, x0, y0, halfSize, p.color, width, height);
+    // drawSmoothSquare(surface, x0, y0, halfSize, p.energy, width, height);
+    // p.color = make_uchar4(0, 255, 0, 255);  // Green
+
+    // drawSmoothBlendedSquare(surface, x0, y0, halfSize, p.energy, p.color, width, height);
     // drawFilledSquare(surface, x0, y0, halfSize, color, width, height);
 
 }
@@ -726,7 +783,7 @@ void CUDAHandler::updateDraw(float dt)
         previousSettings = currentSettings;
         
     }
-    
+    cudaSurfaceObject_t surface = MapSurfaceResourse();
 
     if(startSimulation){
         int kernelDiameter = 2 * convolutionRadius + 1;
@@ -745,15 +802,19 @@ void CUDAHandler::updateDraw(float dt)
         if (growthHistory.size() > 100) growthHistory.erase(growthHistory.begin());
         growthHistory.push_back(debugGrowth_host);
 
-
            
-    }
- 
-    cudaSurfaceObject_t surface = MapSurfaceResourse();   
 
     
 
-    clearGraphicsDisplay(surface, WHITE);
+    clearGraphicsDisplay(surface, make_uchar4(0, 0, 0, 255)); // Clear the surface with black color
+           
+    }
+ 
+    // cudaSurfaceObject_t surface = MapSurfaceResourse();   
+
+    
+
+    // clearGraphicsDisplay(surface, make_uchar4(0, 0, 0, 255)); // Clear the surface with black color
     // drawTriangle(surface, RED_MERCURY, vec2(100, 200), vec2(150, 600), vec2(500, 300));
     // checkCuda(cudaPeekAtLastError());
     // checkCuda(cudaDeviceSynchronize());

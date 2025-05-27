@@ -73,10 +73,10 @@ class CUDAHandler {
         ~CUDAHandler();
         Lenia* lenia = nullptr;
         std::vector<uchar4> colorPallete = {DARK, BLUE, GREEN, GOLD, WHITE, 
-                                            /* PINK, ORANGE, JUPITER, 
+                                            PINK, ORANGE, JUPITER, 
                                             SPACE_NIGH, FULL_MOON, RED_MERCURY,  VENUS_TAN, RED_MERCURY, 
                                             MARS_RED, SATURN_ROSE, NEPTUNE_PURPLE, TAN, BLUE_PLANET, GRAY_ROCKY, SUN_YELLOW, URANUS_BLUE, 
-                                            PLUTO_TAN, LITE_GREY */ };
+                                            PLUTO_TAN, LITE_GREY };
         // Device Variables
         Particle* d_leniaParticles = nullptr;
         curandState_t* d_states = nullptr;
