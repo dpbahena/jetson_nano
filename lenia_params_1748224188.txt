@@ -1,14 +1,56 @@
 ----Snapshot----
-Description: intestines
-Particles: 326591
-Convolution Kernel: 1
+Description: weird3
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 3
+Convolution Radius: 23
+Alpha: 2.866
+Sigma: 0.318
+Mu: 0.171
+Ring Peak (m): 0.441
+Ring Spread (s): 0.153
+Conv dt: 0.088
+k: 1.002
+---------------------------------
+----Snapshot----
+Description: weird4
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 3
+Convolution Radius: 28
+Alpha: 2.861
+Sigma: 0.334
+Mu: 0.174
+Ring Peak (m): 0.441
+Ring Spread (s): 0.153
+Conv dt: 0.087
+k: 1
+---------------------------------
+----Snapshot----
+Description: weird5
+Particles: 1000000
+Convolution Kernel: 3
 Growth Mapping: 10
-Convolution Radius: 26
-Alpha: 5.91
-Sigma: 0.045
-Mu: 0.032
-Ring Peak (m): 0.457
-Ring Spread (s): 0.61
-Conv dt: 0.271
-k: 0.073
+Convolution Radius: 28
+Alpha: 2.861
+Sigma: 0.334
+Mu: 0.174
+Ring Peak (m): 0.441
+Ring Spread (s): 0.153
+Conv dt: 0.195
+k: 1
+---------------------------------
+----Snapshot----
+Description: weird7
+Particles: 1000000
+Convolution Kernel: 3
+Growth Mapping: 1
+Convolution Radius: 28
+Alpha: 2.861
+Sigma: 0.533
+Mu: 0.312
+Ring Peak (m): 0.441
+Ring Spread (s): 0.249
+Conv dt: 0.082
+k: 1
 ---------------------------------
