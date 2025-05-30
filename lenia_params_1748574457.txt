@@ -1,0 +1,42 @@
+----Snapshot----
+Description: green things
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 4
+Convolution Radius: 28
+Alpha: 4.925
+Sigma: 0.003
+Mu: 0.018
+Ring Peak (m): 1.304
+Ring Spread (s): 0.162
+Conv dt: 0.245
+k: 0.332
+---------------------------------
+----Snapshot----
+Description: buttons
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 4
+Convolution Radius: 25
+Alpha: 11.186
+Sigma: 0.008
+Mu: 0.011
+Ring Peak (m): 1.304
+Ring Spread (s): 0.162
+Conv dt: 0.294
+k: 1
+---------------------------------
+----Snapshot----
+Description: more buttons
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 4
+Convolution Radius: 12
+Alpha: 7.246
+Sigma: 0.008
+Mu: 0.011
+Ring Peak (m): 1.304
+Ring Spread (s): 0.162
+Conv dt: 0.271
+k: 1
+---------------------------------

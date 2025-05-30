@@ -113,7 +113,7 @@ void SimulationUI::render(CUDAHandler &sim)
         float step = .001f;
         // float step2 = .0001f;
         
-        ImGui::SliderFloat("S", &sim.sigma, .000f, 2.100f);
+        ImGui::SliderFloat("S", &sim.sigma, .000f, 3.100f);
         if (ImGui::IsItemHovered())
             ImGui::SetTooltip("Sigma");
         ImGui::SameLine();
@@ -138,7 +138,7 @@ void SimulationUI::render(CUDAHandler &sim)
         float muStep = .001f;
         
         
-        ImGui::SliderFloat("mu", &sim.mu, .01f, 0.48f);
+        ImGui::SliderFloat("mu", &sim.mu, .001f, 1.5f);
         ImGui::SameLine();
         // Fine-tune buttons for mu
         if (ImGui::Button("-##mu1")) {
@@ -161,7 +161,7 @@ void SimulationUI::render(CUDAHandler &sim)
             }
         }
         if (kMode == (int)kBELL || kMode == (int)kGAUSS) {
-            float sStep = 0.01f;
+            float sStep = 0.001f;
             ImGui::SliderFloat("Spread", &sim.s, .01f, 0.31f);
             ImGui::SameLine();
             if (ImGui::Button("-##s")) {

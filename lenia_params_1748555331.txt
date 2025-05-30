@@ -1,0 +1,14 @@
+----Snapshot----
+Description: slow
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 0
+Convolution Radius: 25
+Alpha: 4
+Sigma: 0.4
+Mu: 0.41
+Ring Peak (m): 0.03
+Ring Spread (s): 0.237
+Conv dt: 0.139
+k: 1
+---------------------------------

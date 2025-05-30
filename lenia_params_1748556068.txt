@@ -1,0 +1,182 @@
+----Snapshot----
+Description: lines
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 0
+Convolution Radius: 25
+Alpha: 4
+Sigma: 0.387001
+Mu: 0.354
+Ring Peak (m): 2.64
+Ring Spread (s): 0.114
+Conv dt: 0.25
+k: 1
+---------------------------------
+----Snapshot----
+Description: lines2
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 0
+Convolution Radius: 25
+Alpha: 4
+Sigma: 0.387001
+Mu: 0.354
+Ring Peak (m): 2.634
+Ring Spread (s): 0.114
+Conv dt: 0.21
+k: 1
+---------------------------------
+----Snapshot----
+Description: pumping
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 0
+Convolution Radius: 25
+Alpha: 4
+Sigma: 0.293
+Mu: 0.354
+Ring Peak (m): 2.634
+Ring Spread (s): 0.114
+Conv dt: 0.21
+k: 1
+---------------------------------
+----Snapshot----
+Description: move sigma
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 0
+Convolution Radius: 25
+Alpha: 4
+Sigma: 0.29
+Mu: 0.354
+Ring Peak (m): 2.634
+Ring Spread (s): 0.114
+Conv dt: 0.21
+k: 1
+---------------------------------
+----Snapshot----
+Description: rivers
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 0
+Convolution Radius: 25
+Alpha: 4
+Sigma: 0.29
+Mu: 0.354
+Ring Peak (m): 2.634
+Ring Spread (s): 0.114
+Conv dt: 0.21
+k: 1
+---------------------------------
+----Snapshot----
+Description: more separation lines
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 0
+Convolution Radius: 25
+Alpha: 4
+Sigma: 0.284
+Mu: 0.347
+Ring Peak (m): 2.634
+Ring Spread (s): 0.114
+Conv dt: 0.209
+k: 1
+---------------------------------
+----Snapshot----
+Description: more lines (change radius in 5)
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 0
+Convolution Radius: 5
+Alpha: 4
+Sigma: 0.284
+Mu: 0.347
+Ring Peak (m): 2.634
+Ring Spread (s): 0.114
+Conv dt: 0.209
+k: 1
+---------------------------------
+----Snapshot----
+Description: lines and rivers
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 0
+Convolution Radius: 15
+Alpha: 4
+Sigma: 0.284
+Mu: 0.347
+Ring Peak (m): 2.634
+Ring Spread (s): 0.114
+Conv dt: 0.209
+k: 1
+---------------------------------
+----Snapshot----
+Description: fast river
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 0
+Convolution Radius: 15
+Alpha: 4
+Sigma: 0.284
+Mu: 0.347
+Ring Peak (m): 2.634
+Ring Spread (s): 0.114
+Conv dt: 0.32
+k: 1
+---------------------------------
+----Snapshot----
+Description: reset if necessary
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 4
+Convolution Radius: 15
+Alpha: 4
+Sigma: 0.284
+Mu: 0.346
+Ring Peak (m): 2.634
+Ring Spread (s): 0.114
+Conv dt: 0.272
+k: 1
+---------------------------------
+----Snapshot----
+Description: other rivers
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 4
+Convolution Radius: 15
+Alpha: 4
+Sigma: 0.288
+Mu: 0.345
+Ring Peak (m): 2.634
+Ring Spread (s): 0.114
+Conv dt: 0.272
+k: 1
+---------------------------------
+----Snapshot----
+Description: more rivers 2
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 4
+Convolution Radius: 15
+Alpha: 4
+Sigma: 0.288
+Mu: 0.345
+Ring Peak (m): 2.634
+Ring Spread (s): 0.114
+Conv dt: 0.147
+k: 1
+---------------------------------
+----Snapshot----
+Description: blue river
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 4
+Convolution Radius: 15
+Alpha: 4
+Sigma: 0.288
+Mu: 0.345
+Ring Peak (m): 2.634
+Ring Spread (s): 0.114
+Conv dt: 0.325
+k: 1
+---------------------------------
