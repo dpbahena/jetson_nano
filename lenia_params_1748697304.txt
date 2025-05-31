@@ -1,0 +1,28 @@
+----Snapshot----
+Description: maps
+Particles: 1000000
+Convolution Kernel: 3
+Growth Mapping: 0
+Convolution Radius: 8
+Alpha: 4
+Sigma: 0.041
+Mu: 0.15
+Ring Peak (m): 0.03
+Ring Spread (s): 0.141
+Conv dt: 0.125
+k: 1
+---------------------------------
+----Snapshot----
+Description: puzzle
+Particles: 1000000
+Convolution Kernel: 3
+Growth Mapping: 0
+Convolution Radius: 8
+Alpha: 4
+Sigma: 0.044
+Mu: 0.15
+Ring Peak (m): 0.03
+Ring Spread (s): 0.141
+Conv dt: 0.125
+k: 1
+---------------------------------
