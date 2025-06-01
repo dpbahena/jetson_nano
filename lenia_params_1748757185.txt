@@ -1,0 +1,28 @@
+----Snapshot----
+Description: other lenia close
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 10
+Convolution Radius: 20
+Alpha: 4.149
+Sigma: 0.005
+Mu: 0.031
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.04
+k: 1
+---------------------------------
+----Snapshot----
+Description: coins
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 9
+Convolution Radius: 24
+Alpha: 7.791
+Sigma: 0.06
+Mu: 0.271
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.223
+k: 1
+---------------------------------

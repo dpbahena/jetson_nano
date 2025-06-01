@@ -1,0 +1,14 @@
+----Snapshot----
+Description: snake growth
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 10
+Convolution Radius: 20
+Alpha: 0.266
+Sigma: 0.032
+Mu: 0.156
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.096
+k: 1
+---------------------------------

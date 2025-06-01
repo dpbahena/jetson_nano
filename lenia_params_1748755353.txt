@@ -1,0 +1,14 @@
+----Snapshot----
+Description: leaves
+Particles: 1000000
+Convolution Kernel: 3
+Growth Mapping: 4
+Convolution Radius: 30
+Alpha: 10.324
+Sigma: 0.008
+Mu: 0.04
+Ring Peak (m): 0.781
+Ring Spread (s): 0.31
+Conv dt: 0.076
+k: 1
+---------------------------------
