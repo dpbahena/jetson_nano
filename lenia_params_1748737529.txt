@@ -1,0 +1,182 @@
+----Snapshot----
+Description: beans created and destroyed
+Particles: 1000000
+Convolution Kernel: 3
+Growth Mapping: 10
+Convolution Radius: 30
+Alpha: 4.15
+Sigma: 0.008
+Mu: 0.048
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.051
+k: 1
+---------------------------------
+----Snapshot----
+Description: slow growth
+Particles: 1000000
+Convolution Kernel: 3
+Growth Mapping: 10
+Convolution Radius: 30
+Alpha: 4.15
+Sigma: 0.006
+Mu: 0.051
+Ring Peak (m): 0.342
+Ring Spread (s): 0.097
+Conv dt: 0.02
+k: 1
+---------------------------------
+----Snapshot----
+Description: slow2
+Particles: 1000000
+Convolution Kernel: 3
+Growth Mapping: 10
+Convolution Radius: 30
+Alpha: 4.15
+Sigma: 0.006
+Mu: 0.051
+Ring Peak (m): 0.342
+Ring Spread (s): 0.098
+Conv dt: 0.025
+k: 1
+---------------------------------
+----Snapshot----
+Description: larva
+Particles: 1000000
+Convolution Kernel: 3
+Growth Mapping: 10
+Convolution Radius: 30
+Alpha: 4.15
+Sigma: -0.005
+Mu: 0.019
+Ring Peak (m): 0.342
+Ring Spread (s): 0.194
+Conv dt: 0.034
+k: 1
+---------------------------------
+----Snapshot----
+Description: larva2
+Particles: 1000000
+Convolution Kernel: 3
+Growth Mapping: 10
+Convolution Radius: 30
+Alpha: 4.15
+Sigma: -0.005
+Mu: 0.02
+Ring Peak (m): 0.342
+Ring Spread (s): 0.194
+Conv dt: 0.034
+k: 1
+---------------------------------
+----Snapshot----
+Description: larva3
+Particles: 1000000
+Convolution Kernel: 3
+Growth Mapping: 10
+Convolution Radius: 29
+Alpha: 4.15
+Sigma: -0.005
+Mu: 0.019
+Ring Peak (m): 0.342
+Ring Spread (s): 0.194
+Conv dt: 0.034
+k: 1
+---------------------------------
+----Snapshot----
+Description: larva4
+Particles: 1000000
+Convolution Kernel: 3
+Growth Mapping: 10
+Convolution Radius: 29
+Alpha: 4.15
+Sigma: -0.004
+Mu: 0.019
+Ring Peak (m): 0.342
+Ring Spread (s): 0.194
+Conv dt: 0.034
+k: 1
+---------------------------------
+----Snapshot----
+Description: repel or get killed
+Particles: 1000000
+Convolution Kernel: 3
+Growth Mapping: 10
+Convolution Radius: 29
+Alpha: 4.15
+Sigma: -0.004
+Mu: 0.019
+Ring Peak (m): 0.342
+Ring Spread (s): 0.194
+Conv dt: 0.034
+k: 1
+---------------------------------
+----Snapshot----
+Description: lenia attack
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 10
+Convolution Radius: 29
+Alpha: 4.15
+Sigma: -0.004
+Mu: 0.024
+Ring Peak (m): 0.342
+Ring Spread (s): 0.194
+Conv dt: 0.037
+k: 1
+---------------------------------
+----Snapshot----
+Description: forms but escapes
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 10
+Convolution Radius: 29
+Alpha: 4.15
+Sigma: -0.004
+Mu: 0.024
+Ring Peak (m): 0.342
+Ring Spread (s): 0.194
+Conv dt: 0.04
+k: 1
+---------------------------------
+----Snapshot----
+Description: lenia poly
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 10
+Convolution Radius: 30
+Alpha: 0.001
+Sigma: -0.003
+Mu: 0.018
+Ring Peak (m): 0.342
+Ring Spread (s): 0.194
+Conv dt: 0.041
+k: 1
+---------------------------------
+----Snapshot----
+Description: smoke puffs
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 10
+Convolution Radius: 19
+Alpha: 0.001
+Sigma: -0.009
+Mu: 0.004
+Ring Peak (m): 0.302
+Ring Spread (s): 0.231
+Conv dt: 0.071
+k: 1
+---------------------------------
+----Snapshot----
+Description: bothering
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 10
+Convolution Radius: 19
+Alpha: 0.001
+Sigma: -0.009
+Mu: 0.004
+Ring Peak (m): 0.302
+Ring Spread (s): 0.231
+Conv dt: 0.167
+k: 1
+---------------------------------
