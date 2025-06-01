@@ -180,3 +180,185 @@ Ring Spread (s): 0.086
 Conv dt: 0.054
 k: 1
 ---------------------------------
+----Snapshot----
+Description: lenia walking
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 10
+Convolution Radius: 18
+Alpha: 4.15
+Sigma: 0.006
+Mu: 0.034
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.052
+k: 1
+---------------------------------
+----Snapshot----
+Description: lenia walk2
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 10
+Convolution Radius: 18
+Alpha: 4.15
+Sigma: 0.005
+Mu: 0.034
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.052
+k: 1
+---------------------------------
+----Snapshot----
+Description: lenia3 walking
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 10
+Convolution Radius: 18
+Alpha: 4.15
+Sigma: 0.005
+Mu: 0.034
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.053
+k: 1
+---------------------------------
+----Snapshot----
+Description: lenia eating
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 10
+Convolution Radius: 18
+Alpha: 4.15
+Sigma: 0.005
+Mu: 0.033
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.051
+k: 1
+---------------------------------
+----Snapshot----
+Description: eating
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 10
+Convolution Radius: 18
+Alpha: 4.15
+Sigma: 0.005
+Mu: 0.033
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.051
+k: 1
+---------------------------------
+----Snapshot----
+Description: lenia multiple
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 10
+Convolution Radius: 18
+Alpha: 4.15
+Sigma: 0.005
+Mu: 0.033
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.05
+k: 1
+---------------------------------
+----Snapshot----
+Description: lenia repel
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 10
+Convolution Radius: 18
+Alpha: 4.15
+Sigma: 0.005
+Mu: 0.033
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.047
+k: 1
+---------------------------------
+----Snapshot----
+Description: lenia being created
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 10
+Convolution Radius: 22
+Alpha: 4.15
+Sigma: 0.005
+Mu: 0.033
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.039
+k: 1
+---------------------------------
+----Snapshot----
+Description: lenia stable
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 10
+Convolution Radius: 20
+Alpha: 4.15
+Sigma: 0.005
+Mu: 0.033
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.04
+k: 1
+---------------------------------
+----Snapshot----
+Description: lenia cosine
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 8
+Convolution Radius: 20
+Alpha: 4.15
+Sigma: 0.005
+Mu: 0.032
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.041
+k: 1
+---------------------------------
+----Snapshot----
+Description: lenia relu
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 5
+Convolution Radius: 20
+Alpha: 4.15
+Sigma: 0.005
+Mu: 0.032
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.041
+k: 1
+---------------------------------
+----Snapshot----
+Description: leania relu2
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 5
+Convolution Radius: 20
+Alpha: 4.15
+Sigma: 0.005
+Mu: 0.032
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.04
+k: 1
+---------------------------------
+----Snapshot----
+Description: possible to find
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 5
+Convolution Radius: 22
+Alpha: 1.881
+Sigma: 0.004
+Mu: 0.008
+Ring Peak (m): 1.112
+Ring Spread (s): 0.086
+Conv dt: 0.054
+k: 1
+---------------------------------
