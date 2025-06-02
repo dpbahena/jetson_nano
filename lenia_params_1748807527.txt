@@ -1,0 +1,140 @@
+----Snapshot----
+Description: live nest
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 0
+Convolution Radius: 22
+Alpha: 4
+Sigma: 0.008
+Mu: 0.15
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.05
+k: 1
+---------------------------------
+----Snapshot----
+Description: live nest 2n0
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 0
+Convolution Radius: 22
+Alpha: 4
+Sigma: 0.008
+Mu: 0.165
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.049
+k: 1
+---------------------------------
+----Snapshot----
+Description: live nest3N0
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 0
+Convolution Radius: 22
+Alpha: 4
+Sigma: 0.008
+Mu: 0.159
+Ring Peak (m): 0.11
+Ring Spread (s): 0.307
+Conv dt: 0.049
+k: 1
+---------------------------------
+----Snapshot----
+Description: live nest4 N0
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 0
+Convolution Radius: 30
+Alpha: 4
+Sigma: 0.008
+Mu: 0.159
+Ring Peak (m): 0.107
+Ring Spread (s): 0.305
+Conv dt: 0.055
+k: 1
+---------------------------------
+----Snapshot----
+Description: live membrane N0
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 0
+Convolution Radius: 30
+Alpha: 4
+Sigma: 0.008
+Mu: 0.159
+Ring Peak (m): 0.107
+Ring Spread (s): 0.305
+Conv dt: 0.058
+k: 1
+---------------------------------
+----Snapshot----
+Description: live membrane 2 N0
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 0
+Convolution Radius: 30
+Alpha: 4
+Sigma: 0.008
+Mu: 0.157
+Ring Peak (m): 0.107
+Ring Spread (s): 0.317
+Conv dt: 0.058
+k: 1
+---------------------------------
+----Snapshot----
+Description: lenia kind of N0
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 0
+Convolution Radius: 30
+Alpha: 1.802
+Sigma: 0.009
+Mu: 0.152
+Ring Peak (m): 0.107
+Ring Spread (s): 0.317
+Conv dt: 0.012
+k: 1
+---------------------------------
+----Snapshot----
+Description: a real Lenia N0
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 0
+Convolution Radius: 30
+Alpha: 1.802
+Sigma: 0.009
+Mu: 0.152
+Ring Peak (m): 0.107
+Ring Spread (s): 0.317
+Conv dt: 0.014
+k: 1
+---------------------------------
+----Snapshot----
+Description: other lenia N2
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 10
+Convolution Radius: 20
+Alpha: 0.266
+Sigma: 0.032
+Mu: 0.156
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.096
+k: 1
+---------------------------------
+----Snapshot----
+Description: lenia going around
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 10
+Convolution Radius: 20
+Alpha: 0.279
+Sigma: 0.032
+Mu: 0.156
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.096
+k: 1
+---------------------------------

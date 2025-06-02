@@ -123,22 +123,53 @@ __global__ void init_random(unsigned int seed, curandState_t* states){
     int idx = blockIdx.x * blockDim.x + threadIdx.x;
     curand_init(seed, idx, 0, &states[idx]);
 }
-__global__ void initializeLeniaParticle(Particle* particles, int totalParticles, curandState_t* states, uchar4* colors, int numberColors) {
+__global__ void initializeLeniaParticle(
+    Particle* particles,
+    int totalParticles,
+    curandState_t* states,
+    uchar4* colors,
+    int numberColors,
+    int noiseSeed
+) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= totalParticles) return;
-    curandState_t x = states[i];
-    // float e =  random_float_in_range(&x, 0.1, 0.5);
-    // initial noise
-    // float e = curand_uniform(&x);// * 0.5f;
-    float e = curand_uniform(&x) < 0.15f ? curand_uniform(&x) * 0.35f : 0.0f; 
-    // float e = (curand_uniform(&x) < 0.1f) ? curand_uniform(&x) * 0.2f : 0.5f;  // for snake growth
+
+    curandState_t localState = states[i];
+
+    float e = 0.0f; // Initial energy
+    switch (noiseSeed) {
+        case 0: // Full random [0,1)
+            e = curand_uniform(&localState);
+            break;
+
+        case 1: // Sparse low-energy noise
+            e = (curand_uniform(&localState) < 0.15f) ? curand_uniform(&localState) * 0.35f : 0.0f;
+            break;
+
+        case 2: // Mostly medium background, some low-energy specks
+            e = (curand_uniform(&localState) < 0.1f) ? curand_uniform(&localState) * 0.2f : 0.5f;
+            break;
+
+        case 3: // Mostly high background, some noise
+            e = (curand_uniform(&localState) < 0.3f) ? curand_uniform(&localState) * 0.5f : 0.4f;
+            break;
+
+        default: // Default: medium random noise
+            e = curand_uniform(&localState) * 0.5f;
+            break;
+    }
 
     particles[i].energy = e;
-    states[i] = x; // reinstate the random value;
+
+    // Color assignment based on energy
     int colorIndex = static_cast<int>(e * (numberColors - 1));
     colorIndex = max(0, min(colorIndex, numberColors - 1));
     particles[i].color = colors[colorIndex];
+
+    // Save updated state
+    states[i] = localState;
 }
+
 
 // __global__ void drawLeniaParticles(cudaSurfaceObject_t surface, Particle* particles, int numberParticles, int width, int height, float zoom, float panX, float panY){
 //     int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -776,6 +807,7 @@ void CUDAHandler::updateDraw(float dt)
         .conv_dt = conv_dt,
         .gMode = gMode,
         .kMode = kMode,
+        .noiseSeed = noiseSeed,
         .k = k
     };
 
@@ -1005,7 +1037,7 @@ void CUDAHandler::initLenia()
     // checkCuda(cudaPeekAtLastError());
     // checkCuda(cudaDeviceSynchronize());
     // energy and colors
-    initializeLeniaParticle<<<gridSize, blockSize>>>(d_leniaParticles, leniaSize, d_states, d_colors, colorPallete.size());
+    initializeLeniaParticle<<<gridSize, blockSize>>>(d_leniaParticles, leniaSize, d_states, d_colors, colorPallete.size(), noiseSeed);
     // checkCuda(cudaPeekAtLastError());
     // checkCuda(cudaDeviceSynchronize());
 

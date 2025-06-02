@@ -1,0 +1,14 @@
+----Snapshot----
+Description: lenia very closed N2 
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 7
+Convolution Radius: 25
+Alpha: 3.647
+Sigma: 0.005
+Mu: 0.048
+Ring Peak (m): 0.408
+Ring Spread (s): 0.244
+Conv dt: 0.027
+k: 0.999
+---------------------------------
