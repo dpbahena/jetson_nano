@@ -1,0 +1,56 @@
+----Snapshot----
+Description: lenia N5
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 2
+Convolution Radius: 23
+Alpha: 2.245
+Sigma: 0.008
+Mu: 0.126
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.034
+k: 1
+---------------------------------
+----Snapshot----
+Description: lenia moves insides
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 7
+Convolution Radius: 30
+Alpha: 2.237
+Sigma: 0.008
+Mu: 0.126
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.029
+k: 1
+---------------------------------
+----Snapshot----
+Description: lenia step N5
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 4
+Convolution Radius: 30
+Alpha: 2.237
+Sigma: 0.009
+Mu: 0.127
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.031
+k: 1
+---------------------------------
+----Snapshot----
+Description: lenia smooth N5
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 9
+Convolution Radius: 30
+Alpha: 1.774
+Sigma: 0.025
+Mu: 0.145
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.055
+k: 1
+---------------------------------
