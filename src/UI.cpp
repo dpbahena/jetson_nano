@@ -64,7 +64,7 @@ void SimulationUI::render(CUDAHandler &sim)
         ImGui::SliderFloat("Radius", &sim.particleRadius, 0.1f, 30.f);
         ImGui::SliderFloat("distance", &sim.spacing, .2f, 30.f);
         ImGui::Separator();
-        ImGui::SliderInt("Noise Seed", &sim.noiseSeed, 0, 4);
+        ImGui::SliderInt("Noise Seed", &sim.noiseSeed, 0, 5);
         // Choose kernel
         int kMode = static_cast<KernelMode>(sim.kMode);
         ImGui::Text("Select Convolution Kernel:");

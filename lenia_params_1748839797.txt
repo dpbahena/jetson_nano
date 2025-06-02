@@ -1,0 +1,70 @@
+----Snapshot----
+Description: LENIA LENIA
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 0
+Convolution Radius: 26
+Alpha: 2.275
+Sigma: 0.01
+Mu: 0.13
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.05
+k: 1
+---------------------------------
+----Snapshot----
+Description: lenia thicker inside
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 0
+Convolution Radius: 30
+Alpha: 3.347
+Sigma: 0.01
+Mu: 0.13
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.05
+k: 1
+---------------------------------
+----Snapshot----
+Description: MORE lenia
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 0
+Convolution Radius: 30
+Alpha: 1.99
+Sigma: 0.01
+Mu: 0.13
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.05
+k: 1
+---------------------------------
+----Snapshot----
+Description: several lenia
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 0
+Convolution Radius: 30
+Alpha: 2.01
+Sigma: 0.01
+Mu: 0.13
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.05
+k: 1
+---------------------------------
+----Snapshot----
+Description: lenia poly N2
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 0
+Convolution Radius: 30
+Alpha: 2.016
+Sigma: 0.01
+Mu: 0.13
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.05
+k: 1
+---------------------------------

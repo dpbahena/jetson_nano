@@ -153,6 +153,10 @@ __global__ void initializeLeniaParticle(
         case 3: // Mostly high background, some noise
             e = (curand_uniform(&localState) < 0.3f) ? curand_uniform(&localState) * 0.5f : 0.4f;
             break;
+        
+        case 4: 
+            e = (curand_uniform(&localState) < 0.04f) ? 0.3f + curand_uniform(&localState) * 0.2f : 0.0f;
+            break;
 
         default: // Default: medium random noise
             e = curand_uniform(&localState) * 0.5f;
@@ -162,9 +166,9 @@ __global__ void initializeLeniaParticle(
     particles[i].energy = e;
 
     // Color assignment based on energy
-    int colorIndex = static_cast<int>(e * (numberColors - 1));
-    colorIndex = max(0, min(colorIndex, numberColors - 1));
-    particles[i].color = colors[colorIndex];
+    // int colorIndex = static_cast<int>(e * (numberColors - 1));
+    // colorIndex = max(0, min(colorIndex, numberColors - 1));
+    // particles[i].color = colors[colorIndex];
 
     // Save updated state
     states[i] = localState;

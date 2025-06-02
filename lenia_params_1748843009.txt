@@ -1,0 +1,14 @@
+----Snapshot----
+Description: tesla Lenia
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 0
+Convolution Radius: 30
+Alpha: 2.28
+Sigma: 0.01
+Mu: 0.13
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.05
+k: 1
+---------------------------------
