@@ -1,0 +1,168 @@
+----Snapshot----
+Description: beans separate
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 6
+Convolution Radius: 12
+Alpha: 3.761
+Sigma: 0.005
+Mu: 0.014
+Ring Peak (m): 0.265
+Ring Spread (s): 0.117
+Conv dt: 0.088
+k: 0.189
+---------------------------------
+----Snapshot----
+Description: beans separated 2 N4
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 6
+Convolution Radius: 12
+Alpha: 4.49
+Sigma: 0.006
+Mu: 0.018
+Ring Peak (m): 0.265
+Ring Spread (s): 0.117
+Conv dt: 0.12
+k: 0.189
+---------------------------------
+----Snapshot----
+Description: FUNNY BEANS SEPARATING
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 6
+Convolution Radius: 17
+Alpha: 4.482
+Sigma: 0.006
+Mu: 0.018
+Ring Peak (m): 0.265
+Ring Spread (s): 0.117
+Conv dt: 0.12
+k: 0.189
+---------------------------------
+----Snapshot----
+Description: BLUE FAST LENIA
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 6
+Convolution Radius: 17
+Alpha: 3.899
+Sigma: 0.005
+Mu: 0.019
+Ring Peak (m): 0.265
+Ring Spread (s): 0.117
+Conv dt: 0.143
+k: 0.189
+---------------------------------
+----Snapshot----
+Description: SHINY LENIA FAST N4
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 6
+Convolution Radius: 30
+Alpha: 3.901
+Sigma: 0.006
+Mu: 0.021
+Ring Peak (m): 0.265
+Ring Spread (s): 0.117
+Conv dt: 0.156
+k: 0.189
+---------------------------------
+----Snapshot----
+Description: MANY FAST LENIA BLUE N4
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 6
+Convolution Radius: 30
+Alpha: 3.901
+Sigma: 0.006
+Mu: 0.021
+Ring Peak (m): 0.265
+Ring Spread (s): 0.117
+Conv dt: 0.157
+k: 0.189
+---------------------------------
+----Snapshot----
+Description: fast blue shiny lenia N4
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 6
+Convolution Radius: 14
+Alpha: 3.901
+Sigma: 0.006
+Mu: 0.021
+Ring Peak (m): 0.265
+Ring Spread (s): 0.117
+Conv dt: 0.157
+k: 0.189
+---------------------------------
+----Snapshot----
+Description: poly lenia fast blue 
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 6
+Convolution Radius: 14
+Alpha: 3.901
+Sigma: 0.006
+Mu: 0.021
+Ring Peak (m): 0.265
+Ring Spread (s): 0.117
+Conv dt: 0.157
+k: 0.189
+---------------------------------
+----Snapshot----
+Description: poly 0.188 best fast
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 6
+Convolution Radius: 14
+Alpha: 3.901
+Sigma: 0.006
+Mu: 0.021
+Ring Peak (m): 0.265
+Ring Spread (s): 0.117
+Conv dt: 0.157
+k: 0.188
+---------------------------------
+----Snapshot----
+Description: k 0.188 shell lenia blue fast
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 6
+Convolution Radius: 14
+Alpha: 3.901
+Sigma: 0.006
+Mu: 0.021
+Ring Peak (m): 0.265
+Ring Spread (s): 0.117
+Conv dt: 0.157
+k: 0.188
+---------------------------------
+----Snapshot----
+Description: weird balls triangle N0
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 3
+Convolution Radius: 16
+Alpha: 6.736
+Sigma: 0.016
+Mu: 0.058
+Ring Peak (m): 0.265
+Ring Spread (s): 0.117
+Conv dt: 0.037
+k: 0.696
+---------------------------------
+----Snapshot----
+Description: aztec calendar
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 3
+Convolution Radius: 30
+Alpha: 0.003
+Sigma: 0.0849999
+Mu: 0.131
+Ring Peak (m): 0.265
+Ring Spread (s): 0.117
+Conv dt: 0.063
+k: 0.918
+---------------------------------
