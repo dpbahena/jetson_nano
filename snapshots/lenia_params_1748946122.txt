@@ -1,0 +1,135 @@
+----Snapshot----
+Description: lenia blue two-tone
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 3
+Convolution Radius: 28
+Alpha: 4
+Sigma: 0.000999997
+Mu: 0.012
+Ring Peak (m): 0.613
+Ring Spread (s): 0.248
+Conv dt: 0.073
+k: 0.65
+Noise1
+---------------------------------
+----Snapshot----
+Description: fast lenia 1
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 3
+Convolution Radius: 28
+Alpha: 4
+Sigma: 0.000999997
+Mu: 0.012
+Ring Peak (m): 0.613
+Ring Spread (s): 0.248
+Conv dt: 0.074
+k: 0.65
+Noise5
+---------------------------------
+----Snapshot----
+Description: 3 hole creatures
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 9
+Convolution Radius: 25
+Alpha: 4.931
+Sigma: 0.016
+Mu: 0.035
+Ring Peak (m): 0.613
+Ring Spread (s): 0.248
+Conv dt: 0.072
+k: 0.663
+Noise1
+---------------------------------
+----Snapshot----
+Description: 5 hole creature
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 9
+Convolution Radius: 25
+Alpha: 4.931
+Sigma: 0.016
+Mu: 0.035
+Ring Peak (m): 0.613
+Ring Spread (s): 0.248
+Conv dt: 0.072
+k: 0.66
+Noise1
+---------------------------------
+----Snapshot----
+Description: elongated creatrues
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 9
+Convolution Radius: 13
+Alpha: 4.937
+Sigma: 0.015
+Mu: 0.033
+Ring Peak (m): 0.613
+Ring Spread (s): 0.248
+Conv dt: 0.077
+k: 0.66
+Noise1
+---------------------------------
+----Snapshot----
+Description: spirals 
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 9
+Convolution Radius: 13
+Alpha: 4.937
+Sigma: 0.015
+Mu: 0.033
+Ring Peak (m): 0.613
+Ring Spread (s): 0.248
+Conv dt: 0.077
+k: 0.661
+Noise1
+---------------------------------
+----Snapshot----
+Description: more spirals 
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 9
+Convolution Radius: 13
+Alpha: 4.955
+Sigma: 0.017
+Mu: 0.036
+Ring Peak (m): 0.613
+Ring Spread (s): 0.248
+Conv dt: 0.086
+k: 0.655
+Noise1
+---------------------------------
+----Snapshot----
+Description: long ones diff size
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 5
+Convolution Radius: 13
+Alpha: 4.955
+Sigma: 0.017
+Mu: 0.036
+Ring Peak (m): 0.613
+Ring Spread (s): 0.248
+Conv dt: 0.086
+k: 0.655
+Noise1
+---------------------------------
+----Snapshot----
+Description: more long ones
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 5
+Convolution Radius: 13
+Alpha: 4.956
+Sigma: 0.017
+Mu: 0.036
+Ring Peak (m): 0.613
+Ring Spread (s): 0.248
+Conv dt: 0.086
+k: 0.657
+Noise1
+---------------------------------
