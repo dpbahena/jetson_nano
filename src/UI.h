@@ -19,6 +19,7 @@ struct Snapshot {
     int gMode;
     int kMode;
     float k = 1.0f;
+    int noiseSeed;
 };
 
 

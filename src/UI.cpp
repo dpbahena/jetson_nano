@@ -199,9 +199,11 @@ void SimulationUI::render(CUDAHandler &sim)
         ImGui::Separator();
         ImGui::InputText("Description", descriptionBuffer, IM_ARRAYSIZE(descriptionBuffer));
         if (ImGui::Button("Save Parameters Snapshot")) {
+            fs::create_directories("snapshots"); // creates the folder only if it doesn't exist
+
             // create a new file
             if (!paramLogFile.is_open()) {
-                std::string filename = "lenia_params_" + std::to_string(std::time(nullptr)) + ".txt";
+                std::string filename = "snapshots/lenia_params_" + std::to_string(std::time(nullptr)) + ".txt";
                 paramLogFile.open(filename, std::ios::out);
             }
             if (paramLogFile.is_open()) {
@@ -218,20 +220,31 @@ void SimulationUI::render(CUDAHandler &sim)
                 paramLogFile << "Ring Spread (s): " << sim.s << "\n";
                 paramLogFile << "Conv dt: " << sim.conv_dt << "\n";
                 paramLogFile << "k: " << sim.k << "\n";
+                paramLogFile << "Noise" << sim.noiseSeed << "\n";
                 paramLogFile << "---------------------------------\n";
             }
             descriptionBuffer[0] = '\0';  // clear text
         }
+        ImGui::SameLine();
+        if (paramLogFile.is_open()) {
+            if (ImGui::Button("Close Snapshot File")) {
+                paramLogFile.close();
+            }
+        } else {
+            ImGui::TextColored(ImVec4(0.8f, 0.4f, 0.4f, 1.0f), "Snapshot file is closed.");
+        }
+
 
         if (ImGui::BeginCombo("Saved Files", selectFilename.c_str())) {
-            for (const auto& entry : fs::directory_iterator(".")){
-                if (entry.path().extension() == ".txt" && entry.path().string().find("lenia_params_") != std::string::npos) {
-                    std::string filename = entry.path().filename().c_str();
+            for (const auto& entry : fs::directory_iterator("snapshots")){
+                if (entry.path().extension() == ".txt" && entry.path().string().find("snapshots/lenia_params_") != std::string::npos) {
+                    std::string filename = entry.path().filename().string();
                     if (ImGui::Selectable(filename.c_str())) {
                         selectFilename = filename;
                         selectedSnapshotIndex = -1;
                         savedSnapshots.clear();
-                        loadSnapshotsFromFile(filename);
+                        loadSnapshotsFromFile("snapshots/" + filename);
+
                     }
                 }
             }
@@ -259,6 +272,7 @@ void SimulationUI::render(CUDAHandler &sim)
                 sim.s = snap.s;
                 sim.conv_dt = snap.conv_dt;
                 sim.k = snap.k;
+                sim.noiseSeed = snap.noiseSeed;
 
                 sim.initLenia();  // reinitialize with new values;
             }
@@ -774,6 +788,8 @@ void SimulationUI::loadSnapshotsFromFile(const std::string &filename)
             current.conv_dt = std::stof(line.substr(9));
         else if (line.find("k:") == 0)
             current.k = std::stof(line.substr(2));
+        else if (line.find("Noise:") == 0)
+            current.noiseSeed = std::stoi(line.substr(7));
         else if (line.find("---------------------------------") == 0) {
             savedSnapshots.push_back(current);
             // std::cout << "Loaded snapshot: " << current.description << "\n";

@@ -1,0 +1,15 @@
+----Snapshot----
+Description: psycho
+Particles: 1000000
+Convolution Kernel: 3
+Growth Mapping: 9
+Convolution Radius: 21
+Alpha: 4
+Sigma: 0.028
+Mu: 0.015
+Ring Peak (m): 0.03
+Ring Spread (s): 0.25
+Conv dt: 0.267
+k: 1
+Noise0
+---------------------------------

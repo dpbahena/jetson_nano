@@ -1,0 +1,140 @@
+----Snapshot----
+Description: open lenia N1
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 8
+Convolution Radius: 24
+Alpha: 4.567
+Sigma: 0.005
+Mu: 0.009
+Ring Peak (m): 0.265
+Ring Spread (s): 0.117
+Conv dt: 0.064
+k: 0.502
+---------------------------------
+----Snapshot----
+Description: open lenia r17 n1
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 8
+Convolution Radius: 17
+Alpha: 4.567
+Sigma: 0.005
+Mu: 0.009
+Ring Peak (m): 0.265
+Ring Spread (s): 0.117
+Conv dt: 0.064
+k: 0.502
+---------------------------------
+----Snapshot----
+Description: open lenia n1 1
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 8
+Convolution Radius: 17
+Alpha: 4.567
+Sigma: 0.005
+Mu: 0.009
+Ring Peak (m): 0.265
+Ring Spread (s): 0.117
+Conv dt: 0.064
+k: 0.502
+---------------------------------
+----Snapshot----
+Description: open lenia v3
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 8
+Convolution Radius: 17
+Alpha: 4.567
+Sigma: 0.005
+Mu: 0.009
+Ring Peak (m): 0.295
+Ring Spread (s): 0.131
+Conv dt: 0.064
+k: 0.502
+---------------------------------
+----Snapshot----
+Description: lenia bird N1
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 8
+Convolution Radius: 17
+Alpha: 4.567
+Sigma: 0.005
+Mu: 0.009
+Ring Peak (m): 0.295
+Ring Spread (s): 0.131
+Conv dt: 0.065
+k: 0.502
+---------------------------------
+----Snapshot----
+Description: lenia bird 2 N1
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 8
+Convolution Radius: 17
+Alpha: 4.567
+Sigma: 0.005
+Mu: 0.009
+Ring Peak (m): 0.295
+Ring Spread (s): 0.131
+Conv dt: 0.065
+k: 0.508
+---------------------------------
+----Snapshot----
+Description: lenia herradura
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 8
+Convolution Radius: 17
+Alpha: 4.568
+Sigma: 0.005
+Mu: 0.009
+Ring Peak (m): 0.295
+Ring Spread (s): 0.131
+Conv dt: 0.069
+k: 0.508
+---------------------------------
+----Snapshot----
+Description: lenia herradura poly N1
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 8
+Convolution Radius: 17
+Alpha: 4.568
+Sigma: 0.005
+Mu: 0.009
+Ring Peak (m): 0.295
+Ring Spread (s): 0.131
+Conv dt: 0.069
+k: 0.508
+---------------------------------
+----Snapshot----
+Description: little larger lenia N1
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 8
+Convolution Radius: 17
+Alpha: 4.579
+Sigma: 0.006
+Mu: 0.01
+Ring Peak (m): 0.295
+Ring Spread (s): 0.131
+Conv dt: 0.061
+k: 0.52
+---------------------------------
+----Snapshot----
+Description: breathing lenia N1
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 8
+Convolution Radius: 17
+Alpha: 4.579
+Sigma: 0.006
+Mu: 0.01
+Ring Peak (m): 0.295
+Ring Spread (s): 0.131
+Conv dt: 0.061
+k: 0.521
+---------------------------------
