@@ -1,0 +1,70 @@
+----Snapshot----
+Description: tesla2 N5
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 0
+Convolution Radius: 30
+Alpha: 2.284
+Sigma: 0.009
+Mu: 0.13
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.05
+k: 1
+---------------------------------
+----Snapshot----
+Description: small lenia N5
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 0
+Convolution Radius: 30
+Alpha: 2.284
+Sigma: 0.007
+Mu: 0.118
+Ring Peak (m): 0.265
+Ring Spread (s): 0.114
+Conv dt: 0.049
+k: 1
+---------------------------------
+----Snapshot----
+Description: small lenia 2 N5
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 0
+Convolution Radius: 30
+Alpha: 2.284
+Sigma: 0.007
+Mu: 0.118
+Ring Peak (m): 0.265
+Ring Spread (s): 0.117
+Conv dt: 0.049
+k: 1
+---------------------------------
+----Snapshot----
+Description: small lenia 3 N5
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 0
+Convolution Radius: 30
+Alpha: 2.284
+Sigma: 0.007
+Mu: 0.116
+Ring Peak (m): 0.265
+Ring Spread (s): 0.117
+Conv dt: 0.049
+k: 1
+---------------------------------
+----Snapshot----
+Description: smalll lenia stable N5
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 0
+Convolution Radius: 30
+Alpha: 2.284
+Sigma: 0.007
+Mu: 0.117
+Ring Peak (m): 0.265
+Ring Spread (s): 0.117
+Conv dt: 0.049
+k: 1
+---------------------------------
