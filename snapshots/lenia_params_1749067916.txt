@@ -1,0 +1,45 @@
+----Snapshot----
+Description: blue lenia moving being eating by circling lenia
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 10
+Convolution Radius: 12
+Alpha: 1.496
+Sigma: 0.005
+Mu: 0.014
+Ring Peak (m): 1.433
+Ring Spread (s): 0.256
+Conv dt: 0.06
+k: 0.58
+Noise4
+---------------------------------
+----Snapshot----
+Description: stable blue lenia
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 9
+Convolution Radius: 12
+Alpha: 1.538
+Sigma: 0.007
+Mu: 0.015
+Ring Peak (m): 1.433
+Ring Spread (s): 0.256
+Conv dt: 0.06
+k: 0.575
+Noise1
+---------------------------------
+----Snapshot----
+Description: stable lenia2
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 9
+Convolution Radius: 12
+Alpha: 1.538
+Sigma: 0.007
+Mu: 0.015
+Ring Peak (m): 1.433
+Ring Spread (s): 0.256
+Conv dt: 0.059
+k: 0.575
+Noise1
+---------------------------------
