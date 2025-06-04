@@ -1,0 +1,90 @@
+----Snapshot----
+Description: lenia 1
+Particles: 1000000
+Convolution Kernel: 2
+Growth Mapping: 10
+Convolution Radius: 30
+Alpha: 0.002
+Sigma: 0.007
+Mu: 0.04
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.0559999
+k: 1
+Noise0
+---------------------------------
+----Snapshot----
+Description: lenia2
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 10
+Convolution Radius: 30
+Alpha: 0.002
+Sigma: 0.007
+Mu: 0.04
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.0559999
+k: 1
+Noise0
+---------------------------------
+----Snapshot----
+Description: lenia3
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 10
+Convolution Radius: 30
+Alpha: 0.002
+Sigma: 0.007
+Mu: 0.04
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.0559999
+k: 1
+Noise0
+---------------------------------
+----Snapshot----
+Description: beans
+Particles: 1000000
+Convolution Kernel: 3
+Growth Mapping: 5
+Convolution Radius: 30
+Alpha: 0.002
+Sigma: 0.007
+Mu: 0.042
+Ring Peak (m): 0.342
+Ring Spread (s): 0.253
+Conv dt: 0.0559999
+k: 1
+Noise0
+---------------------------------
+----Snapshot----
+Description: lenia 4
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 10
+Convolution Radius: 26
+Alpha: 0.465
+Sigma: 0.005
+Mu: 0.032
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.039
+k: 1
+Noise0
+---------------------------------
+----Snapshot----
+Description: lenia5
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 10
+Convolution Radius: 26
+Alpha: 0.465
+Sigma: 0.005
+Mu: 0.032
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.039
+k: 1
+Noise0
+---------------------------------
