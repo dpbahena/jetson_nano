@@ -58,8 +58,8 @@ struct Settings {
     
 
     bool operator!=(const Settings& other) const {
-        return std::tie(numberOfParticles, particleRadius, spacing, convRadius, alpha, sigma, mu, m, s, conv_dt, gMode, kMode, noiseSeed, k) !=
-               std::tie(other.numberOfParticles, other.particleRadius, other.spacing, other.convRadius, other.alpha, other.sigma,other.mu, other.m, other.s, other.conv_dt, other.gMode, other.kMode, other.noiseSeed, other.k);
+        return std::tie(numberOfParticles, particleRadius, spacing, convRadius, alpha, sigma, mu, m, s, conv_dt, gMode, kMode, noiseSeed, k, k1) !=
+               std::tie(other.numberOfParticles, other.particleRadius, other.spacing, other.convRadius, other.alpha, other.sigma,other.mu, other.m, other.s, other.conv_dt, other.gMode, other.kMode, other.noiseSeed, other.k, other.k1);
     }
 };
 

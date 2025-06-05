@@ -1,0 +1,16 @@
+----Snapshot----
+Description: somethng lenia
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 8
+Convolution Radius: 30
+Alpha: 3.317
+Sigma: 0.028
+Mu: 0.159
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.046
+k: 1.335
+k1: 1
+Noise: 0
+---------------------------------

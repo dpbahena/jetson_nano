@@ -427,20 +427,137 @@ __global__ void activate_LeniaGoL_convolution_kernel(
 
 }
 
+// __global__ void activate_LeniaGoL_convolution_kernel(
+//     Particle* particles,
+//     int totalParticles,
+//     int gridRows,
+//     int gridCols,
+//     int kernelDiameter,
+//     int radius,
+//     float sigma,
+//     float mu,
+//     float dt,
+//     float* debugU,
+//     float* debugGrowth,
+//     GrowthMode gMode, 
+//     float k, float k1
+// ) {
+//     int i = threadIdx.x + blockIdx.x * blockDim.x;
+//     if (i >= totalParticles) return;
+
+//     int row = i / gridCols;
+//     int col = i % gridCols;
+
+//     float neighborSum = 0.0f;
+//     float weightSum = 0.0f;
+
+//     for (int dr = -radius; dr <= radius; ++dr) {
+//         for (int dc = -radius; dc <= radius; ++dc) {
+//             // Wrap around (periodic boundary)
+//             int nr = (row + dr + gridRows) % gridRows;
+//             int nc = (col + dc + gridCols) % gridCols;
+
+//             int j = nr * gridCols + nc;
+//             int kernelIndex = (dr + radius) * kernelDiameter + (dc + radius);
+
+//             float weight = d_kernelConst[kernelIndex];
+//             neighborSum += particles[j].energy * weight/k1;
+//             weightSum += weight;
+//         }
+//     }
+
+//     float u = (weightSum > 0.0f) ? (neighborSum / weightSum) : 0.0f;
+//     float growth;
+//     switch (gMode) {
+//         case gGAUSSIAN:
+//             growth = growth_gaussian(u, mu, sigma);
+//             break;
+//         case gGAUSS_SHARP:
+//             growth = growth_gaussian_sharp(u, mu, sigma);
+//             break;
+//         case gQUAD4:
+//             growth = growth_quad4(u, mu, sigma);
+//             break;
+//         case gTRIANGLE:
+//             growth = growth_triangle(u, mu, sigma);
+//             break;
+//         case gSTEP:
+//             growth = growth_step(u, mu, sigma);
+//             break;
+//         case gRELU: 
+//             growth = growth_relu(u, mu, sigma);
+//             break;
+//         case gMEX_HAT:
+//             growth = growth_mexican_hat(u, mu, sigma);
+//             break;
+//         case gINV_QUAD:
+//             growth = growth_inverse_quadratic(u, mu, sigma);
+//             break;
+//         case gCOSINE:
+//             growth = growth_cosine(u, mu, sigma);
+//             break;
+//         case gSMOOTH_STEP:
+//             growth = growth_smoothstep(u, mu, sigma);
+//             break;
+//         case gSINC:
+//             growth = growth_sinc(u, mu, sigma);
+//             break;
+//         default:
+//             break;
+//     }
+    
+//     // float e = fminf(1.0f, fmaxf(0.0f, particles[i].energy + dt * growth <= 0.0f ? 0.99f: growth));
+//     float e = fminf(1.0f, fmaxf(0.0f, particles[i].energy + dt * growth));
+
+
+//     // TEMP: Visualize normalized excitation and growth directly
+//     // uchar4 debugColor;
+//     // debugColor.x = (unsigned char)(255.0f * fminf(fmaxf(u, 0.0f), 1.0f));        // Red = excitation u
+//     // debugColor.y = (unsigned char)(255.0f * fminf(fmaxf((growth + 1.0f) * 0.5f, 0.0f), 1.0f)); // Green = growth (-1 to 1 mapped to 0-1)
+//     // debugColor.z = 0;
+//     // debugColor.w = 255;
+
+//     // particles[i].color = debugColor;
+
+//     particles[i].nextEnergy = e * k;
+//     // if (i == 0) {
+//     //     // Store a sample (first thread only — for simplicity)
+//     //     debugU[0] = u;
+//     //     debugGrowth[0] = growth;
+//     // }
+//     if (i == 0) {
+//         if (!isnan(u) && !isnan(growth)) {
+//             debugU[0] = u;
+//             debugGrowth[0] = growth;
+//         } else {
+//             debugU[0] = 0.0f;
+//             debugGrowth[0] = 0.0f;
+//         }
+//     }
+//     // if (i == 0) {
+//     //     printf("Sample u = %.5f, growth = %.5f\n", u, growth);
+//     // }
+
+
+   
+
+// }
+
 __global__ void activate_LeniaGoL_convolution_kernel(
-    Particle* particles,
-    int totalParticles,
-    int gridRows,
-    int gridCols,
-    int kernelDiameter,
-    int radius,
-    float sigma,
-    float mu,
-    float dt,
-    float* debugU,
-    float* debugGrowth,
-    GrowthMode gMode, 
-    float k, float k1
+    Particle*   particles,
+    int         totalParticles,
+    int         gridRows,
+    int         gridCols,
+    int         kernelDiameter,
+    int         radius,
+    float       sigma,
+    float       mu,
+    float       dt,
+    float*      debugU,
+    float*      debugGrowth,
+    GrowthMode  gMode, 
+    float       k,   // “growth gain” 
+    float       k1   // “u-scale” 
 ) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= totalParticles) return;
@@ -448,99 +565,58 @@ __global__ void activate_LeniaGoL_convolution_kernel(
     int row = i / gridCols;
     int col = i % gridCols;
 
+    // 1) Compute the convolution “u” but shrink it by 1/k1
     float neighborSum = 0.0f;
-    float weightSum = 0.0f;
+    float weightSum   = 0.0f;
 
     for (int dr = -radius; dr <= radius; ++dr) {
         for (int dc = -radius; dc <= radius; ++dc) {
-            // Wrap around (periodic boundary)
             int nr = (row + dr + gridRows) % gridRows;
             int nc = (col + dc + gridCols) % gridCols;
-
-            int j = nr * gridCols + nc;
+            int j  = nr * gridCols + nc;
             int kernelIndex = (dr + radius) * kernelDiameter + (dc + radius);
 
-            float weight = d_kernelConst[kernelIndex] / k1;
-            neighborSum += particles[j].energy * weight;
-            weightSum += weight;
+            float weight = d_kernelConst[kernelIndex];
+            neighborSum += particles[j].energy * (weight / k1);
+            weightSum   += weight;
         }
     }
-
     float u = (weightSum > 0.0f) ? (neighborSum / weightSum) : 0.0f;
-    float growth;
+
+    // 2) Compute “growth” using whichever growth function you’ve selected
+    float growth = 0.0f;
     switch (gMode) {
-        case gGAUSSIAN:
-            growth = growth_gaussian(u, mu, sigma);
-            break;
-        case gGAUSS_SHARP:
-            growth = growth_gaussian_sharp(u, mu, sigma);
-            break;
-        case gQUAD4:
-            growth = growth_quad4(u, mu, sigma);
-            break;
-        case gTRIANGLE:
-            growth = growth_triangle(u, mu, sigma);
-            break;
-        case gSTEP:
-            growth = growth_step(u, mu, sigma);
-            break;
-        case gRELU: 
-            growth = growth_relu(u, mu, sigma);
-            break;
-        case gMEX_HAT:
-            growth = growth_mexican_hat(u, mu, sigma);
-            break;
-        case gINV_QUAD:
-            growth = growth_inverse_quadratic(u, mu, sigma);
-            break;
-        case gCOSINE:
-            growth = growth_cosine(u, mu, sigma);
-            break;
-        case gSMOOTH_STEP:
-            growth = growth_smoothstep(u, mu, sigma);
-            break;
-        case gSINC:
-            growth = growth_sinc(u, mu, sigma);
-            break;
-        default:
-            break;
+        case gGAUSSIAN:       growth = growth_gaussian(u, mu, sigma);        break;
+        case gGAUSS_SHARP:    growth = growth_gaussian_sharp(u, mu, sigma);  break;
+        case gQUAD4:          growth = growth_quad4(u, mu, sigma);           break;
+        case gTRIANGLE:       growth = growth_triangle(u, mu, sigma);        break;
+        case gSTEP:           growth = growth_step(u, mu, sigma);            break;
+        case gRELU:           growth = growth_relu(u, mu, sigma);            break;
+        case gMEX_HAT:        growth = growth_mexican_hat(u, mu, sigma);     break;
+        case gINV_QUAD:       growth = growth_inverse_quadratic(u, mu, sigma); break;
+        case gCOSINE:         growth = growth_cosine(u, mu, sigma);          break;
+        case gSMOOTH_STEP:    growth = growth_smoothstep(u, mu, sigma);      break;
+        case gSINC:           growth = growth_sinc(u, mu, sigma);            break;
+        default:              /* leave growth = 0 */                          break;
     }
-    
-    // float e = fminf(1.0f, fmaxf(0.0f, particles[i].energy + dt * growth <= 0.0f ? 0.99f: growth));
-    float e = fminf(1.0f, fmaxf(0.0f, particles[i].energy + dt * growth));
 
+    // 3) Apply your “gain” k to the growth, then add to the old energy
+    float e_old = particles[i].energy;
+    float e_new = e_old + k * dt * growth;
+    // 4) Clamp into [0,1]
+    e_new = fminf(1.0f, fmaxf(0.0f, e_new));
+    particles[i].nextEnergy = e_new;
 
-    // TEMP: Visualize normalized excitation and growth directly
-    // uchar4 debugColor;
-    // debugColor.x = (unsigned char)(255.0f * fminf(fmaxf(u, 0.0f), 1.0f));        // Red = excitation u
-    // debugColor.y = (unsigned char)(255.0f * fminf(fmaxf((growth + 1.0f) * 0.5f, 0.0f), 1.0f)); // Green = growth (-1 to 1 mapped to 0-1)
-    // debugColor.z = 0;
-    // debugColor.w = 255;
-
-    // particles[i].color = debugColor;
-
-    particles[i].nextEnergy = e * k;
-    // if (i == 0) {
-    //     // Store a sample (first thread only — for simplicity)
-    //     debugU[0] = u;
-    //     debugGrowth[0] = growth;
-    // }
+    // 5) Debug (only in thread 0)
     if (i == 0) {
         if (!isnan(u) && !isnan(growth)) {
-            debugU[0] = u;
-            debugGrowth[0] = growth;
+            debugU[0]       = u;
+            debugGrowth[0]  = growth;
         } else {
-            debugU[0] = 0.0f;
-            debugGrowth[0] = 0.0f;
+            debugU[0]       = 0.0f;
+            debugGrowth[0]  = 0.0f;
         }
     }
-    // if (i == 0) {
-    //     printf("Sample u = %.5f, growth = %.5f\n", u, growth);
-    // }
-
-
-   
-
 }
 
 

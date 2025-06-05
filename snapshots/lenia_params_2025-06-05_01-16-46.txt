@@ -1,0 +1,48 @@
+----Snapshot----
+Description: breathing lenia
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 8
+Convolution Radius: 30
+Alpha: 3.332
+Sigma: 0.029
+Mu: 0.159
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.046
+k: 1.335
+k1: 1
+Noise: 0
+---------------------------------
+----Snapshot----
+Description: breathing lenia 2
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 8
+Convolution Radius: 30
+Alpha: 3.332
+Sigma: 0.029
+Mu: 0.159
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.047
+k: 1.335
+k1: 1
+Noise: 0
+---------------------------------
+----Snapshot----
+Description: breathing lenia 3
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 8
+Convolution Radius: 30
+Alpha: 3.317
+Sigma: 0.028
+Mu: 0.159
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.046
+k: 1.335
+k1: 1.082
+Noise: 0
+---------------------------------

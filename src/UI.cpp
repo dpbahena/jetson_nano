@@ -186,7 +186,7 @@ void SimulationUI::render(CUDAHandler &sim)
         }
 
         float kStep = 0.001f;
-        ImGui::SliderFloat("K", &sim.k, 0.001, 1.0);
+        ImGui::SliderFloat("K", &sim.k, -2.0, 2.0);
         ImGui::SameLine();
         if (ImGui::Button("-##k")) {
             sim.k -= kStep;
@@ -197,7 +197,7 @@ void SimulationUI::render(CUDAHandler &sim)
         }
 
         float k1Step = 0.001f;
-        ImGui::SliderFloat("K1", &sim.k1, 0.001, 1.0);
+        ImGui::SliderFloat("K1", &sim.k1, 0.001, 2.0);
         ImGui::SameLine();
         if (ImGui::Button("-##k1")) {
             sim.k1 -= k1Step;
@@ -214,7 +214,15 @@ void SimulationUI::render(CUDAHandler &sim)
 
             // create a new file
             if (!paramLogFile.is_open()) {
-                std::string filename = "snapshots/lenia_params_" + std::to_string(std::time(nullptr)) + ".txt";
+                // std::string filename = "snapshots/lenia_params_" + std::to_string(std::time(nullptr)) + ".txt";
+                // Get current time
+                std::time_t now = std::time(nullptr);
+                char timeBuffer[64];
+                std::strftime(timeBuffer, sizeof(timeBuffer), "%Y-%m-%d_%H-%M-%S", std::localtime(&now));
+
+                // Create readable filename
+                std::string filename = "snapshots/lenia_params_" + std::string(timeBuffer) + ".txt";
+
                 paramLogFile.open(filename, std::ios::out);
             }
             if (paramLogFile.is_open()) {

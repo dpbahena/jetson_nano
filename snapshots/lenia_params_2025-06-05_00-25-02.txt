@@ -1,0 +1,16 @@
+----Snapshot----
+Description: big lenia
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 10
+Convolution Radius: 30
+Alpha: 4.15
+Sigma: 0.011
+Mu: 0.054
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.143
+k: 1.121
+k1: 1.806
+Noise: 5
+---------------------------------

@@ -1,0 +1,16 @@
+----Snapshot----
+Description: new lenia with k1 
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 10
+Convolution Radius: 10
+Alpha: 4.15
+Sigma: 0.007
+Mu: 0.037
+Ring Peak (m): 0.342
+Ring Spread (s): 0.09
+Conv dt: 0.126
+k: 1
+k1: 1.893
+Noise: 2132586576
+---------------------------------
