@@ -440,7 +440,7 @@ __global__ void activate_LeniaGoL_convolution_kernel(
     float* debugU,
     float* debugGrowth,
     GrowthMode gMode, 
-    float k
+    float k, float k1
 ) {
     int i = threadIdx.x + blockIdx.x * blockDim.x;
     if (i >= totalParticles) return;
@@ -460,7 +460,7 @@ __global__ void activate_LeniaGoL_convolution_kernel(
             int j = nr * gridCols + nc;
             int kernelIndex = (dr + radius) * kernelDiameter + (dc + radius);
 
-            float weight = d_kernelConst[kernelIndex];
+            float weight = d_kernelConst[kernelIndex] / k1;
             neighborSum += particles[j].energy * weight;
             weightSum += weight;
         }
@@ -812,7 +812,9 @@ void CUDAHandler::updateDraw(float dt)
         .gMode = gMode,
         .kMode = kMode,
         .noiseSeed = noiseSeed,
-        .k = k
+        .k = k,
+        .k1 = k1
+
     };
 
     if(leniaSize == 0 || currentSettings != previousSettings) {
@@ -825,7 +827,7 @@ void CUDAHandler::updateDraw(float dt)
 
     if(startSimulation){
         int kernelDiameter = 2 * convolutionRadius + 1;
-        activate_LeniaGoL_convolution_kernel<<<gridSize, blockSize>>>(d_leniaParticles, leniaSize, lenia->gridRows, lenia->gridCols, kernelDiameter, convolutionRadius, sigma, mu, conv_dt, d_debugU, d_debugGrowth, gMode, k);
+        activate_LeniaGoL_convolution_kernel<<<gridSize, blockSize>>>(d_leniaParticles, leniaSize, lenia->gridRows, lenia->gridCols, kernelDiameter, convolutionRadius, sigma, mu, conv_dt, d_debugU, d_debugGrowth, gMode, k, k1);
         checkCuda(cudaDeviceSynchronize());
         commitNextEnergy_kernel<<<gridSize, blockSize>>> (d_leniaParticles, leniaSize);
         checkCuda(cudaDeviceSynchronize());

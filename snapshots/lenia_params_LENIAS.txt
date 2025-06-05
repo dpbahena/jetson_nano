@@ -1,0 +1,15 @@
+----Snapshot----
+Description: Lenia being created
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 9
+Convolution Radius: 12
+Alpha: 1.492
+Sigma: 0.007
+Mu: 0.011
+Ring Peak (m): 1.043
+Ring Spread (s): 0.31
+Conv dt: 0.033
+k: 0.511
+Noise: 1
+---------------------------------

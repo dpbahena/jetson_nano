@@ -53,6 +53,7 @@ struct Settings {
     KernelMode kMode;
     int noiseSeed;
     float k;
+    float k1; // additional parameter for some kernels
 
     
 
@@ -108,6 +109,7 @@ class CUDAHandler {
         float s = .15f;
         float conv_dt = 0.05f;
         float k = 1.0f;
+        float k1 = 1.0f; // additional parameter for some kernels
         int TARGET_FPS = 90;
         #if defined(__aarch64__) || defined(USE_X11_MONITORS)
         int totalParticles = 150000;

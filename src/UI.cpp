@@ -195,6 +195,17 @@ void SimulationUI::render(CUDAHandler &sim)
         if (ImGui::Button("+##k")) {
             sim.k += kStep;
         }
+
+        float k1Step = 0.001f;
+        ImGui::SliderFloat("K1", &sim.k1, 0.001, 1.0);
+        ImGui::SameLine();
+        if (ImGui::Button("-##k1")) {
+            sim.k1 -= k1Step;
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("+##k1")) {
+            sim.k1 += k1Step;
+        }
         ImGui::PopItemWidth();
         ImGui::Separator();
         ImGui::InputText("Description", descriptionBuffer, IM_ARRAYSIZE(descriptionBuffer));
@@ -220,7 +231,8 @@ void SimulationUI::render(CUDAHandler &sim)
                 paramLogFile << "Ring Spread (s): " << sim.s << "\n";
                 paramLogFile << "Conv dt: " << sim.conv_dt << "\n";
                 paramLogFile << "k: " << sim.k << "\n";
-                paramLogFile << "Noise" << sim.noiseSeed << "\n";
+                paramLogFile << "k1: " << sim.k1 << "\n";
+                paramLogFile << "Noise: " << sim.noiseSeed << "\n";
                 paramLogFile << "---------------------------------\n";
             }
             descriptionBuffer[0] = '\0';  // clear text
@@ -788,8 +800,10 @@ void SimulationUI::loadSnapshotsFromFile(const std::string &filename)
             current.conv_dt = std::stof(line.substr(9));
         else if (line.find("k:") == 0)
             current.k = std::stof(line.substr(2));
+        else if (line.find("k1:") == 0)
+            current.k1 = std::stof(line.substr(3));
         else if (line.find("Noise:") == 0)
-            current.noiseSeed = std::stoi(line.substr(7));
+            current.noiseSeed = std::stoi(line.substr(6));
         else if (line.find("---------------------------------") == 0) {
             savedSnapshots.push_back(current);
             // std::cout << "Loaded snapshot: " << current.description << "\n";

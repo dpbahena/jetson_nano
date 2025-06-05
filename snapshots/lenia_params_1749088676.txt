@@ -1,0 +1,30 @@
+----Snapshot----
+Description: forming lenia 
+Particles: 326591
+Convolution Kernel: 1
+Growth Mapping: 8
+Convolution Radius: 12
+Alpha: 1.164
+Sigma: 0.006
+Mu: 0.012
+Ring Peak (m): 0.464
+Ring Spread (s): 0.167
+Conv dt: 0.046
+k: 0.692
+Noise: 0
+---------------------------------
+----Snapshot----
+Description: more created
+Particles: 1000000
+Convolution Kernel: 1
+Growth Mapping: 8
+Convolution Radius: 25
+Alpha: 1.164
+Sigma: 0.006
+Mu: 0.012
+Ring Peak (m): 0.504
+Ring Spread (s): 0.165
+Conv dt: 0.05
+k: 0.696
+Noise: 0
+---------------------------------

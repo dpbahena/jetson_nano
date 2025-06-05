@@ -19,6 +19,7 @@ struct Snapshot {
     int gMode;
     int kMode;
     float k = 1.0f;
+    float k1 = 1.0f; // additional parameter for some kernels
     int noiseSeed;
 };
 

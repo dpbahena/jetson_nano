@@ -1,0 +1,32 @@
+----Snapshot----
+Description: lenia stable
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 0
+Convolution Radius: 24
+Alpha: 3.284
+Sigma: 0.008
+Mu: 0.099
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.093
+k: 1
+k1: 1
+Noise: 0
+---------------------------------
+----Snapshot----
+Description: lenia stable 2
+Particles: 1000000
+Convolution Kernel: 0
+Growth Mapping: 0
+Convolution Radius: 24
+Alpha: 2.658
+Sigma: 0.008
+Mu: 0.099
+Ring Peak (m): 0.03
+Ring Spread (s): 0.15
+Conv dt: 0.093
+k: 1
+k1: 1.003
+Noise: 0
+---------------------------------
