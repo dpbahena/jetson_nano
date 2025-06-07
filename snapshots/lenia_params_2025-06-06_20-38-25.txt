@@ -1,0 +1,16 @@
+----Snapshot----
+Description: stable lenia
+Particles: 1000000
+Convolution Kernel: 4
+Growth Mapping: 2
+Convolution Radius: 26
+Alpha: 4
+Sigma: 0.002
+Mu: 0.031
+Ring Peak (m): 0.03
+Ring Spread (s): 0.283
+Conv dt: 0.056
+k: 1.032
+k1: 0.874
+Noise: 1
+---------------------------------
